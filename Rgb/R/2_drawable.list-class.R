@@ -1,0 +1,242 @@
+# Reference class for lists of 'drawable' objects
+# Author : Sylvain Mareschal <maressyl@gmail.com>
+# License : GPL3 http://www.gnu.org/licenses/gpl.html
+
+# R5 class definition
+setRefClass(
+	Class = "drawable.list",
+	fields = list(
+		files = "character",
+		objects = "list",
+		hidden = "logical",
+		names = function(newValue) {
+			if(missing(newValue)) {
+				out <- character(0)
+				if(.self$count > 0) for(i in 1:.self$count) out[i] <- .self$get(i)$name
+				return(out)
+			} else {
+				stop("Read-only field")
+			}
+		},
+		classes = function(newValue) {
+			if(missing(newValue)) { return(sapply(objects, class))
+			} else                { stop("Read-only field")
+			}
+		},
+		count = function(newValue) {
+			if(missing(newValue)) { return(length(objects))
+			} else                { stop("Read-only field")
+			}
+		}
+	),
+	methods = list(
+
+add = function(file, track=NULL, hidden=FALSE) {
+"Add a track to the list.
+- file     : single character value, the path to the file containing the 'drawable' object to add.
+- track    : a 'drawable' object to add. If NULL, will be extracted from 'file'.
+- hidden   : single logical value, whether the track is to be shown on plots or hidden. This value can be changed later."
+	
+	# Checks
+	if(length(file) != 1)   stop("'file' must refer to a single existing file")
+	if(length(hidden) != 1) stop("'hidden' must be a single non NA logical value")
+	
+	# File parsing
+	if(is.null(track)) {
+		if(grepl("\\.rdt$", file, ignore.case=TRUE))        { track <- readRDT(file)
+		} else if(grepl("\\.rds$", file, ignore.case=TRUE)) { track <- readRDS(file)
+		} else stop("Unable to read \"", basename(file), "\", expecting a .rdt or .rds file")
+	}
+	
+	# Classes
+	if(!is(track, "drawable")) stop("Only objects inheriting the \"drawable\" class can be loaded.")
+	
+	# Addition
+	i <- .self$count + 1L
+	files[i] <<- file
+	objects[[i]] <<- track
+	hidden[i] <<- hidden
+},
+
+check = function(warn=TRUE) {
+"Raises an error if the object is not valid, else returns TRUE"
+	
+	# Fields
+	if(length(objects) != length(files))  stop("'files' must contain as many values as 'objects'")
+	if(length(objects) != length(hidden)) stop("'hidden' must contain as many values as 'objects'")
+	
+	# Objects
+	for(object in objects) {
+		if(!is(object, "drawable"))      stop("'objects' must be a list of 'drawable' objects")
+		object$check(warn=warn)
+	}
+	
+	# Warnings
+	if(isTRUE(warn)) {
+		if(any(is.na(files)))           warning("'files' should not contain NA values")
+		if(any(is.na(hidden)))          warning("'hidden' should not contain NA values")
+		if(any(!file.exists(files)))    warning("'files' should refer to existing files")
+	}
+	
+	return(TRUE)
+},
+
+fix.files = function(parent=NULL) {
+"Edit drawable list using a Tcl-tk GUI
+- parent   : tcltk parent frame for inclusion, or NULL."
+	
+	tk.tracks(
+		drawables = .self,
+		parent = parent
+	)
+},
+
+fix.param = function(selection=1L, parent=NULL) {
+"Edit drawing parameters using a Tcl-tk GUI
+- selection   : single integer value, the position of the track selected in the list.
+- parent      : tcltk parent frame for inclusion, or NULL."
+	
+	tk.edit(
+		drawables = .self,
+		parent = parent,
+		selection = selection
+	)
+},
+
+get = function(index, what="objects") {
+"Returns a single 'what' from the series
+- index   : single numeric value, the position of the track to get.
+- what    : single character value, the field to be exracted."
+	
+	if(!is.numeric(index) || length(index) != 1 || is.na(index)) stop("'index' must be a single non NA numeric value")
+	return(.self[[what]][[index]])
+},
+
+getByClasses = function(classes, what="objects") {
+"Returns a subset of 'what' from the series, querying by class inheritance
+- classes   : character vector, the class names of the objects to get (inheriting classes are picked too).
+- what      : single character value, the field to be exracted."
+	
+	selected <- logical(0)
+	if(.self$count > 0) for(i in 1:.self$count) selected[i] <- any(sapply(X=classes, FUN=is, object=.self$get(i)))
+	return(.self[[what]][ selected ])
+},
+
+getByNames = function(names, what="objects") {
+"Returns a subset of 'what' from the series, querying by track name
+- names   : character vector, the names of the objects to get.
+- what    : single character value, the field to be exracted."
+	
+	return(.self[[what]][ .self$names %in% names ])
+},
+
+getByPositions = function(positions, what="objects") {
+"Returns a subset of 'what' from the series, querying by position
+- positions   : integer vector, the positions of the objects to get.
+- what        : single character value, the field to be exracted."
+	
+	return(.self[[what]][ positions ])
+},
+
+initialize = function(files=character(0), objects=list(), hidden=logical(0), ...) { # "classes" and "count" are wrappers, do not initialize !
+	initFields(files=files, objects=objects, hidden=hidden)
+},
+
+moveDown = function(toMove) {
+"Increases the position of a track, switching position with the next one
+- toMove   : single numeric value, the position of the track to move."
+	
+	if(is.numeric(toMove) && length(toMove) == 1 && !is.na(toMove) && toMove < .self$count) {
+		# New elements order
+		newOrder <- append((1:.self$count)[ -toMove ], toMove, after=toMove)
+	
+		# Apply
+		files <<- .self$files[ newOrder ]
+		objects <<- .self$objects[ newOrder ]
+		hidden <<- .self$hidden[ newOrder ]
+		
+		return(TRUE)
+	} else {
+		return(FALSE)
+	}
+},
+
+moveUp = function(toMove) {
+"Decreases the position of a track, switching position with the previous one
+- toMove   : single numeric value, the position of the track to move."
+	
+	if(is.numeric(toMove) && length(toMove) == 1 && !is.na(toMove) && toMove > 1) {
+		# New elements order
+		newOrder <- append((1:.self$count)[ -toMove ], toMove, after=toMove-2)
+	
+		# Apply
+		files <<- .self$files[ newOrder ]
+		objects <<- .self$objects[ newOrder ]
+		hidden <<- .self$hidden[ newOrder ]
+		
+		return(TRUE)
+	} else {
+		return(FALSE)
+	}
+},
+
+remove = function(toRemove) {
+"Remove one or many tracks from the list
+- toRemove   : numeric vector, the positions of the tracks to remove."
+	
+	if(is.numeric(toRemove) && length(toRemove) > 0 && all(!is.na(toRemove))) {
+		# Apply
+		files <<- .self$files[ -toRemove ]
+		objects <<- .self$objects[ -toRemove ]
+		hidden <<- .self$hidden[ -toRemove ]
+		
+		return(TRUE)
+	} else {
+		return(FALSE)
+	}
+},
+
+show = function(include=FALSE, fieldWidth=10) {
+"Interactive printing
+- include   : single logical value, if TRUE class name will not be printed."
+	
+	# Class name
+	if(!isTRUE(include)) { cat("\n  \"drawable.list\" reference class object\n")
+	} else               { cat("\n  Extends \"drawable.list\"\n")
+	}
+	
+	# Content
+	cat("\n")
+	print(data.frame(name=.self$names, class=.self$classes))
+}
+
+	)
+)
+
+# Constructor
+drawable.list <- function(files=character(0), objects=NULL, hidden=FALSE, warn=TRUE) {
+	# Importation
+	object <- new("drawable.list")
+	
+	# Addition
+	if(is.null(objects)) {
+		if(length(files) > 0) {
+			# Parse 'files' (silently recycling 'hidden')
+			if(length(hidden) != length(files)) hidden <- rep(hidden, length.out=length(files))
+			for(i in 1:length(files)) object$add(file=files[i], hidden=hidden[i])
+		}
+	} else {
+		if(!is.list(objects) || length(objects) != length(files)) stop("'objects' must be a list of the same length as 'files'")
+		if(length(objects) > 0) {
+			# Use arguments (silently recycling 'hidden')
+			if(length(hidden) != length(files)) hidden <- rep(hidden, length.out=length(files))
+			for(i in 1:length(files)) object$add(track=objects[[i]], file=files[i], hidden=hidden[i])
+		}
+	}
+	
+	# Check
+	object$check(warn=warn)
+	
+	return(object)
+}
+
