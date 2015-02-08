@@ -90,5 +90,6 @@
 }
 
 \seealso{
-  \code{\link{draw.bg}}, \code{\link{draw.points}}, \code{\link{draw.hist}}
+  \code{\link{draw.bg}}, \code{\link{draw.hist}}, \code{\link{draw.points}}, \code{\link{draw.bam}}, \code{\link{draw.fasta}}
 }
+

@@ -1,10 +1,14 @@
 # Reference classes
 import(methods)
 exportClasses(drawable, drawable.list, sliceable, crossable)
-exportClasses(refTable, track.table, track.bam, track.genes, track.bands, track.CNV, track.exons)
+exportClasses(refTable, track.table, track.bam, track.fasta, track.genes, track.bands, track.CNV, track.exons)
 
 # Constructors
-export(drawable.list, refTable, track.table, track.bam, track.genes, track.bands, track.CNV, track.exons)
+export(drawable.list)
+export(refTable)
+export(track.table, track.genes, track.bands, track.CNV, track.exons)
+export(track.bam)
+export(track.fasta.multi, track.fasta.collection)
 
 # Functions
 export(read.gtf)
@@ -20,6 +24,7 @@ export("draw.boxes")
 export("draw.points")
 export("draw.hist")
 export("draw.pileup")
+export("draw.seq")
 
 # Annotation functions
 export("track.table.GTF")

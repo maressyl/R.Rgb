@@ -55,5 +55,6 @@
 }
 
 \seealso{
-  \code{\link{draw.boxes}}, \code{\link{draw.points}}, \code{\link{draw.bg}}
+  \code{\code{\link{draw.bg}}, \link{draw.boxes}}, \code{\link{draw.points}}, \code{\link{draw.bam}}, \code{\link{draw.fasta}}
 }
+

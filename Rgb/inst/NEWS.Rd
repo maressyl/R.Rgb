@@ -1,5 +1,11 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
+\section{Changes in version 1.4.0 (2015-02-08)}{
+  \itemize{
+    \item{track.fasta class added, with corresponding constructors.}
+    \item{draw.seq() function added.}
+  }
+}
 \section{Changes in version 1.3.0 (2014-10-26)}{
   \itemize{
     \item{Rsamtools dependency replaced by a native R solution.}

@@ -77,7 +77,11 @@
 }
 
 \seealso{
-  \code{\link{tk.browse}}, \code{\link{browsePlot}}, \code{\link{track.table-class}}, \code{\link{track.exons-class}}, \code{\link{track.CNV-class}}, \code{\link{track.genes-class}} or \code{\link{track.bands-class}}
+  \code{\link{track.fasta-constructors}}, \code{\link{Annotation}}
+  
+  \code{\link{track.table-class}}, \code{\link{track.exons-class}}, \code{\link{track.CNV-class}}, \code{\link{track.genes-class}} or \code{\link{track.bands-class}}
+
+  \code{\link{tk.browse}}, \code{\link{browsePlot}}
 }
 
 \examples{

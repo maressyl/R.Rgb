@@ -63,6 +63,6 @@
 \seealso{
   \code{\link{track.bam-class}}
   
-  \code{\link{draw.bg}}, \code{\link{draw.points}}, \code{\link{draw.hist}}
+  \code{\link{draw.bg}}, \code{\link{draw.boxes}}, \code{\link{draw.hist}}, \code{\link{draw.points}}, \code{\link{draw.fasta}}
 }
 
