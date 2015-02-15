@@ -1,9 +1,10 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
-\section{Changes in version 1.4.0 (2015-02-08)}{
+\section{Changes in version 1.4.0 (2015-02-15)}{
   \itemize{
     \item{track.fasta class added, with corresponding constructors.}
     \item{draw.seq() function added.}
+    \item{Minor DESCRIPTION file updates to comply with new CRAN policies}
   }
 }
 \section{Changes in version 1.3.0 (2014-10-26)}{
