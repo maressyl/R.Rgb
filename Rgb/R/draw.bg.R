@@ -56,20 +56,19 @@ draw.bg = function(
 	}
 	
 	# X grid and axis (Mb)
-	if(isTRUE(xgrid)) {
-		at <- pretty(c(start, end), n=12)
-		axis(
-			tck = 1,
-			col = "#CCCCCC",
-			lty = "dotted",
-			side = 1,
-			at = at,
-			cex.axis = cex.lab,
-			labels = if (xaxt != "n") at/1e6 else FALSE,
-			padj = -1
-		)
+	at <- pretty(c(start, end), n=12)
+	if(xaxt != "n") {
+		# With axis labels
+		if(isTRUE(xgrid)) { axis(side=1, at=at, tck=1, col="#CCCCCC", lty="dotted", cex.axis=cex.lab, labels=at/1e6, padj=-1)
+		} else            { axis(side=1, at=at, cex.axis=cex.lab, labels=at/1e6, padj=-1)
+		}
+	} else {
+		# Without axis labels
+		if(isTRUE(xgrid)) { axis(side=1, at=at, tck=1, col="#CCCCCC", lty="dotted", cex.axis=cex.lab, labels=FALSE, padj=-1)
+		}
 	}
 	
+	# Proper box
 	box(
 		which = "plot",
 		col = "#000000",
