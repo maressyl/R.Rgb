@@ -3,26 +3,23 @@
 # License : GPL3 http://www.gnu.org/licenses/gpl.html
 
 singlePlot <- function(
-		track,
-		bandTrack,
+		object,
+		bands,
 		columns = 4,
-		exclude = c("X", "Y")
+		bandHeight = lcm(1),
+		exclude = c("X", "Y"),
+		object.args = list(),
+		bands.args = list()
 	) {
-	# Erase arms
-	bands <- bandTrack$eraseArms(temp=TRUE)
-	elements <- track$eraseArms(temp=TRUE)
+	# Check
+	if(!is(object, "drawable"))   stop("'object' must inherit from the 'drawable' class")
+	if(!is(bands, "track.bands")) stop("'bands' must inherit from the 'track.bands' class")
 	
-	# Add colors
-	colors <- bands$extract(,"stain")
-	colors[ colors == "gneg" ]    <- "#EEEEEE"
-	colors[ colors == "gpos25" ]  <- "#CCCCCC"
-	colors[ colors == "gpos50" ]  <- "#AAAAAA"
-	colors[ colors == "gpos75" ]  <- "#888888"
-	colors[ colors == "gpos100" ] <- "#666666"
-	colors[ colors == "acen" ]    <- "#CC8888"
-	colors[ colors == "gvar" ]    <- "#88CC88"
-	colors[ colors == "stalk" ]   <- "#8888CC"
-	bands$addColumn(colors, "colors")
+	# Erase arms and copy objects
+	bands <- bands$eraseArms(temp=TRUE)
+	if(is(object, "track.table")) { object <- object$eraseArms(temp=TRUE)
+	} else                        { object <- object$copy(shallow=FALSE)
+	}
 	
 	# Layout
 	chromLengths <- with(bands$extract(), tapply(end, chrom, max))
@@ -30,41 +27,60 @@ singlePlot <- function(
 	
 	# Layout matrix
 	n <- length(chromLengths)
-	if(n %% columns == 0) { lay <- 1:n
-	} else                { lay <- 1:(n + (columns - (n %% columns)))
+	if(n %% columns == 0) { lay <- n
+	} else                { lay <- n + (columns - (n %% columns))
 	}
-	lay <- matrix(lay, ncol=columns)
+	lay <- matrix(1:(lay*2), ncol=columns)
 	
-	# Layout widths
-	chromLengths <- c(chromLengths, rep(0L, ncol(lay)*nrow(lay)-length(chromLengths)))
-	widths <- tapply(chromLengths, as.vector(col(lay)), max) + 20e6
+	# Layout cell sizes
+	widths <- split(x=rep(chromLengths, each=2), f=rep(1:ncol(lay), each=nrow(lay))[ 1 : (length(chromLengths)*2) ])
+	widths <- sapply(widths, max) + 20e6
+	heights <- rep(c(1, bandHeight), length.out=nrow(lay))
 	
 	# Apply layout
-	layout(lay, widths=widths)
+	layout(lay, widths=widths, heights=heights)
 	par(oma=c(1,1,1,1))
+	
+	# Merge argument lists (object)
+	object$setParam("mar", c(0, 0, 0, 0))
+	object$setParam("bty", "n")
+	object$setParam("xgrid", FALSE)
+	object$setParam("xaxt", "n")
+	object$setParam("yaxt", "n")
+	object$setParam("yaxs", "i")
+	object$setParam("ysub", "")
+	object$setParam("ylab", "")
+	for(argName in names(object.args)) object$setParam(argName, object.args[[argName]])
+	
+	# Merge argument lists (bands)
+	bands$setParam("mar", c(0, 0, 0.5, 0))
+	bands$setParam("bty", "n")
+	bands$setParam("xgrid", FALSE)
+	bands$setParam("xaxt", "n")
+	bands$setParam("yaxt", "n")
+	bands$setParam("yaxs", "i")
+	bands$setParam("ysub", "")
+	bands$setParam("ylab", "")
+	bands$setParam("label", FALSE)
+	bands$setParam("border", NA)
+	bands$setParam("ylim", c(0.25, 0.75))
+	for(argName in names(bands.args)) bands$setParam(argName, bands.args[[argName]])
 	
 	chromosomes <- setdiff(bands$chromosomes(), exclude)
 	for(i in 1:length(chromosomes)) {
-		# Plotted chromosome
-		chrom <- bands$chromosomes()[i]
+		chrom <- chromosomes[i]
+		start <- 0L
+		end <- widths[ col(lay)[i*2] ]
 		
-		# Background
-		par(mar=c(0,0,0,0))
-		plot(x=NA, y=NA, xlim=c(0, widths[col(lay)[i]]), ylim=c(-1,1), xaxs="i", yaxs="i", xaxt="n", yaxt="n", bty="n")
+		# User object plotting
+		object$draw(chrom=chrom, start=start, end=end)
 		
-		# Bands
-		with(bands$slice(chrom, 0, chromLengths[chrom]), rect(xleft=start, xright=end, ybottom=-0.5, ytop=-0.1, col=colors, border=NA))
-		rect(xleft=0, xright=chromLengths[chrom], ybottom=-0.5, ytop=-0.1)
-		
-		# Track elements
-		rect(xleft=0, xright=chromLengths[chrom], ybottom=0.1, ytop=0.8, col="#EEEEEE", border="#EEEEEE")
-		tmp <- elements$slice(chrom, 0, chromLengths[chrom])
-		if(!"colors" %in% colnames(tmp)) tmp$colors <- "#000000"
-		if(!"height" %in% colnames(tmp)) tmp$height <- 1
-		if(nrow(tmp) > 0) with(tmp, rect(xleft=start, xright=end, ybottom=0.1, ytop=height*0.7+0.1, col=colors, border=colors))
-		
-		# Chromosome name
-		text(x=0, y=0.7, labels=sprintf(" %s", chrom), adj=c(0, 1), cex=1.25, font=2)
+		# Band track plotting
+		bands$draw(chrom=chrom, start=start, end=end)
+		xbox <- c(0, par("cxy")[1]*2*1) + par("cxy")[1]/2
+		rect(xleft=xbox[1], xright=xbox[2], ybottom=0.35, ytop=0.65, border="#000000", col="#FFFFFF")
+		text(x=sum(xbox)/2, y=0.5, labels=sprintf("%s", chrom), adj=c(0.5, 0.5), cex=1, font=2)
+		rect(xleft=start, xright=chromLengths[chrom], ybottom=par("usr")[3], ytop=par("usr")[4])
 	}
 }
 
