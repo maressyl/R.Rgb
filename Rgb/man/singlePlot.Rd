@@ -9,7 +9,7 @@
 }
 
 \usage{
-  singlePlot(object, bands, columns = 4, exclude = c("X", "Y"),
+  singlePlot(object, bands, columns = 4, bandHeight = lcm(1), exclude = c("X", "Y"),
     object.args = list(), bands.args = list())
 }
 
@@ -22,6 +22,9 @@
 }
   \item{columns}{
     Single integer value, column count in the chromosome layout.
+}
+  \item{bandHeight}{
+    Single character or numeric value, the height to be used in \code{layout} for cytoband plots.
 }
   \item{exclude}{
     Character vector, the names of the chromosomes to not plot.
