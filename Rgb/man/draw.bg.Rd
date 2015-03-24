@@ -10,7 +10,8 @@
 
 \usage{
   draw.bg(start, end, ylab = "", ysub = as.character(NA), mar = c(0.2, 5, 0.2, 1),
-    xaxt = "s", yaxt = "n", yaxs = "r", ylim = c(0, 1), cex.lab = 1, bty = "o", ...)
+    xaxt = "s", yaxt = "n", yaxs = "r", ylim = c(0, 1), cex.lab = 1, bty = "o",
+    xgrid = TRUE, ...)
 }
 
 \arguments{
@@ -46,6 +47,9 @@
 }
   \item{bty}{
     A character string which determined the type of box which is drawn about plots. If bty is one of "o" (the default), "l", "7", "c", "u", or "]" the resulting box resembles the corresponding upper case letter. A value of "n" suppresses the box. See \code{par}.
+}
+  \item{xgrid}{
+    Single logical value, whether to draw a grid on X axis or not.
 }
   \item{\dots}{
     Not used, only ignores other arguments.

@@ -14,6 +14,7 @@ draw.bg = function(
 		ylim = c(0, 1),
 		cex.lab = 1,
 		bty = "o",
+		xgrid = TRUE,
 		...
 	) {
 	# Coercions
@@ -55,17 +56,20 @@ draw.bg = function(
 	}
 	
 	# X grid and axis (Mb)
-	at = pretty(c(start, end), n=12)
-	axis(
-		tck = 1,
-		col = "#CCCCCC",
-		lty = "dotted",
-		side = 1,
-		at = at,
-		cex.axis = cex.lab,
-		labels = if (xaxt != "n") at/1e6 else FALSE,
-		padj = -1
-	)
+	if(isTRUE(xgrid)) {
+		at <- pretty(c(start, end), n=12)
+		axis(
+			tck = 1,
+			col = "#CCCCCC",
+			lty = "dotted",
+			side = 1,
+			at = at,
+			cex.axis = cex.lab,
+			labels = if (xaxt != "n") at/1e6 else FALSE,
+			padj = -1
+		)
+	}
+	
 	box(
 		which = "plot",
 		col = "#000000",
