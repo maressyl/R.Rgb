@@ -295,7 +295,7 @@ segMerge = function(...) {
 - ...   : arguments to be passed to segMerge()."
 	
 	# Processing
-	newRegions <- segMerge(
+	newRegions <- Rgb::segMerge(
 		segTable = .self$extract(),
 		...
 	)
