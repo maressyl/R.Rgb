@@ -11,7 +11,7 @@
 \usage{
   draw.bg(start, end, ylab = "", ysub = as.character(NA), mar = c(0.2, 5, 0.2, 1),
     xaxt = "s", yaxt = "n", yaxs = "r", yaxp = as.numeric(NA), ylim = c(0, 1),
-    cex.lab = 1, bty = "o", xgrid = TRUE, ...)
+    cex.lab = 1, bty = "o", las = 0, xgrid = TRUE, ...)
 }
 
 \arguments{
@@ -50,6 +50,9 @@
 }
   \item{bty}{
     A character string which determined the type of box which is drawn about plots. If bty is one of "o" (the default), "l", "7", "c", "u", or "]" the resulting box resembles the corresponding upper case letter. A value of "n" suppresses the box. See \code{par}.
+}
+  \item{las}{
+    The direction of both X and Y axis labels: 0 for labels parallel to the axes, 1 for horizontal labels, 2 for labels perpendicular to the axes and 3 for vertical labels. See \code{par}.
 }
   \item{xgrid}{
     Single logical value, whether to draw a grid on X axis or not.

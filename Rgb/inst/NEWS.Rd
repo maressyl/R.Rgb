@@ -5,6 +5,7 @@
     \item{Fixed error in draw.boxes() when labels are vertical and plot area too narrow.}
     \item{'xgrid' argument added to draw.bg().}
     \item{'yaxp' argument added to draw.bg().}
+    \item{'las' argument added to draw.bg().}
     \item{singlePlot() rewritten to handle any drawable object.}
   }
 }

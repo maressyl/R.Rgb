@@ -15,6 +15,7 @@ draw.bg = function(
 		ylim = c(0, 1),
 		cex.lab = 1,
 		bty = "o",
+		las = 0,
 		xgrid = TRUE,
 		...
 	) {
@@ -46,6 +47,7 @@ draw.bg = function(
 		yaxs = yaxs,
 		yaxp = yaxp,
 		bty = "n",
+		las = las,
 		cex.lab = cex.lab
 	)
 	
@@ -64,12 +66,12 @@ draw.bg = function(
 	at <- pretty(c(start, end), n=12)
 	if(xaxt != "n") {
 		# With axis labels
-		if(isTRUE(xgrid)) { axis(side=1, at=at, tck=1, col="#CCCCCC", lty="dotted", cex.axis=cex.lab, labels=at/1e6, padj=-1)
-		} else            { axis(side=1, at=at, cex.axis=cex.lab, labels=at/1e6, padj=-1)
+		if(isTRUE(xgrid)) { axis(side=1, at=at, las=las, tck=1, col="#CCCCCC", lty="dotted", cex.axis=cex.lab, labels=at/1e6, padj=-1)
+		} else            { axis(side=1, at=at, las=las, cex.axis=cex.lab, labels=at/1e6, padj=-1)
 		}
 	} else {
 		# Without axis labels
-		if(isTRUE(xgrid)) { axis(side=1, at=at, tck=1, col="#CCCCCC", lty="dotted", cex.axis=cex.lab, labels=FALSE, padj=-1)
+		if(isTRUE(xgrid)) { axis(side=1, at=at, las=las, tck=1, col="#CCCCCC", lty="dotted", cex.axis=cex.lab, labels=FALSE, padj=-1)
 		}
 	}
 	
