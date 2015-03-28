@@ -70,6 +70,10 @@
       - \strong{positions}   : integer vector, the positions of the objects to get.\cr
       - \strong{what}        : single character value, the field to be exracted.
     }
+    \item{\code{getChromEnd(chrom)}:}{
+      Returns as a single integer value the maximal ending position of the object descriptions of the given chromosome.\cr
+      - \strong{chrom}   : single integer, numeric or character value, the chromosomal location.
+    },
     \item{\code{initialize(files = , objects = , hidden = , ...)}:}{}
     \item{\code{moveDown(toMove)}:}{
       Increases the position of a track, switching position with the next one\cr

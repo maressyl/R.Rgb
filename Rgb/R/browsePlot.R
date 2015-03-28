@@ -41,12 +41,7 @@ browsePlot = function(
 			# Default values
 			if(is.na(chrom)) stop("'chrom' must be provided")
 			if(is.na(start)) start <- 0L
-			if(is.na(end)) {
-				ends <- integer(0)
-				for(i in toProcess) ends[i] <- drawables$get(i)$getChromEnd(chrom)
-				if(all(is.na(ends))) stop("Unable to predict chromosome end. Set 'end' manually or use at least one drawable object whose getChromEnd() method does not return NA.")
-				end <- max(ends, na.rm=TRUE)
-			}
+			if(is.na(end))   end <- drawables$getChromEnd(chrom)
 			
 			# Forces integer coordinates (for 'sliceable')
 			if(abs(start) > .Machine$integer.max) stop("'start' is too large (integer limit reached)")

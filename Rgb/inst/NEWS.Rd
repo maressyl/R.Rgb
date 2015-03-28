@@ -7,6 +7,7 @@
     \item{'yaxp' argument added to draw.bg().}
     \item{'las' argument added to draw.bg().}
     \item{singlePlot() rewritten to handle any drawable object.}
+    \item{drawable.list$getChromEnd() method added, now used by browsePlot().}
   }
 }
 \section{Changes in version 1.4.0 (2015-02-15)}{
