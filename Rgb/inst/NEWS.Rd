@@ -1,9 +1,10 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
-\section{Changes in version 1.4.1 (2015-03-24)}{
+\section{Changes in version 1.4.1 (2015-03-28)}{
   \itemize{
     \item{Fixed error in draw.boxes() when labels are vertical and plot area too narrow.}
     \item{'xgrid' argument added to draw.bg().}
+    \item{'yaxp' argument added to draw.bg().}
     \item{singlePlot() rewritten to handle any drawable object.}
   }
 }

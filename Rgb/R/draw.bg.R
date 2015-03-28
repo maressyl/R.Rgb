@@ -11,6 +11,7 @@ draw.bg = function(
 		xaxt = "s",
 		yaxt = "n",
 		yaxs = "r",
+		yaxp = as.numeric(NA),
 		ylim = c(0, 1),
 		cex.lab = 1,
 		bty = "o",
@@ -28,6 +29,9 @@ draw.bg = function(
 	# pretty() acuraccy workaround
 	if(start == -1) start <- 0L
 	
+	# yaxp default to NULL
+	if(any(is.na(yaxp))) yaxp <- NULL
+	
 	# Background
 	par(cex=1, mar=mar)
 	plot(
@@ -35,11 +39,12 @@ draw.bg = function(
 		xlim = c(start, end),
 		ylim = ylim,
 		xlab = "",
-		ylab = ylab,
 		xaxt = "n",
-		yaxt = yaxt,
 		xaxs = "i",
+		ylab = ylab,
+		yaxt = yaxt,
 		yaxs = yaxs,
+		yaxp = yaxp,
 		bty = "n",
 		cex.lab = cex.lab
 	)
