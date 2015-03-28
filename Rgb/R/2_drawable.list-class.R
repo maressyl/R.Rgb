@@ -142,7 +142,7 @@ getChromEnd = function(chrom) {
 "Returns as a single integer value the maximal ending position of the object descriptions of the given chromosome.
 - chrom   : single integer, numeric or character value, the chromosomal location."
 	ends <- integer(.self$count)
-	for(i in 1:.self$count) ends[i] <- drawables$get(i)$getChromEnd(chrom)
+	for(i in 1:.self$count) ends[i] <- .self$get(i)$getChromEnd(chrom)
 	if(all(is.na(ends))) stop("Unable to predict chromosome end. Set 'end' manually or use at least one drawable object whose getChromEnd() method does not return NA.")
 	end <- max(ends, na.rm=TRUE)
 	return(end)
