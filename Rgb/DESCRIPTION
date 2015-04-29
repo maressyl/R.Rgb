@@ -2,7 +2,7 @@ Package: Rgb
 Type: Package
 Title: The R Genome Browser
 Version: 1.4.1
-Date: 2015-03-24
+Date: 2015-04-29
 Author: Sylvain Mareschal
 Maintainer: Sylvain Mareschal <maressyl@gmail.com>
 URL: http://bioinformatics.ovsa.fr/Rgb

@@ -11,7 +11,7 @@
 \usage{
   draw.bg(start, end, ylab = "", ysub = as.character(NA), mar = c(0.2, 5, 0.2, 1),
     xaxt = "s", yaxt = "n", yaxs = "r", ylim = c(0, 1), cex.lab = 1, bty = "o",
-    xgrid = TRUE, ...)
+    xgrid = TRUE, new = FALSE, ...)
 }
 
 \arguments{
@@ -50,6 +50,9 @@
 }
   \item{xgrid}{
     Single logical value, whether to draw a grid on X axis or not.
+}
+  \item{new}{
+    Single logical value, whether to plot on top of previous track (\code{TRUE}) or in a new track (\code{FALSE}, default).
 }
   \item{\dots}{
     Not used, only ignores other arguments.

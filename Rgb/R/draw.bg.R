@@ -15,6 +15,7 @@ draw.bg = function(
 		cex.lab = 1,
 		bty = "o",
 		xgrid = TRUE,
+		new = FALSE,
 		...
 	) {
 	# Coercions
@@ -29,7 +30,7 @@ draw.bg = function(
 	if(start == -1) start <- 0L
 	
 	# Background
-	par(cex=1, mar=mar)
+	par(cex=1, mar=mar, new=new)
 	plot(
 		x=NA, y=NA,
 		xlim = c(start, end),
