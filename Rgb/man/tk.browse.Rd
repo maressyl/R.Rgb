@@ -89,5 +89,5 @@
 }
 
 \seealso{
-  \code{\linkS4class{drawable}}, \code{\linkS4class{track.table}}
+  \code{\link{singlePlot}}, \code{\linkS4class{drawable.list}}, \code{\linkS4class{drawable}}
 }

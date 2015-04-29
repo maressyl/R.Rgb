@@ -10,8 +10,8 @@
 
 \usage{
   draw.bg(start, end, ylab = "", ysub = as.character(NA), mar = c(0.2, 5, 0.2, 1),
-    xaxt = "s", yaxt = "n", yaxs = "r", ylim = c(0, 1), cex.lab = 1, bty = "o",
-    xgrid = TRUE, new = FALSE, ...)
+    xaxt = "s", yaxt = "n", yaxs = "r", yaxp = as.numeric(NA), ylim = c(0, 1),
+    cex.lab = 1, bty = "o", las = 0, xgrid = TRUE, new = FALSE, ...)
 }
 
 \arguments{
@@ -39,6 +39,9 @@
   \item{yaxs}{
     Y axis style, "r" enlarges the Y limits by 4 percents on each side for a cleaner look, "i" will not. See \code{par}.
 }
+  \item{yaxp}{
+    A numerical vector of the form "c(first, last, intervalCount)" which defines the Y axis ticks. Use \code{NA} to let R select pretty values itself. See \code{par}.
+}
   \item{ylim}{
     The Y axis limits as a numerical vector of the form "c(start, end)" of the plot. Note that start > end is allowed and leads to a "reversed axis". Use "NULL" to guess the axis range from the data. See \code{plot.default}.
 }
@@ -47,6 +50,9 @@
 }
   \item{bty}{
     A character string which determined the type of box which is drawn about plots. If bty is one of "o" (the default), "l", "7", "c", "u", or "]" the resulting box resembles the corresponding upper case letter. A value of "n" suppresses the box. See \code{par}.
+}
+  \item{las}{
+    The direction of both X and Y axis labels: 0 for labels parallel to the axes, 1 for horizontal labels, 2 for labels perpendicular to the axes and 3 for vertical labels. See \code{par}.
 }
   \item{xgrid}{
     Single logical value, whether to draw a grid on X axis or not.

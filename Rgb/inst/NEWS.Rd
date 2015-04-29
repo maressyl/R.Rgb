@@ -4,8 +4,11 @@
   \itemize{
     \item{Fixed error in draw.boxes() when labels are vertical and plot area too narrow.}
     \item{'xgrid' argument added to draw.bg().}
+    \item{'yaxp' argument added to draw.bg().}
+    \item{'las' argument added to draw.bg().}
     \item{'new' argument added to draw.bg().}
     \item{singlePlot() rewritten to handle any drawable object.}
+    \item{drawable.list$getChromEnd() method added, now used by browsePlot().}
   }
 }
 \section{Changes in version 1.4.0 (2015-02-15)}{
