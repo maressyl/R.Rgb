@@ -57,9 +57,13 @@ browsePlot = function(
 			
 				## LAYOUT CHECK ##
 				
+				# Ignore new=TRUE
+				toLay <- integer(0)
+				for(i in toProcess) if(!drawables$objects[[i]]$getParam("new")) toLay <- c(toLay, i)
+				
 				# Track heights
 				trackHeights = character(0)
-				for(i in toProcess) {
+				for(i in toLay) {
 					trackHeights <- c(trackHeights, drawables$get(i)$getParam("height"))
 				}
 				
@@ -78,7 +82,7 @@ browsePlot = function(
 				
 				layout(
 					matrix(
-						data = 1:length(toProcess),
+						data = 1:length(toLay),
 						ncol = 1
 					),
 					heights = trackHeights

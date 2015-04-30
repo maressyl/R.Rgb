@@ -75,6 +75,7 @@ defaultParams = function(...) {
 	
 	params$height <- 1
 	params$mar <- c(0.2, 5, 0.2, 1)
+	params$new <- FALSE
 	
 	return(params)
 },

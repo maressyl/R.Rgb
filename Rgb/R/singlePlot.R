@@ -59,17 +59,24 @@ singlePlot <- function(
 	widths.chrom <- matrix(chromLengths[ chromosomes[ lay.chrom ] ], nrow=nrow(lay.chrom), ncol=ncol(lay.chrom))
 	widths.chrom <- apply(widths.chrom, 2, max, na.rm=TRUE) + sum(add)
 	
+	# Count layable tracks
+	isHidden <- sapply(drawables$hidden, isTRUE)
+	isNew <- rep(as.logical(NA), drawables$count)
+	for(i in 1:drawables$count) isNew[i] <- drawables$objects[[i]]$getParam("new")
+	toLay <- which(!isHidden & !isNew)
+	trackCount <- length(toLay)
+	
 	# Expand chromosomes into tracks
-	lay <- matrix(as.integer(NA), nrow=nrow(lay.chrom)*(drawables$count+1L), ncol=0)
+	lay <- matrix(as.integer(NA), nrow=nrow(lay.chrom)*(trackCount+1L), ncol=0)
 	widths <- NULL
 	for(k in 1:ncol(lay.chrom)) {
 		# Chromosome cap column
-		capColumn <- rep(lay.chrom[,k], each=drawables$count+1L)
-		capColumn[ c(rep(FALSE, drawables$count), TRUE) ] <- NaN
+		capColumn <- rep(lay.chrom[,k], each=trackCount+1L)
+		capColumn[ c(rep(FALSE, trackCount), TRUE) ] <- NaN
 		
 		# Plot column
-		plotColumn <- rep((lay.chrom[,k]-1L)*drawables$count, each=drawables$count+1L) + 1:(drawables$count+1L) + max(lay.chrom, na.rm=TRUE)
-		plotColumn[ c(rep(FALSE, drawables$count), TRUE) ] <- NaN
+		plotColumn <- rep((lay.chrom[,k]-1L)*trackCount, each=trackCount+1L) + 1:(trackCount+1L) + max(lay.chrom, na.rm=TRUE)
+		plotColumn[ c(rep(FALSE, trackCount), TRUE) ] <- NaN
 		
 		# Add both to layout matrix
 		lay <- cbind(lay, capColumn, plotColumn)
@@ -80,7 +87,7 @@ singlePlot <- function(
 	
 	# Layout row heights (plots)
 	trackHeights <- NULL
-	for(object in drawables$objects) trackHeights <- c(trackHeights, object$getParam("height"))
+	for(i in toLay) trackHeights <- c(trackHeights, drawables$objects[[i]]$getParam("height"))
 	heights <- rep(c(trackHeights, spacer), nrow(lay.chrom))
 	
 	# Spacer in excess
