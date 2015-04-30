@@ -23,11 +23,21 @@ defaultParams = function(...) {
 	params$labelAdj <- "left"
 	params$colorVal <- as.character(NA)
 	params$colorFun <- function() {
-		output <- rep("#888888", nrow(slice))
-		output[ slice$type %in% c("Duplication", "Gain", "Insertion") ] <- "#8888FF"
-		output[ slice$type == "Deletion" ] <- "#FF8888"
-		output[ slice$type == "Loss" ] <- "#880000"
-		output[ slice$type == "Complex" ] <- "#BB7744"
+		colors <- c(
+			"loss"                     = "#880000",
+			"loss mobile element"      = "#880000",
+			"deletion"                 = "#FF8888",
+			"duplication"              = "#8888FF",
+			"gain"                     = "#8888FF",
+			"tandem duplication"       = "#8888FF",
+			"amplification"            = "#000088",
+			"gain+loss"                = "#BB7744",
+			"novel sequence insertion" = "#88FF88",
+			"mobile element insertion" = "#88FF88",
+			"insertion"                = "#88FF88"		
+		)
+		output <- colors[ slice$type ]
+		output[ is.na(output) ] <- "#888888"
 		return(output)
 	}
 	params$border <- "color"

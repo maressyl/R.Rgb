@@ -15,7 +15,8 @@ track.CNV.DGV = function(
 		header = TRUE,
 		sep = "\t",
 		quote = "",
-		comment.char = ""
+		comment.char = "",
+		stringsAsFactors = FALSE
 	)
 	
 	# Filtering out other features
@@ -29,7 +30,7 @@ track.CNV.DGV = function(
 		start = as.integer(DGV$start),
 		end = as.integer(DGV$end),
 		strand = factor(rep("+", nrow(DGV)), levels=c("-","+")),
-		type = DGV$variantsubtype,
+		type = factor(DGV$variantsubtype),
 		
 		# Meta-data
 		.name = name,
