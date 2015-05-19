@@ -9,7 +9,7 @@
 }
 
 \usage{
-  segOverlap(segTable, fun = list(unique.default, start=min, end=max))
+  segOverlap(segTable, fun = list(unique.default, start=min, end=max), factorsAsIntegers = TRUE)
 }
 
 \arguments{
@@ -18,6 +18,9 @@
 }
   \item{fun}{
     A \code{list} of \code{function}s, defining how to merge values when merging rows. It should contain an unamed element for the default function, and named elements to deal with specific columns.
+}
+  \item{factorsAsIntegers}{
+    Single logical value, whether to handle columns of class factor as integers or as is. Using \code{TRUE} dramatically shortens computation time in default user case ("chrom" column of class factor, "unique" function applied), but \code{FALSE} may be required to allow non-standard merging functions to access encoded values rather than factor indexes.
 }
 }
 

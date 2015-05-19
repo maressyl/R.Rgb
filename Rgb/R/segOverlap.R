@@ -4,7 +4,8 @@
 
 segOverlap = function(
 		segTable,
-		fun = list(unique.default, start=min, end=max)
+		fun = list(unique.default, start=min, end=max),
+		factorsAsIntegers = TRUE
 		)
 	{
 	# Arg checks
@@ -13,13 +14,13 @@ segOverlap = function(
 	
 	if(nrow(segTable) > 1) {
 		# Ordering
-		if(is.factor(segTable$chrom)) { segTable <- segTable[ order(as.integer(segTable$chrom), segTable$start) ,]
-		} else                        { segTable <- segTable[ order(segTable$chrom, segTable$start) ,]
+		if(is.factor(segTable$chrom) && isTRUE(factorsAsIntegers)) { segTable <- segTable[ order(as.integer(segTable$chrom), segTable$start) ,]
+		} else                                                     { segTable <- segTable[ order(segTable$chrom, segTable$start) ,]
 		}
 		
 		# Computing groups
-		if(is.factor(segTable$chrom)) { chroms <- as.integer(segTable$chrom)
-		} else                        { chroms <- segTable$chrom
+		if(is.factor(segTable$chrom) && isTRUE(factorsAsIntegers)) { chroms <- as.integer(segTable$chrom)
+		} else                                                     { chroms <- segTable$chrom
 		}
 		starts <- segTable$start
 		ends <- segTable$end
@@ -54,7 +55,7 @@ segOverlap = function(
 			}
 			
 			# Apply
-			if(is.factor(segTable[[k]])) {
+			if(is.factor(segTable[[k]]) && isTRUE(factorsAsIntegers)) {
 				# Factor
 				lev <- levels(segTable[[k]])
 				newSeg[[k]] <- tapply(X=as.integer(segTable[[k]]), INDEX=group, FUN=FUN)
