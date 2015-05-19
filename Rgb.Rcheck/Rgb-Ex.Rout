@@ -1,0 +1,550 @@
+
+R version 3.0.2 (2013-09-25) -- "Frisbee Sailing"
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-redhat-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgname <- "Rgb"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
+> library('Rgb')
+> 
+> base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("Annotation")
+> ### * Annotation
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: Annotation
+> ### Title: Annotation track constructors
+> ### Aliases: Annotation track.table.GTF track.exons.CCDS track.CNV.DGV
+> ###   track.genes.NCBI track.bands.UCSC
+> 
+> ### ** Examples
+> 
+>   # From the "How-to" vignette, section "Custom annotation tracks"
+>   file <- system.file("extdata/Cosmic_ATM.gtf.gz", package="Rgb")
+>   tt <- track.table.GTF(file)
+File parsing ... 1499 rows processed
+Attribute splitting ... 2998 pairs processed
+Attribute sorting ... 2 tags found
+Attribute binding ...
+done
+Warning in object$check(warn = warn) : 'organism' should not be NA
+Warning in object$check(warn = warn) : 'assembly' should not be NA
+> 
+> 
+> 
+> cleanEx()
+> nameEx("istrack_subtrack_sizetrack")
+> ### * istrack_subtrack_sizetrack
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: subtrack
+> ### Title: Extract elements within a genomic window
+> ### Aliases: subtrack sizetrack istrack
+> 
+> ### ** Examples
+> 
+>   
+>   # Exemplar data : subset of human genes
+>   data(hsFeatures)
+>   
+>   # Track validity
+>   print(istrack(hsGenes))
+[1] FALSE
+attr(,"why")
+[1] "'chrom' is not ordered (row 3)"
+>   hsGenes <- hsGenes[ order(hsGenes$chrom, hsGenes$start) ,]
+>   print(istrack(hsGenes))
+[1] TRUE
+>   
+>   # Chromosome index (factorial 'chrom')
+>   index <- tapply(1:nrow(hsGenes), hsGenes$chrom, max)
+>   
+>   # Factor chrom query
+>   print(class(hsGenes$chrom))
+[1] "factor"
+>   subtrack("1", 10e6, 15e6, index, hsGenes)
+          name chrom    start      end strand
+1         LZIC     1  9989776 10002826      -
+2       NMNAT1     1 10003486 10045556      +
+3       APITD1     1 10490159 10502872      +
+4  APITD1-CORT     1 10490159 10512060      +
+5        CASZ1     1 10696661 10856707      -
+6          SRM     1 11114649 11120091      -
+7      EXOSC10     1 11126675 11159938      -
+8        FBXO6     1 11724150 11734411      +
+9     C1orf187     1 11751781 11780336      +
+10        MFN2     1 12040238 12073572      +
+11     MIR4632     1 12251762 12251839      +
+12     AADACL4     1 12704566 12727097      +
+13    C1orf158     1 12806163 12821102      +
+14    PRAMEF16     1 13495254 13498260      +
+15    PRAMEF20     1 13736907 13747803      +
+16        PDPN     1 13910252 13944452      +
+>   
+>   # Row count
+>   a <- nrow(subtrack("1", 10e6, 15e6, index, hsGenes))
+>   b <- sizetrack("1", 10e6, 15e6, index, hsGenes)
+>   if(a != b) stop("Inconsistency")
+>   
+>   # Multiple sources
+>   length <- hsGenes$end - hsGenes$start
+>   subtrack("1", 10e6, 15e6, index, hsGenes, length)
+          name chrom    start      end strand <unknown>
+1         LZIC     1  9989776 10002826      -     13050
+2       NMNAT1     1 10003486 10045556      +     42070
+3       APITD1     1 10490159 10502872      +     12713
+4  APITD1-CORT     1 10490159 10512060      +     21901
+5        CASZ1     1 10696661 10856707      -    160046
+6          SRM     1 11114649 11120091      -      5442
+7      EXOSC10     1 11126675 11159938      -     33263
+8        FBXO6     1 11724150 11734411      +     10261
+9     C1orf187     1 11751781 11780336      +     28555
+10        MFN2     1 12040238 12073572      +     33334
+11     MIR4632     1 12251762 12251839      +        77
+12     AADACL4     1 12704566 12727097      +     22531
+13    C1orf158     1 12806163 12821102      +     14939
+14    PRAMEF16     1 13495254 13498260      +      3006
+15    PRAMEF20     1 13736907 13747803      +     10896
+16        PDPN     1 13910252 13944452      +     34200
+>   subtrack("1", 10e6, 15e6, index, hsGenes, length=length)
+          name chrom    start      end strand length
+1         LZIC     1  9989776 10002826      -  13050
+2       NMNAT1     1 10003486 10045556      +  42070
+3       APITD1     1 10490159 10502872      +  12713
+4  APITD1-CORT     1 10490159 10512060      +  21901
+5        CASZ1     1 10696661 10856707      - 160046
+6          SRM     1 11114649 11120091      -   5442
+7      EXOSC10     1 11126675 11159938      -  33263
+8        FBXO6     1 11724150 11734411      +  10261
+9     C1orf187     1 11751781 11780336      +  28555
+10        MFN2     1 12040238 12073572      +  33334
+11     MIR4632     1 12251762 12251839      +     77
+12     AADACL4     1 12704566 12727097      +  22531
+13    C1orf158     1 12806163 12821102      +  14939
+14    PRAMEF16     1 13495254 13498260      +   3006
+15    PRAMEF20     1 13736907 13747803      +  10896
+16        PDPN     1 13910252 13944452      +  34200
+>   
+>   # Speed comparison (x200 here)
+>   system.time(
++     for(i in 1:40000) {
++       subtrack("1", 10e6, 15e6, index, hsGenes)
++     }
++   )
+   user  system elapsed 
+  0.372   0.001   0.374 
+>   system.time(
++     for(i in 1:200) {
++       hsGenes[ hsGenes$chrom == "1" & hsGenes$start <= 15e6 & hsGenes$end >= 10e6 ,]
++     }
++   )
+   user  system elapsed 
+  0.488   0.001   0.490 
+>   
+>   # Convert chrom from factor to integer
+>   hsGenes$chrom <- as.integer(as.character(hsGenes$chrom))
+Warning: NAs introduced by coercion
+>   
+>   # Chromosome index (integer 'chrom')
+>   index <- rep(NA_integer_, 24)
+>   tmpIndex <- tapply(1:nrow(hsGenes), hsGenes$chrom, max)
+>   index[ as.integer(names(tmpIndex)) ] <- tmpIndex
+>   
+>   # Integer chrom query
+>   print(class(hsGenes$chrom))
+[1] "integer"
+>   subtrack(1, 10e6, 15e6, index, hsGenes)
+          name chrom    start      end strand
+1         LZIC     1  9989776 10002826      -
+2       NMNAT1     1 10003486 10045556      +
+3       APITD1     1 10490159 10502872      +
+4  APITD1-CORT     1 10490159 10512060      +
+5        CASZ1     1 10696661 10856707      -
+6          SRM     1 11114649 11120091      -
+7      EXOSC10     1 11126675 11159938      -
+8        FBXO6     1 11724150 11734411      +
+9     C1orf187     1 11751781 11780336      +
+10        MFN2     1 12040238 12073572      +
+11     MIR4632     1 12251762 12251839      +
+12     AADACL4     1 12704566 12727097      +
+13    C1orf158     1 12806163 12821102      +
+14    PRAMEF16     1 13495254 13498260      +
+15    PRAMEF20     1 13736907 13747803      +
+16        PDPN     1 13910252 13944452      +
+> 
+> 
+> 
+> cleanEx()
+> nameEx("refTable-class")
+> ### * refTable-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: refTable-class
+> ### Title: Class '"refTable"'
+> ### Aliases: refTable-class
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+>   # New empty refTable
+>   tab <- new("refTable")
+>   tab$addColumn(1:5, "C1")
+>   tab$addColumn(letters[1:5], "C2")
+>   tab$setRowNames(LETTERS[11:15])
+>   
+>   # New filled refTable (same content)
+>   tab <- refTable(C1=1:5, C2=letters[1:5], row.names=LETTERS[11:15])
+>   
+>   # Whole table print
+>   print(tab$extract())
+  C1 C2
+K  1  a
+L  2  b
+M  3  c
+N  4  d
+O  5  e
+>   
+>   # Data update
+>   tab$fill(c(2,4), 2, c("B","D"))
+>   
+>   # Data extraction
+>   print(tab$extract(1:3))
+  C1 C2
+K  1  a
+L  2  B
+M  3  c
+>   print(tab$extract(c(TRUE, FALSE)))
+  C1 C2
+K  1  a
+M  3  c
+O  5  e
+>   print(tab$extract("K", "C1"))
+K 
+1 
+>   
+>   # Expression-based extraction
+>   expr <- expression(C1 %% 2 == 1)
+>   print(tab$extract(expr))
+  C1 C2
+K  1  a
+M  3  c
+O  5  e
+>   
+>   # Table extension
+>   tab$addEmptyRows(5L, LETTERS[1:5])
+>   tab$fill(6:10, "C1", 6:10)
+>   print(tab$extract())
+  C1   C2
+K  1    a
+L  2    B
+M  3    c
+N  4    D
+O  5    e
+A  6 <NA>
+B  7 <NA>
+C  8 <NA>
+D  9 <NA>
+E 10 <NA>
+>   
+>   # Filling from R objects
+>   tab <- new("refTable")
+>   print(tab$extract())
+data frame with 0 columns and 2 rows
+>   tab$addVectors(C1=1:5, C2=letters[1:5])
+>   print(tab$extract())
+  C1 C2
+1  1  a
+2  2  b
+3  3  c
+4  4  d
+5  5  e
+>   tab$addList(list(C1=6:8, C3=LETTERS[6:8]))
+>   print(tab$extract())
+  C1   C2   C3
+1  1    a <NA>
+2  2    b <NA>
+3  3    c <NA>
+4  4    d <NA>
+5  5    e <NA>
+6  6 <NA>    F
+7  7 <NA>    G
+8  8 <NA>    H
+>   
+>   # Beware of recycling !
+>   tab$addVectors(C1=9:15, C3=LETTERS[9:10])
+>   print(tab$extract())
+   C1   C2   C3
+1   1    a <NA>
+2   2    b <NA>
+3   3    c <NA>
+4   4    d <NA>
+5   5    e <NA>
+6   6 <NA>    F
+7   7 <NA>    G
+8   8 <NA>    H
+9   9 <NA>    I
+10 10 <NA>    J
+11 11 <NA>    I
+12 12 <NA>    J
+13 13 <NA>    I
+14 14 <NA>    J
+15 15 <NA>    I
+> 
+> 
+> 
+> cleanEx()
+> nameEx("refTable-constructor")
+> ### * refTable-constructor
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: refTable-constructor
+> ### Title: refTable class constructor
+> ### Aliases: refTable
+> 
+> ### ** Examples
+> 
+>   # From vectors
+>   tab <- refTable(colA=1:5, colB=letters[1:5])
+>   print(tab$extract(3,))
+  colA colB
+3    3    c
+>   
+>   # From list (recycling)
+>   columns <- list(number=1, letters=LETTERS)
+>   tab <- refTable(columns)
+>   print(tab$extract())
+   number letters
+1       1       A
+2       1       B
+3       1       C
+4       1       D
+5       1       E
+6       1       F
+7       1       G
+8       1       H
+9       1       I
+10      1       J
+11      1       K
+12      1       L
+13      1       M
+14      1       N
+15      1       O
+16      1       P
+17      1       Q
+18      1       R
+19      1       S
+20      1       T
+21      1       U
+22      1       V
+23      1       W
+24      1       X
+25      1       Y
+26      1       Z
+>   
+>   # data.frame conversion
+>   dataFrame <- data.frame(colA=1:5, colB=letters[1:5])
+>   tab <- refTable(dataFrame)
+>   print(tab$extract())
+  colA colB
+1    1    a
+2    2    b
+3    3    c
+4    4    d
+5    5    e
+> 
+> 
+> 
+> cleanEx()
+> nameEx("track-constructors")
+> ### * track-constructors
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: track-constructors
+> ### Title: Track constructors
+> ### Aliases: track-constructors track.table track.bam track.genes
+> ###   track.bands track.exons track.CNV
+> 
+> ### ** Examples
+> 
+>   # track.table from a data.frame
+>   df <- data.frame(chrom=1, strand="+", start=1:5, end=2:6, name=letters[1:5], stringsAsFactors=FALSE)
+>   track.table(df)
+Warning in track.table(df) : 'strand' column converted to factor
+Warning in track.table(df) : 'chrom' column converted to factor
+Warning in drawable.check(warn = warn) : 'name' should not be NA
+Warning in object$check(warn = warn) : 'organism' should not be NA
+Warning in object$check(warn = warn) : 'assembly' should not be NA
+
+  "track.table" reference class object
+  organism   : NA
+  assembly   : NA
+
+  Extends "drawable"
+  name       : NA
+
+  Extends "refTable"
+
+  name chrom strand start end
+1    a     1      +     1   2
+2    b     1      +     2   3
+3    c     1      +     3   4
+4    d     1      +     4   5
+5    e     1      +     5   6
+                             
+>   
+>   # track.table from vectors
+>   track.table(chrom=1, strand="+", start=1:5, end=2:6, name=letters[1:5])
+Warning in track.table(chrom = 1, strand = "+", start = 1:5, end = 2:6,  :
+  'strand' column converted to factor
+Warning in track.table(chrom = 1, strand = "+", start = 1:5, end = 2:6,  :
+  'chrom' column converted to factor
+Warning in drawable.check(warn = warn) : 'name' should not be NA
+Warning in object$check(warn = warn) : 'organism' should not be NA
+Warning in object$check(warn = warn) : 'assembly' should not be NA
+
+  "track.table" reference class object
+  organism   : NA
+  assembly   : NA
+
+  Extends "drawable"
+  name       : NA
+
+  Extends "refTable"
+
+  name chrom strand start end
+1    a     1      +     1   2
+2    b     1      +     2   3
+3    c     1      +     3   4
+4    d     1      +     4   5
+5    e     1      +     5   6
+                             
+>   
+>   # track.bam
+>   track.bam(system.file("extdata/ATM.bam", package="Rgb"))
+Parsing reference #1 (0 bins)
+Parsing reference #2 (0 bins)
+Parsing reference #3 (0 bins)
+Parsing reference #4 (0 bins)
+Parsing reference #5 (0 bins)
+Parsing reference #6 (0 bins)
+Parsing reference #7 (0 bins)
+Parsing reference #8 (0 bins)
+Parsing reference #9 (0 bins)
+Parsing reference #10 (0 bins)
+Parsing reference #11 (14 bins)
+Parsing reference #12 (0 bins)
+Parsing reference #13 (0 bins)
+Parsing reference #14 (0 bins)
+Parsing reference #15 (0 bins)
+Parsing reference #16 (0 bins)
+Parsing reference #17 (0 bins)
+Parsing reference #18 (0 bins)
+Parsing reference #19 (0 bins)
+Parsing reference #20 (0 bins)
+Parsing reference #21 (0 bins)
+Parsing reference #22 (0 bins)
+Parsing reference #23 (0 bins)
+Parsing reference #24 (0 bins)
+Warning in object$check(warn = warn) : 'organism' should not be NA
+Warning in object$check(warn = warn) : 'assembly' should not be NA
+
+  "track.bam" reference class object
+  name       : ATM.bam
+  organism   : NA
+  assembly   : NA
+  BAM file   : /home/sylvain/Git/R.Rgb/Rgb.Rcheck/Rgb/extdata/ATM.bam
+  references : chr1, chr2, chr3 ...
+
+  Extends "sliceable"
+> 
+> 
+> 
+> cleanEx()
+> nameEx("track.table-class")
+> ### * track.table-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: track.table-class
+> ### Title: Class '"track.table"'
+> ### Aliases: track.table-class
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+>   # Exemplar data : subset of human genes
+>   data(hsFeatures)
+>   
+>   # Construction
+>   trackTable <- track.table(
++     hsGenes,
++     .name = "NCBI Genes",
++     .organism = "Homo sapiens",
++     .assembly = "GRCh37"
++   )
+Warning in track.table(hsGenes, .name = "NCBI Genes", .organism = "Homo sapiens",  :
+  'strand' column converted to factor
+>   
+>   # Slicing
+>   print(trackTable$slice(chrom="1", as.integer(15e6), as.integer(20e6)))
+       name chrom    start      end strand
+1     EFHD2     1 15736391 15756839      +
+2     AGMAT     1 15898194 15911605      -
+3   RPS16P1     1 16154707 16155228      +
+4  FLJ37453     1 16160710 16174642      -
+5      SPEN     1 16174359 16266950      +
+6    ZBTB17     1 16268364 16302627      -
+7    CLCNKA     1 16348486 16360545      +
+8      RSG1     1 16558182 16563659      -
+9    FBXO42     1 16576559 16678948      -
+10  TRNAG36     1 16874160 16874232      -
+11  CROCCP2     1 16944751 16957401      -
+12   MST1P2     1 16972069 16976915      +
+13   RNU1-3     1 16993280 16993443      -
+14  TRNAG10     1 17053780 17053850      +
+15   MST1P9     1 17081401 17090975      -
+16  MIR3675     1 17185444 17185516      -
+17   RNU1-2     1 17222475 17222638      +
+18   IGSF21     1 18434240 18704977      +
+19   TAS1R2     1 19166093 19186155      -
+20     UBR4     1 19401000 19536746      -
+21    AKR7L     1 19593794 19600568      -
+22    CAPZB     1 19665267 19812066      -
+> 
+> 
+> 
+> ### * <FOOTER>
+> ###
+> options(digits = 7L)
+> base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
+Time elapsed:  1.532 0.015 1.553 0 0 
+> grDevices::dev.off()
+null device 
+          1 
+> ###
+> ### Local variables: ***
+> ### mode: outline-minor ***
+> ### outline-regexp: "\\(> \\)?### [*]+" ***
+> ### End: ***
+> quit('no')
