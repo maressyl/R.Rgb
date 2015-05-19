@@ -64,7 +64,7 @@ segOverlap = function(
 				type <- class(newSeg[[k]][1L])
 				if(type == "list") { stop("'fun' does not return single values for factor column \"", k, "\"")
 				} else {
-					newSeg[[k]] <- as.integer(newSeg[[k]])
+					newSeg[[k]] <- factor(as.integer(newSeg[[k]]))
 					levels(newSeg[[k]]) <- lev
 				}
 			} else {
