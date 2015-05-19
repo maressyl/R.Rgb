@@ -9,7 +9,7 @@
 }
 
 \usage{
-  segOverlap(segTable, fun = list(unique, start=min, end=max))
+  segOverlap(segTable, fun = list(unique.default, start=min, end=max))
 }
 
 \arguments{

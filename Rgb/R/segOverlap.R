@@ -4,7 +4,7 @@
 
 segOverlap = function(
 		segTable,
-		fun = list(unique, start=min, end=max)
+		fun = list(unique.default, start=min, end=max)
 		)
 	{
 	# Arg checks
@@ -13,10 +13,14 @@ segOverlap = function(
 	
 	if(nrow(segTable) > 1) {
 		# Ordering
-		segTable <- segTable[ order(segTable$chrom, segTable$start) ,]
+		if(is.factor(segTable$chrom)) { segTable <- segTable[ order(as.integer(segTable$chrom), segTable$start) ,]
+		} else                        { segTable <- segTable[ order(segTable$chrom, segTable$start) ,]
+		}
 		
 		# Computing groups
-		chroms <- segTable$chrom
+		if(is.factor(segTable$chrom)) { chroms <- as.integer(segTable$chrom)
+		} else                        { chroms <- segTable$chrom
+		}
 		starts <- segTable$start
 		ends <- segTable$end
 		opened <- 1L
@@ -48,14 +52,27 @@ segOverlap = function(
 				}
 			} else { stop("'fun' must be a list of functions")
 			}
-
-			# Apply
-			newSeg[[k]] <- tapply(X=segTable[[k]], INDEX=group, FUN=FUN)
 			
-			# From array to vector
-			type <- class(newSeg[[k]][1L])
-			if(type == "list") { stop("'fun' does not return single values for column \"", k, "\"")
-			} else             { newSeg[[k]] <- as(newSeg[[k]], type)
+			# Apply
+			if(is.factor(segTable[[k]])) {
+				# Factor
+				lev <- levels(segTable[[k]])
+				newSeg[[k]] <- tapply(X=as.integer(segTable[[k]]), INDEX=group, FUN=FUN)
+				
+				# From array to vector
+				type <- class(newSeg[[k]][1L])
+				if(type == "list") { stop("'fun' does not return single values for factor column \"", k, "\"")
+				} else             { newSeg[[k]] <- factor(newSeg[[k]], levels=lev)
+				}
+			} else {
+				# Other vector
+				newSeg[[k]] <- tapply(X=segTable[[k]], INDEX=group, FUN=FUN)
+				
+				# From array to vector
+				type <- class(newSeg[[k]][1L])
+				if(type == "list") { stop("'fun' does not return single values for column \"", k, "\"")
+				} else             { newSeg[[k]] <- as(newSeg[[k]], type)
+				}
 			}
 		}
 		

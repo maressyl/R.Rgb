@@ -1,6 +1,6 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
-\section{Changes in version 1.4.1 (2015-04-30)}{
+\section{Changes in version 1.4.1 (2015-05-19)}{
   \itemize{
     \item{Fixed error in draw.boxes() when labels are vertical and plot area too narrow.}
     \item{'xgrid' argument added to draw.bg().}
@@ -10,6 +10,7 @@
     \item{singlePlot() rewritten to handle any drawable object.}
     \item{drawable.list$getChromEnd() method added, now used by browsePlot().}
     \item{'colorFun' drawing parameter for track.CNV class updated to comply with last DGV release.}
+    \item{segOverlap() performances highly enhanced when factor columns are involved.}
   }
 }
 \section{Changes in version 1.4.0 (2015-02-15)}{
