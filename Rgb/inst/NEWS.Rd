@@ -1,5 +1,10 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
+\section{Changes in version 1.4.2 (2015-07-24)}{
+  \itemize{
+    \item{tk.file(), tk.files(), tk.folder() and handle() are now documented and exported.}
+  }
+}
 \section{Changes in version 1.4.1 (2015-05-19)}{
   \itemize{
     \item{Fixed error in draw.boxes() when labels are vertical and plot area too narrow.}

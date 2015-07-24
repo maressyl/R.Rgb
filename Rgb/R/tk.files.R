@@ -2,62 +2,6 @@
 # License : GPL3 http://www.gnu.org/licenses/gpl.html
 # Last update : 2013-08-06 11:45
 
-# Interactive tcltk::tcl-TK directory choosing
-tk.folder = function(
-		title = "Choose a directory",
-		mustexist = TRUE,
-		mandatory = TRUE
-		)
-	{
-	# Dialog
-	suppressWarnings(folder <- tcltk::tclvalue(tcltk::tkchooseDirectory(title=title, mustexist=mustexist)))
-	
-	# No folder
-	if(mandatory && folder == "") stop("No directory selected")
-	
-	return(folder)
-}
-
-# Interactive tcltk::tcl-TK file choosing
-tk.file <- function(title="Choose a file", typeNames="All files", typeExt="*", multiple=FALSE, mandatory=TRUE, type=c("open", "save"), initialdir=NULL, parent=NULL) {
-	# Checks
-	type <- match.arg(type)
-	
-	# Ignore all warnings (fix for 'X11 BadDrawable')
-	on.exit(options(warn=getOption("warn")))
-	options(warn=-1)
-	
-	# Initial directory
-	if(is.null(initialdir)) initialdir <- getOption("tk.currentDirectory", default=getwd())
-	
-	# File filters
-	filetypes <- paste(sprintf("{{%s} {%s}}", typeNames, typeExt), collapse=" ")
-	
-	# Dialog
-	if(is.null(parent)) {
-		if(type == "open")        { files <- tcltk::tkgetOpenFile(title=title, filetypes=filetypes, multiple=multiple, initialdir=initialdir)
-		} else if(type == "save") { files <- tcltk::tkgetSaveFile(title=title, filetypes=filetypes, initialdir=initialdir)
-		}
-	} else {
-		if(type == "open")        { files <- tcltk::tkgetOpenFile(parent=parent, title=title, filetypes=filetypes, multiple=multiple, initialdir=initialdir)
-		} else if(type == "save") { files <- tcltk::tkgetSaveFile(parent=parent, title=title, filetypes=filetypes, initialdir=initialdir)
-		}
-	}
-	
-	# Get value
-	if(!multiple && as.integer(tcltk::tcl("llength", files)) != 0L) { files <- tcltk::tclvalue(files)
-	} else                                                          { files <- as.character(files)
-	}
-	
-	# No file
-	if(mandatory && length(files) == 0) stop("No file selected")
-	
-	# Remind working directory
-	if(length(files) > 0) options(tk.currentDirectory=dirname(files[1]))
-	
-	return(files)
-}
-
 # Interactive tcltk::tcl-TK file choosing in multiple diretories
 tk.files <- function(preselection=character(0), multiple=TRUE, parent=NULL, ...) {
 	## FUNCTIONS ##
@@ -181,44 +125,5 @@ tk.files <- function(preselection=character(0), multiple=TRUE, parent=NULL, ...)
 	# End
 	tcltk::tkwait.window(topLevel)
 	return(files)
-}
-
-# Custom silent condition handling function
-# - Messages and warnings are silently caught (execution continues)
-# - Errors are silently caught (execution stops)
-# - NULL can be used to ignore a condition
-handle <- function(
-		expr,
-		messageHandler,
-		warningHandler,
-		errorHandler
-	) {
-	toEval <- ""
-	
-	# Message handler
-	if(!missing(messageHandler)) {
-		if(is.null(messageHandler))            messageHandler <- function(m){}
-		else if (!is.function(messageHandler)) stop("'messageHandler' must be a function or NULL")
-		toEval <- sprintf("%s, message=function(m) { messageHandler(m); invokeRestart(\"muffleMessage\") }", toEval)
-	}
-	
-	# Warning handler
-	if(!missing(warningHandler)) {
-		if(is.null(warningHandler))            warningHandler <- function(w){}
-		else if (!is.function(warningHandler)) stop("'warningHandler' must be a function or NULL")
-		toEval <- sprintf("%s, warning=function(w) { warningHandler(w); invokeRestart(\"muffleWarning\") }", toEval)
-	}
-	
-	# Error handler
-	if(!missing(errorHandler)) {
-		if(is.null(errorHandler))            errorHandler <- function(e){}
-		else if (!is.function(errorHandler)) stop("'errorHandler' must be a function or NULL")
-		toEval <- sprintf("%s, error=function(e) { errorHandler(e); invokeRestart(\"muffleError\") }", toEval)
-	}
-	
-	# Call execution
-	eval(parse(text=sprintf("withRestarts(withCallingHandlers({expr}%s), muffleError=\"\")", toEval)))
-
-	invisible(NULL)
 }
 
