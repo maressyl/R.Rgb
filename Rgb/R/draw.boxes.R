@@ -63,8 +63,8 @@ draw.boxes = function(
 		if(is.na(groupBy)) {
 			# No grouping factor (all rows are individual boxes)
 			boxes <- data.frame(
-				start.rect = as.integer(slice$start),
-				end.rect = as.integer(slice$end),
+				start.plot = as.integer(slice$start),
+				end.plot = as.integer(slice$end),
 				strand = as.character(slice$strand),
 				label = slice$name,
 				stringsAsFactors = FALSE
@@ -90,8 +90,8 @@ draw.boxes = function(
 			
 			# Group rows in boxes
 			boxes <- data.frame(
-				start.rect = as.integer(lapply(X=split(x=slice$start,                  f=slice[[ groupBy ]]), FUN=min, na.rm=TRUE)),
-				end.rect   = as.integer(lapply(X=split(x=slice$end,                    f=slice[[ groupBy ]]), FUN=max, na.rm=TRUE)),
+				start.plot = as.integer(lapply(X=split(x=slice$start,                  f=slice[[ groupBy ]]), FUN=min, na.rm=TRUE)),
+				end.plot   = as.integer(lapply(X=split(x=slice$end,                    f=slice[[ groupBy ]]), FUN=max, na.rm=TRUE)),
 				strand     = as.character(lapply(X=split(x=as.character(slice$strand), f=slice[[ groupBy ]]), FUN="[", i=1L)),
 				label      = levels(slice[[ groupBy ]]),
 				stringsAsFactors = FALSE
@@ -105,94 +105,43 @@ draw.boxes = function(
 				size.i  <- as.integer(lapply(X=split(x=slice[[ groupSize ]],     f=slice[[ groupBy ]]), FUN="[", i=1L))
 				
 				# Enlarge partially displayed boxes to drawing boundary
-				boxes[ boxes$strand == "+" & start.i > 1L , "start.rect" ] <- as.integer(par("usr")[1])
-				boxes[ boxes$strand == "-" & start.i > 1L , "end.rect" ] <- as.integer(par("usr")[2])
-				boxes[ boxes$strand == "+" & end.i < size.i , "end.rect" ] <- as.integer(par("usr")[2])
-				boxes[ boxes$strand == "-" & end.i < size.i , "start.rect" ] <- as.integer(par("usr")[1])
+				boxes[ boxes$strand == "+" & start.i > 1L , "start.plot" ] <- as.integer(par("usr")[1])
+				boxes[ boxes$strand == "-" & start.i > 1L , "end.plot" ] <- as.integer(par("usr")[2])
+				boxes[ boxes$strand == "+" & end.i < size.i , "end.plot" ] <- as.integer(par("usr")[2])
+				boxes[ boxes$strand == "-" & end.i < size.i , "start.plot" ] <- as.integer(par("usr")[1])
 			}
 		}
 		
-		# Label widths
-		if(labelSrt == 0)         { labelWidths <- round(xinch(par("cin")[1]) * (nchar(boxes$label) + ifelse(labelStrand, 3, 1)) * labelCex) * 0.66
-		} else if(labelSrt == 90) { labelWidths <- rep(round(xinch(par("cin")[2]) * 1 * labelCex) * 0.66, nrow(boxes))
-		} else                    { labelWidths <- rep(0, nrow(boxes)) #TODO
-		}
+		# Compute collision
+		boxes <- yline(
+			boxes = boxes,
+			start = start,
+			end = end,
+			label = label,
+			labelStrand = labelStrand,
+			labelCex = labelCex,
+			labelSrt = labelSrt,
+			labelAdj = labelAdj,
+			labelOverflow = labelOverflow,
+			maxDepth = maxDepth
+		)
 		
-		# Label box position
-		if(labelAdj == "left") {
-			# May overflow by the right
-			boxes$start.lab <- as.integer(boxes$start.rect)
-			boxes$end.lab <- as.integer(boxes$start.rect + labelWidths)
-		} else if(labelAdj == "right") {
-			# May overflow by the left
-			boxes$start.lab <- as.integer(boxes$end.rect - labelWidths)
-			boxes$end.lab <- as.integer(boxes$end.rect)
-		} else if(labelAdj == "center") {
-			# May overflow by both sides
-			boxes$start.lab <- as.integer((boxes$start.rect + boxes$end.rect) / 2 - labelWidths / 2)
-			boxes$end.lab <- as.integer((boxes$start.rect + boxes$end.rect) / 2 + labelWidths / 2)
+		# Break if an error occured
+		if(is(boxes, "error")) {
+			# Pass error
+			errorMessage <- boxes
 		} else {
-			stop("Invalid 'labelAdj'")
-		}
-		
-		# Label out of sight (left)
-		outLeft <- boxes$start.lab < start
-		if(any(outLeft)) {
-			boxes[ outLeft , "start.lab" ] <- as.integer(start)
-			boxes[ outLeft , "end.lab" ] <- as.integer(start + labelWidths[ outLeft ])
-		}
-		
-		# Label out of sight (right)
-		outRight <- boxes$end.lab > end
-		if(any(outRight)) {
-			boxes[ outRight , "start.lab" ] <- as.integer(end - labelWidths[ outRight ])
-			boxes[ outRight , "end.lab" ] <- as.integer(end)
-		}
-		
-		# Final collision box boundaries
-		boxes$start <- boxes$start.rect
-		boxes$end <- boxes$end.rect
-		boxes$overflow <- boxes$start.lab < boxes$start.rect | boxes$end.lab > boxes$end.rect
-		if(isTRUE(label) && isTRUE(labelOverflow)) {
-			# Allow overflow
-			boxes[ boxes$overflow , "start" ] <- boxes[ boxes$overflow , "start.lab" ]
-			boxes[ boxes$overflow , "end" ] <- boxes[ boxes$overflow , "end.lab" ]
-		}
-		
-		# 'boxes' must be ordered to use subtrack
-		neworder <- order(boxes$start)
-		boxes <- boxes[ neworder ,]
-		
-		# To bypass subtrack() indexing during next step, as working on a single chromosome subtrack
-		boxes$chrom <- 1L
-		boxIndex <- length(boxes$start)
-		
-		# Looking for non overlaping boxLines (attribution from the widest box to the narrowest)
-		boxLines <- rep(-1L, nrow(boxes))
-		for(l in order(boxes$end - boxes$start, decreasing=TRUE)) {
-			overlaps <- subtrack(1L, boxes$start[l]+1L, boxes$end[l]-1L, boxIndex, boxes, boxLines=boxLines)
-			i <- 0L; while(any(overlaps$boxLines == i)) i <- i + 1L
-			if(i > maxDepth) {
-				errorMessage <- "'maxDepth' reached"
-				break
-			}
-			boxLines[l] <- i
-		}
-		
-		# Break if maxDepth has been reached
-		if(is.na(errorMessage)) {
 			# From box line to (feature's) plot line
 			if(is.na(groupBy)) {
-				# 'boxes'~='slice', but was reordered for 'boxLines' computation
-				slice <- slice[ neworder ,]
-				slice$plotLine <- boxLines
+				# boxes = slice
+				slice$plotLine <- boxes$yline
 			} else {
 				# Retrieve corresponding box
-				slice$plotLine <- boxLines[ match(slice[[ groupBy ]], boxes$label) ]
+				slice$plotLine <- boxes$yline[ match(slice[[ groupBy ]], boxes$label) ]
 			}
 			
 			# Maximal depth used
-			maxLine <- max(boxLines) + 1L
+			maxLine <- max(boxes$yline) + 1L
 			
 			
 			
@@ -212,10 +161,10 @@ draw.boxes = function(
 			# Group bonds
 			if(!is.na(groupBy)) {
 				segments(
-					x0 = boxes$start.rect,
-					y0 = (boxLines + 0.5) / maxLine,
-					x1 = boxes$end.rect,
-					y1 = (boxLines + 0.5) / maxLine,
+					x0 = boxes$start.plot,
+					y0 = (boxes$yline + 0.5) / maxLine,
+					x1 = boxes$end.plot,
+					y1 = (boxes$yline + 0.5) / maxLine,
 					col = border
 				)
 			}
@@ -240,8 +189,8 @@ draw.boxes = function(
 					rect(
 						xleft = boxes$start.lab,
 						xright = boxes$end.lab,
-						ybottom = (boxLines + 0.5) / maxLine - charHeight/2,
-						ytop = (boxLines + 0.5) / maxLine + charHeight/2,
+						ybottom = (boxes$yline + 0.5) / maxLine - charHeight/2,
+						ytop = (boxes$yline + 0.5) / maxLine + charHeight/2,
 						col = "#FFFFFF",
 						border = border
 					)		
@@ -257,8 +206,8 @@ draw.boxes = function(
 				args <- with(
 					boxes[ (isTRUE(label) && isTRUE(labelOverflow)) | !boxes$overflow ,],
 					list(
-						x = (start.lab + end.lab) / 2,
-						y = (boxLines + 0.5) / maxLine,
+						x = (boxes$start.lab + boxes$end.lab) / 2,
+						y = (boxes$yline + 0.5) / maxLine,
 						label = label,
 						col = "#000000",
 						adj = c(0.5, 0.5),

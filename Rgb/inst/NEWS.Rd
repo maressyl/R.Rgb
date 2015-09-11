@@ -1,8 +1,9 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
-\section{Changes in version 1.4.2 (2015-07-24)}{
+\section{Changes in version 1.4.2 (2015-09-11)}{
   \itemize{
     \item{tk.file(), tk.files(), tk.folder() and handle() are now documented and exported.}
+    \item{Collision in draw.boxes() is now handled by an exported yline() function.}
   }
 }
 \section{Changes in version 1.4.1 (2015-05-19)}{
