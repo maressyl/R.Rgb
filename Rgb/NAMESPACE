@@ -20,7 +20,7 @@ export(segMerge, segOverlap)
 
 # Draw functions
 export("draw.bg")
-export("draw.boxes")
+export("draw.boxes", "yline")
 export("draw.points")
 export("draw.hist")
 export("draw.pileup")
