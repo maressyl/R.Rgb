@@ -5,7 +5,7 @@
 }
 
 \description{
-  This function handles the collision between objects to be drawn, also accounting for labels. It is provided as a convenient component of custom drawing functions, and is currently in use in \code{\link{draw.boxes}}.
+  This function handles the collision between objects to be drawn, also accounting for labels. It is provided as a convenient component of custom drawing functions, and is currently in use in \code{\link{draw.boxes}} and \code{\link{draw.steps}}.
 }
 
 \usage{
@@ -55,6 +55,6 @@
 }
 
 \seealso{
-  \code{\link{draw.boxes}}
+  \code{\link{draw.boxes}}, \code{\link{draw.steps}}
 }
 

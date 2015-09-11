@@ -4,6 +4,7 @@
   \itemize{
     \item{tk.file(), tk.files(), tk.folder() and handle() are now documented and exported.}
     \item{Collision in draw.boxes() is now handled by an exported yline() function.}
+    \item{draw.steps() added.}
   }
 }
 \section{Changes in version 1.4.1 (2015-05-19)}{

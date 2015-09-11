@@ -90,7 +90,7 @@
 }
 
 \seealso{
-  \code{\link{draw.bg}}, \code{\link{draw.hist}}, \code{\link{draw.points}}, \code{\link{draw.pileup}}, \code{\link{draw.seq}}
+  \code{\link{draw.bg}}, \code{\link{draw.steps}}, \code{\link{draw.hist}}, \code{\link{draw.points}}, \code{\link{draw.pileup}}, \code{\link{draw.seq}}
   
   \code{\link{yline}}
 }

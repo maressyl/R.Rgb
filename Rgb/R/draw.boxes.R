@@ -196,7 +196,7 @@ draw.boxes = function(
 					)		
 				}
 				
-				# Add strand to labels (before collision computation)
+				# Add strand to labels (collision already accounts for it)
 				if(isTRUE(labelStrand)) {
 					boxes[ boxes$strand == "-" , "label" ] <- sprintf("< %s", boxes[ boxes$strand == "-" , "label" ])
 					boxes[ boxes$strand == "+" , "label" ] <- sprintf("%s >", boxes[ boxes$strand == "+" , "label" ])

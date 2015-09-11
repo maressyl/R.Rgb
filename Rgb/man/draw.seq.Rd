@@ -51,6 +51,6 @@
 \seealso{
   \code{\link{track.fasta-class}}
   
-  \code{\link{draw.bg}}, \code{\link{draw.boxes}}, \code{\link{draw.hist}}, \code{\link{draw.points}}, \code{\link{draw.pileup}}
+  \code{\link{draw.bg}}, \code{\link{draw.boxes}}, \code{\link{draw.steps}}, \code{\link{draw.hist}}, \code{\link{draw.points}}, \code{\link{draw.pileup}}
 }
 
