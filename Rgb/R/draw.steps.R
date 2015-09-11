@@ -89,7 +89,7 @@ draw.steps = function(
 				environment(colorFun) <- environment()
 				color <- colorFun()
 			} else {
-				color <- colorVal
+				color <- rep(colorVal, nrow(slice))
 			}
 			
 			# Repercute to border
@@ -113,7 +113,7 @@ draw.steps = function(
 					x = x[i,],
 					y = (y * (1 - spacing) + spacing / 2 + slice[i,"plotLine"]) / maxLine,
 					border = border,
-					col = color
+					col = color[i]
 				)
 			}
 			
