@@ -24,22 +24,30 @@ read.bam.header <- function(fileName) {
 	
 	# Split reference tag/value pairs
 	ref <- grep("^@SQ", header, value=TRUE)
-	ref <- strsplit(ref, split="\t")
-	ref <- lapply(ref, "[", -1)
+	if(length(ref) > 0) {
+		ref <- strsplit(ref, split="\t")
+		ref <- lapply(ref, "[", -1)
 	
-	# Vectorize
-	lin <- rep(1:length(ref), sapply(ref, length))
-	ref <- unlist(ref)
-	tag <- sub("^([A-Z0-9]{2}):(.*)$", "\\1", ref)
-	val <- sub("^([A-Z0-9]{2}):(.*)$", "\\2", ref)
+		# Vectorize
+		lin <- rep(1:length(ref), sapply(ref, length))
+		ref <- unlist(ref)
+		tag <- sub("^([A-Z0-9]{2}):(.*)$", "\\1", ref)
+		val <- sub("^([A-Z0-9]{2}):(.*)$", "\\2", ref)
 	
-	# Fill in a matrix
-	mtx <- matrix(data=as.character(NA), ncol=length(unique(tag)), nrow=max(lin), dimnames=list(NULL, unique(tag)))
-	mtx[ cbind(lin, match(tag, colnames(mtx))) ] <- val
+		# Fill in a matrix
+		mtx <- matrix(data=as.character(NA), ncol=length(unique(tag)), nrow=max(lin), dimnames=list(NULL, unique(tag)))
+		mtx[ cbind(lin, match(tag, colnames(mtx))) ] <- val
 	
-	# Convert to data.frame
-	tab <- as.data.frame(mtx, stringsAsFactors=FALSE)
-	for(k in 1:ncol(tab)) tab[[k]] <- type.convert(tab[[k]], as.is=TRUE)
+		# Convert to data.frame
+		tab <- as.data.frame(mtx, stringsAsFactors=FALSE)
+		for(k in 1:ncol(tab)) tab[[k]] <- type.convert(tab[[k]], as.is=TRUE)
+	} else {
+		# Empty header
+		tab <- data.frame(SN=character(0), stringsAsFactors=FALSE)
+	}
+	
+	# Add unplaced chromosome
+	tab[ nrow(tab) + 1L , "SN" ] <- "*"
 	
 	return(tab)
 }

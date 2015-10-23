@@ -25,17 +25,16 @@ check = function(warn=TRUE) {
 	callSuper(warn)
 	
 	# Fields
-	if(!file.exists(bamPath))         stop("'bamPath' file does not exist")
-	if(!file.exists(baiPath))         stop("'baiPath' file does not exist")
-	if(length(organism) != 1)         stop("'organism' must be a single character value")
-	if(length(assembly) != 1)         stop("'assembly' must be a single character value")
-	if(length(addChr) != 1)           stop("'addChr' must be a single logical value")
-	if(is.na(addChr))                 stop("'addChr' cannot be NA")
-	if(length(compression) != 1)      stop("'compression' must be a single numeric value")
-	if(is.na(compression))            stop("'compression' cannot be NA")
-	if(nrow(header) == 0)             stop("'header' is empty")
-	if(!"SN" %in% colnames(header))   stop("'header' must contain at least a 'SN' column")
-	if(length(index) != nrow(header)) stop("'index' must describe as many reference sequences as 'header'")
+	if(!file.exists(bamPath))                    stop("'bamPath' file does not exist")
+	if(!is.na(baiPath) && !file.exists(baiPath)) stop("'baiPath' file does not exist")
+	if(length(organism) != 1)                    stop("'organism' must be a single character value")
+	if(length(assembly) != 1)                    stop("'assembly' must be a single character value")
+	if(length(addChr) != 1)                      stop("'addChr' must be a single logical value")
+	if(is.na(addChr))                            stop("'addChr' cannot be NA")
+	if(length(compression) != 1)                 stop("'compression' must be a single numeric value")
+	if(is.na(compression))                       stop("'compression' cannot be NA")
+	if(!"SN" %in% colnames(header))              stop("'header' must contain at least a 'SN' column")
+	if(length(index) != nrow(header))            stop("'index' must describe as many reference sequences as 'header'")
 	
 	# BAM magic number
 	con <- gzfile(bamPath, open="rb")
@@ -44,15 +43,19 @@ check = function(warn=TRUE) {
 	if(!identical(magic, charToRaw("BAM\1"))) return("'bamPath' does not refer to a valid BAM file (wrong magic number)")
 	
 	# BAI magic number
-	con <- gzfile(baiPath, open="rb")
-	magic <- readBin(con, what="raw", n=4)
-	close(con)
-	if(!identical(magic, charToRaw("BAI\1"))) return("'baiPath' does not refer to a valid BAI file (wrong magic number)")
+	if(!is.na(baiPath)) {
+		con <- gzfile(baiPath, open="rb")
+		magic <- readBin(con, what="raw", n=4)
+		close(con)
+		if(!identical(magic, charToRaw("BAI\1"))) return("'baiPath' does not refer to a valid BAI file (wrong magic number)")
+	}
 	
 	# Warnings
 	if(isTRUE(warn)) {
-		if(is.na(organism)) warning("'organism' should not be NA")
-		if(is.na(assembly)) warning("'assembly' should not be NA")
+		if(is.na(organism))   warning("'organism' should not be NA")
+		if(is.na(assembly))   warning("'assembly' should not be NA")
+		if(nrow(header) == 0) warning("'header' is empty (unaligned BAM file ?)")
+		if(is.na(baiPath))    warning("'baiPath' is NA (unaligned BAM file ?)")
 	}
 	
 	return(TRUE)
@@ -162,12 +165,14 @@ crawl = function(chrom, start, end, addChr=.self$addChr, maxRange=.self$getParam
 	if(end - start < maxRange) {
 		# Translate chrom name into index
 		SN <- header$SN
-		if(isTRUE(addChr)) chrom <- sprintf("chr%s", chrom)
+		if(isTRUE(addChr) && chrom != "*") chrom <- sprintf("chr%s", chrom)
 		chromIndex <- match(chrom, SN)
 		if(is.na(chromIndex)) stop("'chrom' not found in BAM header")
-		
+	
 		if(verbosity > 0) message("Get chunks for given window ...")
-		offsets <- getOffsets(index=index, chromIndex=chromIndex, start=start, end=end)
+		if(chrom == "*") { offsets <- index[[chromIndex]]
+		} else           { offsets <- getOffsets(index=index, chromIndex=chromIndex, start=start, end=end)
+		}
 		
 		# Custom initialization
 		if(verbosity > 0) message("Evaluate initialization ...")
@@ -213,7 +218,7 @@ crawl = function(chrom, start, end, addChr=.self$addChr, maxRange=.self$getParam
 				# Keep manual record of current uoffset as gzcon() does not
 				if(blockStart == offsets[h,"c.start"]) {
 					if(verbosity > 0) message("Seeking uoffset ", offsets[h,"u.start"])
-					invisible(readBin(con, what="raw", n=offsets[h,"u.start"], size=1L))
+					if(offsets[h,"u.start"] > 0) invisible(readBin(con, what="raw", n=offsets[h,"u.start"], size=1L))
 					u <- offsets[h,"u.start"]
 				} else { u <- 0L
 				}
@@ -587,13 +592,42 @@ track.bam <- function(bamPath, baiPath, addChr, quiet=FALSE, .name, .organism, .
 	
 	# Normalize paths
 	object$bamPath <- normalizePath(bamPath)
-	object$baiPath <- normalizePath(baiPath)
+	if(is.na(baiPath)) { object$baiPath <- as.character(NA)
+	} else             { object$baiPath <- normalizePath(baiPath)
+	}
 	
 	# Parse BAM header
 	object$header <- read.bam.header(bamPath)
 	
 	# Parse BAI
-	object$index <- read.bai(baiPath, quiet=quiet)
+	if(is.na(baiPath)) {
+		# Offsets for unplaced reads ("*" chromosome)
+		offsets <- matrix(as.double(NA), nrow=1, ncol=4, dimnames=list(NULL, c("c.start", "c.end", "u.start", "u.end")))
+		secondBlock <- object$getBlocks(limit=200, quiet=TRUE)[200,]
+		offsets[1,"c.start"] <- secondBlock[1,"coffset"]
+		offsets[1,"c.end"] <- file.info(bamPath)[1,"size"]
+		offsets[1,"u.start"] <- 0
+		offsets[1,"u.end"] <- 0
+		
+		# Unaligned BAM file
+		object$index <- list(offsets)
+	} else {
+		# Aligned BAM file
+		object$index <- read.bai(baiPath, quiet=quiet)
+		
+		# Add unplaced reads as "*" chromosome
+		warning("Not yet implemented")
+		
+		# Offsets for unplaced reads ("*" chromosome)
+		offsets <- matrix(as.double(NA), nrow=1, ncol=4, dimnames=list(NULL, c("c.start", "c.end", "u.start", "u.end")))
+		secondBlock <- object$getBlocks(limit=200, quiet=TRUE)[200,]
+		offsets[1,"c.start"] <- secondBlock[1,"coffset"]
+		offsets[1,"c.end"] <- file.info(bamPath)[1,"size"]
+		offsets[1,"u.start"] <- 0
+		offsets[1,"u.end"] <- 0
+		
+		object$index[[ length(object$index) + 1 ]] <- offsets
+	}
 	
 	# Add 'chr' default
 	if(missing(addChr)) { object$addChr <- nrow(object$header) != 0 && any(grepl("^chr", object$header$SN, ignore.case=TRUE))
