@@ -24,6 +24,7 @@ draw.boxes = function(
 		groupBy = NA,
 		groupPosition = NA,
 		groupSize = NA,
+		groupLwd = 1,
 		...
 	) {
 	# Coercions
@@ -165,7 +166,8 @@ draw.boxes = function(
 					y0 = (boxes$yline + 0.5) / maxLine,
 					x1 = boxes$end.plot,
 					y1 = (boxes$yline + 0.5) / maxLine,
-					col = border
+					col = border,
+					lwd = groupLwd
 				)
 			}
 			

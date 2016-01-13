@@ -13,7 +13,7 @@
     labelStrand = FALSE, labelCex = 0.8, labelSrt = 0, labelAdj = "center",
     labelOverflow = TRUE, labelFamily = "sans", colorVal = "#BBBBBB",
     colorFun = function() NULL, border = "#666666", cex.lab = 1, spacing = 0.2,
-    bty = "o", groupBy = NA, groupPosition = NA, groupSize = NA, ...)
+    bty = "o", groupBy = NA, groupPosition = NA, groupSize = NA, groupLwd = 1, ...)
 }
 
 \arguments{
@@ -79,6 +79,9 @@
 }
   \item{groupSize}{
     Single character value, the name of an integer \code{slice} column with the total amount of features in the group. See \code{groupPosition}.
+}
+  \item{groupLwd}{
+    Single numeric value, the width of the line drawn to group elements.
 }
   \item{\dots}{
     Further arguments to be passed to \code{\link{draw.bg}}.

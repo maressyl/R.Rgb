@@ -1,5 +1,10 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
+\section{Changes in version 1.4.3 (2016-01-13)}{
+  \itemize{
+    \item{groupLwd argument added to draw.boxes().}
+  }
+}
 \section{Changes in version 1.4.2 (2015-09-11)}{
   \itemize{
     \item{tk.file(), tk.files(), tk.folder() and handle() are now documented and exported.}
