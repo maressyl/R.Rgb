@@ -622,11 +622,26 @@ setColNames = function(j, value) {
 	# Forget value names
 	names(value) <- NULL
 	
-	# Apply class()
+	# Remove old bindings
+	rm(list=colNames[j], pos=values)
+	
+	# Update colNames vector
 	if(is.null(j)) {
 		colNames <<- value
 	} else {
 		colNames[j] <<- value
+	}
+	
+	# Create new bindings
+	for(index in j) {
+		makeActiveBinding(
+			sym = colNames[index],
+			fun = eval(
+				parse(text=sprintf("function(v) get(\"%s\")", colReferences[index])),
+				envir = values
+			),
+			env = values
+		)
 	}
 },
 

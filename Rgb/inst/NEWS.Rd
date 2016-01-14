@@ -5,6 +5,7 @@
     \item{groupLwd argument added to draw.boxes().}
     \item{'labelCex' default in draw.boxes() turned back to 1, to avoid visual errors in tk.browse().}
     \item{Y axis sub-title scaled back to cex=1, to avoid visual errors in tk.browse().}
+    \item{refTable$setColNames() bug fixed (column bindings were not updated).}
   }
 }
 \section{Changes in version 1.4.2 (2015-09-11)}{

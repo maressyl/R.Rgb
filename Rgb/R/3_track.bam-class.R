@@ -599,16 +599,16 @@ track.bam <- function(bamPath, baiPath, addChr, quiet=FALSE, .name, .organism, .
 	# Parse BAM header
 	object$header <- read.bam.header(bamPath)
 	
+	# Offsets for unplaced reads ("*" chromosome)
+	offsets <- matrix(as.double(NA), nrow=1, ncol=4, dimnames=list(NULL, c("c.start", "c.end", "u.start", "u.end")))
+	secondBlock <- object$getBlocks(limit=2, quiet=TRUE)[2,]
+	offsets[1,"c.start"] <- secondBlock[1,"coffset"]
+	offsets[1,"c.end"] <- file.info(bamPath)[1,"size"]
+	offsets[1,"u.start"] <- 0
+	offsets[1,"u.end"] <- 0
+	
 	# Parse BAI
 	if(is.na(baiPath)) {
-		# Offsets for unplaced reads ("*" chromosome)
-		offsets <- matrix(as.double(NA), nrow=1, ncol=4, dimnames=list(NULL, c("c.start", "c.end", "u.start", "u.end")))
-		secondBlock <- object$getBlocks(limit=200, quiet=TRUE)[200,]
-		offsets[1,"c.start"] <- secondBlock[1,"coffset"]
-		offsets[1,"c.end"] <- file.info(bamPath)[1,"size"]
-		offsets[1,"u.start"] <- 0
-		offsets[1,"u.end"] <- 0
-		
 		# Unaligned BAM file
 		object$index <- list(offsets)
 	} else {
@@ -617,15 +617,6 @@ track.bam <- function(bamPath, baiPath, addChr, quiet=FALSE, .name, .organism, .
 		
 		# Add unplaced reads as "*" chromosome
 		warning("Not yet implemented")
-		
-		# Offsets for unplaced reads ("*" chromosome)
-		offsets <- matrix(as.double(NA), nrow=1, ncol=4, dimnames=list(NULL, c("c.start", "c.end", "u.start", "u.end")))
-		secondBlock <- object$getBlocks(limit=200, quiet=TRUE)[200,]
-		offsets[1,"c.start"] <- secondBlock[1,"coffset"]
-		offsets[1,"c.end"] <- file.info(bamPath)[1,"size"]
-		offsets[1,"u.start"] <- 0
-		offsets[1,"u.end"] <- 0
-		
 		object$index[[ length(object$index) + 1 ]] <- offsets
 	}
 	
