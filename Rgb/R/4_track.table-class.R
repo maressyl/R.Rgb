@@ -326,14 +326,19 @@ segOverlap = function(...) {
 	.self$check()
 },
 
-setColNames = function(...) {
-"Overload to keep calls up-to-date"
-	callSuper(...)
+setColNames = function(j, value) {
+"Replaces one or many column names (overload to keep calls and ordering up-to-date).
+- j       : subset of columns to rename.
+- value   : new column names to use, as a character vector."
+
+	callSuper(j=j, value=value)
+	if("chrom" %in% c(j, value) || "start" %in% c(j, value)) rowOrder(c("chrom", "start"), na.last=TRUE, decreasing=FALSE)
 	buildCalls()
 },
 
 setLevels = function(j=NULL, newLevels) {
 "Overload to keep indexes up-to-date"
+
 	j <- indexes(j, "column")
 	callSuper(j=j, newLevels=newLevels)
 	if(colNames[j] == "chrom") buildIndex()

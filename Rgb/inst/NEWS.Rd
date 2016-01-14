@@ -6,6 +6,7 @@
     \item{'labelCex' default in draw.boxes() and draw.steps() turned back to 1, to avoid visual errors in tk.browse().}
     \item{Y axis sub-title scaled back to cex=1, to avoid visual errors in tk.browse().}
     \item{refTable$setColNames() bug fixed (column bindings were not updated).}
+    \item{track.table$setColNames() overloaded accordingly (keep row ordered).}
   }
 }
 \section{Changes in version 1.4.2 (2015-09-11)}{
