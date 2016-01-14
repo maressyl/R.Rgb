@@ -10,7 +10,7 @@
 
 \usage{
   draw.steps(slice, start, end, startColumns = "start", endColumns = "end", maxDepth = 100,
-    label = TRUE, labelStrand = FALSE, labelCex = 0.8, labelSrt = 0, labelAdj = "center",
+    label = TRUE, labelStrand = FALSE, labelCex = 1, labelSrt = 0, labelAdj = "center",
     labelOverflow = TRUE, labelFamily = "sans", colorVal = "#BBBBBB",
     colorFun = function() NULL, border = "#666666", cex.lab = 1, spacing = 0.1, bty = "o",
     ...)
