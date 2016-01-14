@@ -10,7 +10,7 @@
 
 \usage{
   draw.boxes(slice, start, end, maxElements = 50, maxDepth = 100, label = TRUE,
-    labelStrand = FALSE, labelCex = 0.8, labelSrt = 0, labelAdj = "center",
+    labelStrand = FALSE, labelCex = 1, labelSrt = 0, labelAdj = "center",
     labelOverflow = TRUE, labelFamily = "sans", colorVal = "#BBBBBB",
     colorFun = function() NULL, border = "#666666", cex.lab = 1, spacing = 0.2,
     bty = "o", groupBy = NA, groupPosition = NA, groupSize = NA, groupLwd = 1, ...)

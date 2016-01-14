@@ -3,6 +3,8 @@
 \section{Changes in version 1.4.3 (2016-01-13)}{
   \itemize{
     \item{groupLwd argument added to draw.boxes().}
+    \item{'labelCex' default in draw.boxes() turned back to 1, to avoid visual errors in tk.browse().}
+    \item{Y axis sub-title scaled back to cex=1, to avoid visual errors in tk.browse().}
   }
 }
 \section{Changes in version 1.4.2 (2015-09-11)}{

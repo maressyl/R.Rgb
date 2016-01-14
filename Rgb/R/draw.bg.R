@@ -59,7 +59,7 @@ draw.bg = function(
 			text = ysub,
 			line = 1,
 			adj = 0.5,
-			cex = cex.lab * 0.85
+			cex = cex.lab
 		)
 	}
 	
