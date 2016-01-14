@@ -1,0 +1,15 @@
+* installing *source* package ‘Rgb’ ...
+** libs
+gcc -m64 -std=gnu99 -I/usr/include/R -DNDEBUG  -I/usr/local/include    -fpic  -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4  -m64 -mtune=generic  -c tracks.c -o tracks.o
+gcc -m64 -std=gnu99 -shared -Wl,-z,relro -o Rgb.so tracks.o -L/usr/lib64/R/lib -lR
+installing to /home/sylvain/Git/R.Rgb/Rgb.Rcheck/Rgb/libs
+** R
+** data
+** inst
+** preparing package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded
+* DONE (Rgb)
