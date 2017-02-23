@@ -81,7 +81,10 @@
 
 \examples{
   # track.table from a data.frame
-  df <- data.frame(chrom=1, strand="+", start=1:5, end=2:6, name=letters[1:5], stringsAsFactors=FALSE)
+  df <- data.frame(
+    chrom=1, strand="+", start=1:5, end=2:6, name=letters[1:5],
+    stringsAsFactors=FALSE
+  )
   track.table(df)
   
   # track.table from vectors

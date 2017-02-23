@@ -9,8 +9,8 @@
 }
 
 \usage{
-  yline(boxes, start, end, label, labelStrand, labelCex, labelSrt, labelAdj, labelOverflow,
-    maxDepth)
+  yline(boxes, start, end, label, labelStrand, labelCex, labelSrt, labelAdj,
+    labelOverflow, maxDepth)
 }
 
 \arguments{

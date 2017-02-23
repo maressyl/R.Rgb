@@ -22,8 +22,9 @@
 }
 
 \usage{
-  tk.file(title = "Choose a file", typeNames = "All files", typeExt = "*", multiple = FALSE,
-    mandatory = TRUE, type = c("open", "save"), initialdir = NULL, parent = NULL)
+  tk.file(title = "Choose a file", typeNames = "All files", typeExt = "*",
+    multiple = FALSE, mandatory = TRUE, type = c("open", "save"), initialdir = NULL,
+    parent = NULL)
   tk.files(preselection = character(0), multiple = TRUE, parent = NULL, ...)
   tk.folder(title = "Choose a directory", mustexist = TRUE, mandatory = TRUE)
   handle(expr, messageHandler, warningHandler, errorHandler)
