@@ -45,7 +45,7 @@ tk.memory <- function(
 	
 	
 	# Top level
-	topLevel <- tcltk::tktoplevel()
+	topLevel <- tcltk::tktoplevel(class="Rgb")
 	tcltk::tktitle(topLevel) <- "Rgb - Drawables in memory"
 	tcltk::tkgrid.columnconfigure(topLevel, 1, weight=1)
 	tcltk::tkgrid.rowconfigure(topLevel, 2, weight=1)
