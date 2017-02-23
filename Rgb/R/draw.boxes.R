@@ -130,7 +130,7 @@ draw.boxes = function(
 		# Break if an error occured
 		if(is(boxes, "error")) {
 			# Pass error
-			errorMessage <- boxes
+			errorMessage <- conditionMessage(boxes)
 		} else {
 			# From box line to (feature's) plot line
 			if(is.na(groupBy)) {
