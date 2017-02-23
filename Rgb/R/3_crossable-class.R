@@ -10,7 +10,7 @@ setRefClass(
 		
 		### Inherits sliceable "slice" (virtual) method, but requires it to return a data.frame with at least "chrom", "start" and "end" columns
 		
-cross = function(annotation, colname=NULL, type=c("cover", "count", "cytoband"), fuzzyness=0L, maxElements=30, location=c("chrom", "start", "end"), precision=2, quiet=TRUE) {
+cross = function(annotation, colname=NULL, type=c("cover", "count", "cytoband"), fuzziness=0L, maxElements=30, location=c("chrom", "start", "end"), precision=2, quiet=TRUE) {
 "Add a new column computed from overlaps with an other crossable object.
 - annotation    : other crossable object to compute overlap with.
 - colname       : single character value, the name of the new column to add to .self. If NULL or NA, the result will be returned rather than added to .self.
@@ -19,7 +19,7 @@ cross = function(annotation, colname=NULL, type=c("cover", "count", "cytoband"),
                   'count', to count 'annotation' elements overlapping each .self element
                   'cytoband', to get cytogenetic coordinates from a cytoband annotation track
                   an 'annotation' column name, to list 'annotation' elements overlapping each .self element
-- fuzzyness     : single integer value, to be added on each side of .self elements when computing overlaps.
+- fuzziness     : single integer value, to be added on each side of .self elements when computing overlaps.
 - maxElements   : single integer value, when more overlaps are found, lists are replaced by counts. Can be NA to disable this behavior.
 - location      : character vector, the 'chrom' / 'start' / 'end' .self columns to use for annotation.
 - precision     : single integer value from 1 to 4, amount of digits to consider in banding (type='cytoband').
@@ -33,7 +33,7 @@ cross = function(annotation, colname=NULL, type=c("cover", "count", "cytoband"),
 		# Coverage
 		newColumn <- double(.self$getRowCount())
 		processing <- function(chrom, start, end) {
-			slice <- annotation$slice(chrom, start-fuzzyness, end+fuzzyness)
+			slice <- annotation$slice(chrom, start-fuzziness, end+fuzziness)
 			if(nrow(slice) > 0) { return(sum(pmin(slice$end, end) - pmax(slice$start, start)) / (end - start))
 			} else              { return(0)
 			}
@@ -42,7 +42,7 @@ cross = function(annotation, colname=NULL, type=c("cover", "count", "cytoband"),
 		# Element count
 		newColumn <- integer(.self$getRowCount())
 		processing <- function(chrom, start, end) {
-			out <- annotation$size(chrom, start-fuzzyness, end+fuzzyness)
+			out <- annotation$size(chrom, start-fuzziness, end+fuzziness)
 			return(out)
 		}
 	} else if(identical(type, "cytoband")) {
@@ -50,7 +50,7 @@ cross = function(annotation, colname=NULL, type=c("cover", "count", "cytoband"),
 		newColumn <- character(.self$getRowCount())
 		processing <- function(chrom, start, end) {
 			# Coordinates of boundaries
-			slice <- annotation$slice(chrom, start-fuzzyness, end+fuzzyness)
+			slice <- annotation$slice(chrom, start-fuzziness, end+fuzziness)
 			slice <- slice[ c(1, nrow(slice)) , "name" ]
 			
 			# Band precision
@@ -76,7 +76,7 @@ cross = function(annotation, colname=NULL, type=c("cover", "count", "cytoband"),
 		# Column concatenation
 		newColumn <- character(.self$getRowCount())
 		processing <- function(chrom, start, end) {
-			slice <- annotation$slice(chrom, start-fuzzyness, end+fuzzyness)
+			slice <- annotation$slice(chrom, start-fuzziness, end+fuzziness)
 			elements <- slice[[ type ]]
 			if(!is.na(maxElements) && length(elements) > maxElements) { return(sprintf("(%i elements)", length(elements)))
 			} else                                                    { return(paste(elements, collapse=", "))

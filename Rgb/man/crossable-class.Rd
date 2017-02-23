@@ -32,7 +32,7 @@
 }
 \section{Methods}{
   \describe{
-    \item{\code{cross(annotation, colname = , type = , fuzzyness = , maxElements = , location = , precision = , quiet = )}:}{
+    \item{\code{cross(annotation, colname = , type = , fuzziness = , maxElements = , location = , precision = , quiet = )}:}{
       Add a new column computed from overlaps with an other crossable object.\cr
       - \strong{annotation}    : other crossable object to compute overlap with.\cr
       - \strong{colname}       : single character value, the name of the new column to add to .self. If NULL or NA, the result will be returned rather than added to .self.\cr
@@ -41,7 +41,7 @@
                         'count', to count 'annotation' elements overlapping each .self element\cr
                         'cytoband', to get cytogenetic coordinates from a cytoband annotation track\cr
                         an 'annotation' column name, to list 'annotation' elements overlapping each .self element\cr
-      - \strong{fuzzyness}     : single integer value, to be added on each side of .self elements when computing overlaps.\cr
+      - \strong{fuzziness}     : single integer value, to be added on each side of .self elements when computing overlaps.\cr
       - \strong{maxElements}   : single integer value, when more overlaps are found, lists are replaced by counts. Can be NA to disable this behavior.\cr
       - \strong{location}      : character vector, the 'chrom' / 'start' / 'end' .self columns to use for annotation.\cr
       - \strong{precision}     : single integer value from 1 to 4, amount of digits to consider in banding (type='cytoband').\cr
