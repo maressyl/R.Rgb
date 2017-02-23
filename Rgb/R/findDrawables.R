@@ -7,7 +7,7 @@ findDrawables <- function(varNames=NA, envir=globalenv()) {
 	trackList <- character(0)
 	
 	# Default : look into environment
-	if(length(varNames) == 1 && is.na(varNames)) varNames <- ls(envir=envir)
+	if(length(varNames) == 1 && is.na(varNames)) varNames <- sprintf("`%s`", ls(envir=envir))
 		
 	for(varName in varNames) {
 		var <- eval(parse(text=varName), envir=envir)
