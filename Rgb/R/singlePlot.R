@@ -17,6 +17,13 @@ singlePlot <- function(
 		cap.adj = c(0.5, 0.5),
 		cap.cex = 2,
 		cap.font = 2,
+		mar = c(0,0,0,0),
+		bty = "n",
+		xaxt = "n",
+		xgrid = FALSE,
+		yaxt = "n",
+		ylab = "",
+		ysub = "",
 		...
 	) {
 	# Check tracks
@@ -121,8 +128,27 @@ singlePlot <- function(
 		start <- 0L - add[1]
 		end <- widths.chrom[ col(lay.chrom)[i] ] - add[1]
 		
+		# Argument to browsePlot()
+		args <- list(
+			drawables = drawables,
+			chrom = chrom,
+			start = start,
+			end = end,
+			customLayout = TRUE,
+			...
+		)
+		
+		# Suggested arguments
+		if(!is.null(mar))   args$mar <- c(0,0,0,0)
+		if(!is.null(bty))   args$bty <- "n"
+		if(!is.null(xaxt))  args$xaxt <- "n"
+		if(!is.null(xgrid)) args$xgrid <- FALSE
+		if(!is.null(yaxt))  args$yaxt <- "n"
+		if(!is.null(ylab))  args$ylab <- ""
+		if(!is.null(ysub))  args$ysub <- ""
+		
 		# Plot the whole chromosome
-		browsePlot(drawables=drawables, chrom=chrom, start=start, end=end, customLayout=TRUE, mar=c(0,0,0,0), ...)
+		do.call(what=browsePlot, args=args)
 	}
 	
 	# Fill empty space

@@ -12,7 +12,8 @@
   singlePlot(drawables, columns = 4, exclude = c("X", "Y"), add = c(5e6, 15e6),
     vertical = FALSE, capWidth = lcm(1), spacer = lcm(1), finalize = TRUE,
     cap.border = "black", cap.font.col = "black", cap.bg.col = NA, cap.adj = c(0.5, 0.5),
-    cap.cex = 2, cap.font = 2, ...)
+    cap.cex = 2, cap.font = 2, mar = c(0,0,0,0), bty = "n", xaxt = "n", xgrid = FALSE,
+    yaxt = "n", ylab = "", ysub = "", ...)
 }
 
 \arguments{
@@ -58,8 +59,29 @@
   \item{cap.font}{
     Single value defining the font type of chromosome names in the caps. See the \code{font} argument of \code{par} for futher details.
 }
+  \item{mar}{
+    Refer to \dots described here-after. To disable the overriding and let each track define its own value as usual, set this parameter to \code{NULL}.
+}
+  \item{bty}{
+    Refer to \dots described here-after. To disable the overriding and let each track define its own value as usual, set this parameter to \code{NULL}.
+}
+  \item{xaxt}{
+    Refer to \dots described here-after. To disable the overriding and let each track define its own value as usual, set this parameter to \code{NULL}.
+}
+  \item{xgrid}{
+    Refer to \dots described here-after. To disable the overriding and let each track define its own value as usual, set this parameter to \code{NULL}.
+}
+  \item{yaxt}{
+    Refer to \dots described here-after. To disable the overriding and let each track define its own value as usual, set this parameter to \code{NULL}.
+}
+  \item{ylab}{
+    Refer to \dots described here-after. To disable the overriding and let each track define its own value as usual, set this parameter to \code{NULL}.
+}
+  \item{ysub}{
+    Refer to \dots described here-after. To disable the overriding and let each track define its own value as usual, set this parameter to \code{NULL}.
+}
   \item{\dots}{
-    Further arguments will be passed to \code{\link{browsePlot}} on each call. Please consider to use \code{bty="n"}, \code{xaxt="n"}, \code{xgrid=FALSE}, \code{yaxt="n"}, \code{ylab=""} and / or \code{ysub="")} for a cleaner output.
+    Further arguments will be passed to \code{\link{browsePlot}} for each chromosome, which itself will pass it to the \code{draw} method of each track, overriding the class default and object setting.
 }
 }
 
