@@ -2,6 +2,8 @@
 
 \documentclass[a4paper]{article}
 
+\renewcommand{\familydefault}{\sfdefault}
+
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{Sweave}
 \usepackage{graphicx}
@@ -25,7 +27,26 @@
 
 \title{\textbf{How-to guide to Rgb}}
 \author{Sylvain Mareschal}
-\maketitle
+
+\begin{titlepage}
+	\centering
+	\vfill
+	{\bfseries\huge
+		How-to guide to Rgb\\
+	}
+	\vskip1cm
+	{\bfseries
+		Last edition February 23rd 2017\\
+		\smallskip
+		Sylvain Mareschal\\
+		\vskip1cm
+		\url{http://bioinformatics.ovsa.fr/Rgb}
+	}
+	\vskip2cm
+	\includegraphics[width=4cm]{cghRA.png}
+	\vfill
+	\vfill
+\end{titlepage}
 
 \bigskip
 
