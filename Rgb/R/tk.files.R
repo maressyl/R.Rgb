@@ -64,7 +64,7 @@ tk.files <- function(preselection=character(0), multiple=TRUE, parent=NULL, ...)
 	## INTERFACE ##
 	
 	# Top level
-	topLevel <- tcltk::tktoplevel()
+	topLevel <- tcltk::tktoplevel(class="Rgb")
 	tcltk::tktitle(topLevel) <- "Select files"
 	
 	# Make slave
