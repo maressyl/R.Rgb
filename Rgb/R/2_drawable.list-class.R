@@ -31,7 +31,7 @@ setRefClass(
 	),
 	methods = list(
 
-add = function(file, track=NULL, hidden=FALSE) {
+add = function(file, track=NULL, hidden=FALSE, ...) {
 "Add a track to the list.
 - file     : single character value, the path to the file containing the 'drawable' object to add.
 - track    : a 'drawable' object to add. If NULL, will be extracted from 'file'.
@@ -43,13 +43,36 @@ add = function(file, track=NULL, hidden=FALSE) {
 	
 	# File parsing
 	if(is.null(track)) {
-		if(grepl("\\.rdt$", file, ignore.case=TRUE))        { track <- readRDT(file)
-		} else if(grepl("\\.rds$", file, ignore.case=TRUE)) { track <- readRDS(file)
-		} else stop("Unable to read \"", basename(file), "\", expecting a .rdt or .rds file")
+		# File extension
+		fileExtension <- tolower(sub("^.+\\.([^\\.]+)$", "\\1", file))
+		
+		# Look for a parsing function
+		if(fileExtension == "rdt")        { track <- readRDT(file)
+		} else if(fileExtension == "rds") { track <- readRDS(file)
+		} else {
+			# Custom parsing function
+			fun <- sprintf("drawableFromFile.%s", fileExtension)
+			if(exists(fun, mode="function")) {
+				track <- base::get(fun, mode="function")(file=file, track=track, hidden=hidden, ...)
+				file <- NA
+			} else {
+				stop("Unable to extract a 'drawable' object from a \".", fileExtension, "\" file")
+			}
+		}
 	}
 	
-	# Classes
-	if(!is(track, "drawable")) stop("Only objects inheriting the \"drawable\" class can be loaded.")
+	# Class check
+	if(!is(track, "drawable")) {
+		# Custom converting function
+		fun <- sprintf("drawableFromClass.%s", class(track)[1])
+		if(exists(fun, mode="function")) {
+			track <- base::get(fun, mode="function")(file=file, track=track, hidden=hidden, ...)
+			if(!is(track, "drawable")) stop("\"", fun, "\" did not return a 'drawable' object")
+			file <- NA
+		} else {
+			stop("Unable to convert a '", class(track)[1], "' object into a 'drawable' object")
+		}
+	}
 	
 	# Addition
 	i <- .self$count + 1L

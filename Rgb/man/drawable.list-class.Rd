@@ -8,6 +8,8 @@
   The purpose of this class is to store and manage a collection of \code{\linkS4class{drawable}} objects. These collections are to be used by \code{\link{tk.browse}} and \code{\link{browsePlot}} as input.
   
   Objects can be created by the \code{\link{drawable.list}} constructor, and edited / created using the \code{\link{tk.tracks}} Tcl-tk interface.
+  
+  By default, the \code{drawable.list$add()} method is only able to handle objects from \code{\linkS4class{drawable}}-inheriting classes saved in \link[=saveRDT]{RDT} or \link[=saveRDS]{RDS} individual files. This can however be extended defining functions named \code{drawableFromFile.EXTENSION} and \code{drawableFromClass.CLASS}, in the global environment or a package. Such a function will take the same arguments as the \code{drawable.list$add()} method, and will only have to return a \code{\linkS4class{drawable}}-inheriting object.
 }
 \author{
   Sylvain Mareschal
@@ -32,11 +34,12 @@
 }
 \section{Methods}{
   \describe{
-    \item{\code{add(file, track = , hidden = )}:}{
+    \item{\code{add(file, track = , hidden = , ...)}:}{
       Add a track to the list.\cr
       - \strong{file}     : single character value, the path to the file containing the 'drawable' object to add.\cr
       - \strong{track}    : a 'drawable' object to add. If NULL, will be extracted from 'file'.\cr
       - \strong{hidden}   : single logical value, whether the track is to be shown on plots or hidden. This value can be changed later.
+      - \strong{...}      : further arguments to be passed to drawableFromFile.EXTENSION or drawableFromClass.CLASS, if relevant.
     }
     \item{\code{check(warn = )}:}{
       Raises an error if the object is not valid, else returns TRUE
