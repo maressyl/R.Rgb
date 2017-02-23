@@ -85,8 +85,9 @@ buildGroupPosition = function(groupBy, colName="groupPosition", reverse=TRUE) {
 - colName   : single character value, the name of the column to buid.
 - reverse   : single logical value, whether to reverse numbering on reverse strand or not."
 	
-	# Group / row index dictionnary
+	# Group / row index dictionnary (filter out unused factor levels)
 	indexes <- tapply(X=1:.self$rowCount, INDEX=.self$extract(,groupBy), FUN=c)
+	indexes <- indexes[ sapply(indexes, length) > 0L ]
 	
 	# Parallel numbering
 	numbers <- lapply(sapply(indexes, length), seq.int, from=1, by=1)
