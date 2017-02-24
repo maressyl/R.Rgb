@@ -1,5 +1,22 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
+\section{Changes in version 1.5.0 (2017-02-24)}{
+  \itemize{
+    \item{Better rendering for plots in tk.browse() for Linux and/or R >= 3.4.0.}
+    \item{Better automatic sizing of the plot in tk.browse().}
+    \item{Welcome message added in tk.browse().}
+    \item{tk.browse() no longer display errors when resizing an empty plot.}
+    \item{No more warning in tk.browse() when 'maxDepth' is reached by some track.}
+    \item{drawable.list$add() compatibility can now be extended to other files and classes.}
+    \item{singlePlot() default output looks nicer.}
+    \item{Vignette styling update.}
+    \item{track.table$groupByPosition() no longer crash when using a factor for grouping.}
+    \item{'fuzzyness' argument corrected to 'fuzziness' in crossable$cross() method.}
+    \item{Usage lines truncation to nicer display in manual pages.}
+    \item{Interactive window grouping fixed for tk.tracks(), tk.memory(), tk.files().}
+    \item{'Add from memory' now handles variable names with special characters.}
+  }
+}
 \section{Changes in version 1.4.3 (2016-01-13)}{
   \itemize{
     \item{groupLwd argument added to draw.boxes().}

@@ -11,6 +11,11 @@ A short presentation of the project can be found on my personnal website.
 
 * **WWW** : http://bioinformatics.ovsa.fr/Rgb
 
+Release sources and builds can be found in the CRAN repository :
+
+* **WWW** : https://CRAN.R-project.org/package=Rgb
+* **R** : install.packages("Rgb")
+
 Development sources are freely available on GitHub :
 
 * **WWW** : https://github.com/maressyl/R.Rgb
