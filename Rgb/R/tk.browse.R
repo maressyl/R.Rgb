@@ -2,24 +2,49 @@
 # Author : Sylvain Mareschal <maressyl@gmail.com>
 # License : GPL3 http://www.gnu.org/licenses/gpl.html
 
-tk.browse = function(
+tk.browse <- function(
 		drawables = drawable.list(),
-		hscale = NA,
-		vscale = NA,
 		blocking = FALSE,
-		scaleFactor = NA,
-		updateLimit = 0.4
+		updateLimit = 0.4,
+		render = c("auto", "png", "tkrplot"),
+		tkrplot.scale = 1,
+		png.res = 100,
+		png.file = tempfile(fileext=".png")
 		)
 	{
 	# Check tracks
 	if(!is(drawables, "drawable.list")) stop("'drawables' must be a 'drawable.list' object")
 	drawables$check(warn=FALSE)
 	
+	# Check renderer
+	render <- match.arg(render)
+	tcltkVer <- as.double(sub("^([0-9]+\\.[0-9]+).+$", "\\1", tcltk::tclVersion()))
+	if(tcltkVer >= 8.6) {
+		# PNG is not compatible
+		if(render == "auto") render <- "png"
+	} else {
+		# PNG is compatible
+		if(render == "auto")       { render <- "tkrplot"
+		} else if(render == "png") { stop("PNG rendering requires tcltk 8.6 or above")
+		}
+	}
+	
+	# Check if tkrplot is installed
+	if(length(find.package("tkrplot", quiet=TRUE)) == 0L) {
+		tcltk::tkmessageBox(
+			parent = topLevel,
+			icon = "info",
+			type = "ok",
+			title = "tkrplot package missing",
+			message = "The optional 'tkrplot' package is required to use tk.browse(), please install it and try again."
+		)
+	}
+	
 	
 	
 	## FUNCTIONS ##
 	
-	checkPlot = function(silent=FALSE) {
+	checkPlot <- function(silent=FALSE) {
 		# No track
 		if(drawables$count == 0) {
 			if(!silent) {
@@ -28,21 +53,21 @@ tk.browse = function(
 					icon = "info",
 					type = "ok",
 					title = "Choose drawables",
-					message = sprintf("Use the 'Tracks' button to add drawable objects to the plot.")
+					message = "Use the 'Tracks' button to add drawable objects to the plot."
 				)
 			}
 			return(FALSE)
 		}
 		
 		# 'chrom' error
-		if(as.character(tcltk::tcl(chromCombo, "get")) == "") {
+		if(tcltk::tclvalue(tcltk::tcl(chromCombo, "get")) == "") {
 			if(!silent) {
 				tcltk::tkmessageBox(
 					parent = topLevel,
 					icon = "info",
 					type = "ok",
 					title = "Choose chromosome",
-					message = sprintf("Enter a chromosome name in the 'Chromosome' field, or use 'Find'.")
+					message = "Enter a chromosome name in the 'Chromosome' field, or use 'Find'."
 				)
 			}
 			return(FALSE)
@@ -56,7 +81,7 @@ tk.browse = function(
 					icon = "error",
 					type = "ok",
 					title = "Invalid coordinates",
-					message = sprintf("Enter numeric coordinates, using the dot as decimal separator.")
+					message = "Enter numeric coordinates, using the dot as decimal separator."
 				)
 			}
 			return(FALSE)
@@ -66,31 +91,40 @@ tk.browse = function(
 		return(TRUE)
 	}
 	
-	if(is.na(scaleFactor)) {
-		if(.Platform$OS.type == "unix") { scaleFactor <- 480
-		} else                          { scaleFactor <- 388
+	# Compute current plot area height
+	autoHeight <- function(unit) {
+		if(unit == "px")           { out <- max(300L, as.integer(tcltk::tclvalue(tcltk::tkwinfo("height", plotFrame))))
+		} else if(unit == "scale") { out <- autoHeight("px") / scaleFactor * tkrplot.scale
 		}
+		
+		return(out)
 	}
 	
-	autoVScale = function() {
-		return(max(1, (as.double(tcltk::tclvalue(tcltk::tkwinfo("height", topLevel))) - 53 - 2) / scaleFactor))
+	# Compute current plot area width, in pixels
+	autoWidth <- function(unit) {
+		if(unit == "px")           { out <- max(300L, as.integer(tcltk::tclvalue(tcltk::tkwinfo("width", plotFrame))))
+		} else if(unit == "scale") { out <- autoWidth("px") / scaleFactor * tkrplot.scale
+		}
+		
+		return(out)
 	}
 	
-	autoHScale = function() {
-		return(max(1, (as.double(tcltk::tclvalue(tcltk::tkwinfo("width", topLevel))) - 10 - 2) / scaleFactor))
-	}
-	
-	resize = function() {
+	resize <- function() {
 		# Automatic sizes
-		vscale <<- autoVScale()
-		hscale <<- autoHScale()
+		if(render == "tkrplot") {
+			vscale <<- autoHeight("scale")
+			hscale <<- autoWidth("scale")
+		} else if(render == "png") {
+			height <<- autoHeight("px")
+			width <<- autoWidth("px")
+		}
 		
 		# Refresh
 		replot()
 	}
 	
 	savePar <- list()
-	xConvert = function(x) {
+	xConvert <- function(x) {
 		# Plot area coordinates in pixels
 		width <- as.numeric(tcltk::tclvalue(tcltk::tkwinfo("reqwidth", plotWidget)))
 		xMin <- savePar$plt[1] * width
@@ -100,29 +134,29 @@ tk.browse = function(
 		return((x - xMin) / (xMax - xMin) * (savePar$usr[2] - savePar$usr[1]) + savePar$usr[1])
 	}
 	
-	keyPressUp = function() {
+	keyPressUp <- function() {
 		zoom("in")
 	}
 	
-	keyPressDown = function() {
+	keyPressDown <- function() {
 		zoom("out")
 	}
 	
-	keyPressLeft = function() {
+	keyPressLeft <- function() {
 		move("left")
 	}
 	
-	keyPressRight = function() {
+	keyPressRight <- function() {
 		move("right")
 	}
 	
 	dragFrom <- NA
-	mousePress = function(x, y) {
+	mousePress <- function(x, y) {
 		dragFrom <<- formatCoordinate(xConvert(as.double(x)) / 1e6)
 	}
 	
 	dragTo <- NA
-	mouseRelease = function(x, y) {
+	mouseRelease <- function(x, y) {
 		dragTo <<- formatCoordinate(xConvert(as.double(x)) / 1e6)
 		if(dragFrom != dragTo) {
 			tcltk::tclvalue(startValue) <- min(as.numeric(dragFrom), as.numeric(dragTo))
@@ -131,82 +165,116 @@ tk.browse = function(
 		}
 	}
 	
-	mouseWheel = function(D) {
+	mouseWheel <- function(D) {
 		if(D > 0) { mouseWheelUp()
 		} else    { mouseWheelDown()
 		}
 	}
 	
-	mouseWheelUp = function() {
+	mouseWheelUp <- function() {
 		zoom("in")
 	}
 	
-	mouseWheelDown = function() {
+	mouseWheelDown <- function() {
 		zoom("out")
 	}
 	
-	replaceEntry = function(widget) {
+	replaceEntry <- function(widget) {
 		tcltk::tkfocus("-force", widget)
 		tcltk::tcl(widget, "delete", "0", "end")
 		tcltk::tcl(widget, "icursor", "end")
 	}
 	
-	replot = function() {
-		if(checkPlot()) {
-			# Focus
-			tcltk::tcl("wm", "attributes", topLevel, topmost = 1)
-			
-			# Default size (not at launch, for embedded compatibility)
-			
-			# Replot
-			tkrplot::tkrreplot(
-				lab = plotWidget,
-				fun = function() {
-					par(bg="#FFFFFF")
-					handle(
-						expr = {
-							savePar <<- browsePlot(
-								drawables = drawables,
-								chrom = as.character(tcltk::tcl(chromCombo, "get")),
-								start = as.double(tcltk::tclvalue(startValue)) * 1e6,
-								end = as.double(tcltk::tclvalue(endValue)) * 1e6
-							)
-						},
-						# Silently ignore message()
-						messageHandler = NULL,
-						# Pass warning() but continue execution
-						warningHandler = function(w) {
-							tcltk::tkmessageBox(
-								parent = topLevel,
-								icon = "warning",
-								type = "ok",
-								title = "Warning in browsePlot()",
-								message = conditionMessage(w)
-							)
-						},
-						# Pass stop() and stop execution
-						errorHandler = function(e) {
-							tcltk::tkmessageBox(
-								parent = topLevel, 
-								icon = "error",
-								type = "ok",
-								title = "Error in browsePlot()",
-								message = conditionMessage(e)
-							)
-						}					
-					)
-				},
-				hscale = hscale,
-				vscale = vscale
-			)
-			
-			# Focus
-			tcltk::tcl("wm", "attributes", topLevel, topmost = 0)
-			tcltk::tkfocus(force=topLevel)
-		}
+	# browsePlot() call to produce the plot
+	plot.core <- function() {
+		par(bg="#FFFFFF")
+		savePar <<- browsePlot(
+			drawables = drawables,
+			chrom = as.character(tcltk::tcl(chromCombo, "get")),
+			start = as.double(tcltk::tclvalue(startValue)) * 1e6,
+			end = as.double(tcltk::tclvalue(endValue)) * 1e6
+		)
 	}
 	
-	forceCoordinates = function() {
+	# Replot using 'png' rendered
+	plot.png <- function(empty) {
+		# Produce image file
+		png(png.file, width=width, height=height, res=png.res)
+		if(isTRUE(empty)) { plot.empty()
+		} else            { plot.core()
+		}
+		dev.off()
+		
+		# Refresh image
+		tcltk::tkconfigure(plotImage, file=png.file)
+	}
+	
+	plot.empty <- function() {
+		par(bg="#FFFFFF")
+		plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xlab="", ylab="", xaxt="n", yaxt="n", bty="n")
+		text(x=0.5, y=0.5, labels="Welcome to Rgb !\n\n1. Click \"Tracks\" to select data files to visualize.\n2. Enter genomic coordinates and click \"Jump\".")
+	}
+	
+	# Replot using 'tkrplot' rendered
+	plot.tkrplot <- function(empty) {
+		tkrplot::tkrreplot(
+			lab = plotWidget,
+			fun = if(isTRUE(empty)) { plot.empty } else { plot.core },
+			hscale = hscale,
+			vscale = vscale
+		)
+	}
+	
+	# Replot common workflow
+	replot <- function(empty=FALSE) {
+		# Check coordinates
+		if(!isTRUE(empty)) empty <- !checkPlot()
+		print(empty)
+		
+		# Cursor
+		tcltk::tkconfigure(topLevel, cursor="watch")
+		tcltk::.Tcl("update idletasks")
+		
+		# Grab focus to avoid keyboard shortcuts quirks
+		tcltk::tkfocus(plotWidget)
+		
+		# Replot
+		handle(
+			expr = {
+				if(render == "png")            { plot.png(empty=empty)
+				} else if(render == "tkrplot") { plot.tkrplot(empty=empty)
+				}
+			},
+			# Silently ignore message()
+			messageHandler = NULL,
+			# Pass warning() but continue execution
+			warningHandler = function(w) {
+				tcltk::tkmessageBox(
+					parent = topLevel,
+					icon = "warning",
+					type = "ok",
+					title = "Warning in browsePlot()",
+					message = conditionMessage(w)
+				)
+			},
+			# Pass stop() and stop execution
+			errorHandler = function(e) {
+				tcltk::tkmessageBox(
+					parent = topLevel, 
+					icon = "error",
+					type = "ok",
+					title = "Error in browsePlot()",
+					message = conditionMessage(e)
+				)
+			}					
+		)
+		
+		# Cursor
+		tcltk::tkconfigure(topLevel, cursor="arrow")
+		tcltk::.Tcl("update idletasks")
+	}
+	
+	forceCoordinates <- function() {
 		# Is forcing needed ?
 		if(tcltk::tclvalue(startValue) == "" || tcltk::tclvalue(endValue) == "") {
 			# Needed but impossible
@@ -222,7 +290,7 @@ tk.browse = function(
 		return(TRUE)
 	}
 	
-	formatCoordinate = function(x) {
+	formatCoordinate <- function(x) {
 		x <- as.numeric(x)
 		if(abs(x) < 0.000003) x <- 0
 		x <- sprintf("%.6f", round(x, 6))
@@ -232,7 +300,7 @@ tk.browse = function(
 	
 	updateT0 <- updateT1 <- proc.time()['elapsed']
 	
-	move = function(way) {
+	move <- function(way) {
 		updateT1 <<- proc.time()['elapsed']
 		if(updateT1 - updateT0 > updateLimit) {
 			if(checkPlot()) {
@@ -258,7 +326,7 @@ tk.browse = function(
 		}
 	}
 	
-	zoom = function(way) {
+	zoom <- function(way) {
 		updateT1 <<- proc.time()['elapsed']
 		if(updateT1 - updateT0 > updateLimit) {
 			if(checkPlot()) {
@@ -323,7 +391,7 @@ tk.browse = function(
 	}
 	
 	matchIterator <- 0L
-	searchAction = function() {
+	searchAction <- function() {
 		track <- drawables$get( as.integer(tcltk::tcl(searchCombo, "current")) + 1L )
 		if(tcltk::tclvalue(searchValue) == "") {
 			tcltk::tkmessageBox(
@@ -439,6 +507,7 @@ tk.browse = function(
 	
 	# Horizontal resizing
 	tcltk::tkgrid.columnconfigure(topLevel, 1, weight=1)
+	tcltk::tkgrid.rowconfigure(topLevel, 2, weight=1)
 	
 		# Location main frame
 		locationMainFrame <- tcltk::tkframe(parent=topLevel)
@@ -522,13 +591,42 @@ tk.browse = function(
 		
 		tcltk::tkgrid(locationMainFrame, column=1, row=1)
 		
-		# R-Plot widget
-		if(is.na(hscale)) hscale <- autoHScale()
-		if(is.na(vscale)) vscale <- autoVScale()
-		plotWidget <- tkrplot::tkrplot(parent=topLevel, fun=plot.new, hscale=hscale, vscale=vscale)
-		tcltk::tkgrid(plotWidget, column=1, row=2)
+		# Plot frame
+		plotFrame <- tcltk::tkframe(parent=topLevel)
+		tcltk::tkgrid(plotFrame, column=1, row=2, sticky="nsew")
+		
+			# R-Plot widget (wait for maximization to apply and propagate)
+			tcltk::.Tcl("update idletasks")
+			
+			if(render == "png") {
+				# Default size
+				height <- autoHeight("px")
+				width <- autoWidth("px")
+				
+				# Display (empty) PNG image
+				plotImage <- tcltk::tkimage.create("photo", width=width, height=height)
+				plotWidget <- tcltk::tkcanvas(plotFrame, width=width, height=height)
+				tcltk::tkcreate(plotWidget, "image", 0, 0, anchor="nw", image=plotImage)
+			} else if(render == "tkrplot") {
+				# tkrplot widget
+				plotWidget <- tkrplot::tkrplot(parent=plotFrame, fun=plot.empty, hscale=1, vscale=1)
+			}
+		
+			tcltk::tkgrid(plotWidget, column=1, row=1)
 	
-	
+	# Guess scale factor from 1 x 1 empty plot
+	if(render == "tkrplot") {
+		# Scale factor (wait for plot update)
+		tcltk::.Tcl("update idletasks")
+		scaleFactor <- as.integer(tcltk::tclvalue(tcltk::tkwinfo("width", plotWidget)))
+		if(scaleFactor < 100) stop("Scale factor detection seems to have failed (", scaleFactor, ")")
+		
+		# Default size
+		vscale <- autoHeight("scale")
+		hscale <- autoWidth("scale")
+		
+		replot(empty=TRUE)
+	}
 	
 	
 	
@@ -537,9 +635,9 @@ tk.browse = function(
 	## LAUNCH ##
 	
 	# General events
-	tcltk::tkbind(topLevel, "<MouseWheel>", mouseWheel)             # Windows
-	tcltk::tkbind(topLevel, "<Button-4>", mouseWheelUp)             # Linux
-	tcltk::tkbind(topLevel, "<Button-5>", mouseWheelDown)           # Linux
+	tcltk::tkbind(topLevel, "<MouseWheel>", mouseWheel)          # Windows
+	tcltk::tkbind(topLevel, "<Button-4>", mouseWheelUp)          # Linux
+	tcltk::tkbind(topLevel, "<Button-5>", mouseWheelDown)        # Linux
 	tcltk::tkbind(topLevel, "<KeyPress-Up>", keyPressUp)
 	tcltk::tkbind(topLevel, "<KeyPress-Down>", keyPressDown)
 	tcltk::tkbind(topLevel, "<KeyPress-Left>", keyPressLeft)

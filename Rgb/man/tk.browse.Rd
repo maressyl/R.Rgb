@@ -14,8 +14,9 @@
 }
 
 \usage{
-  tk.browse(drawables, hscale = NA, vscale = NA, blocking = FALSE,
-    scaleFactor = NA, updateLimit = 0.4)
+  tk.browse(drawables = drawable.list(), blocking = FALSE, updateLimit = 0.4,
+    render = c("auto", "png", "tkrplot"), tkrplot.scale = 1, png.res = 100,
+    png.file = tempfile(fileext=".png"))
   browsePlot(drawables, chrom = NA, start = NA, end = NA,
     customLayout = FALSE, xaxt = "s", xaxm = 1.5, ...)
 }
@@ -24,20 +25,23 @@
   \item{drawables}{
     A \code{\linkS4class{drawable.list}} object containing the tracks to plot, as returned by \code{\link{drawable.list}} or \code{\link{tk.tracks}}.
 }
-  \item{hscale}{
-    Single numeric value, to be passed to \code{tkrplot}.
-}
-  \item{vscale}{
-    Single numeric value, to be passed to \code{tkrplot}.
-}
   \item{blocking}{
     Single logical value, whether to wait for the interface window to be closed before unfreezing the R console. The \code{FALSE} default let you use R and the interface in parallel (see the 'Typing R commands while browsing' section below), the code{TRUE} value is used essentially in the stand alone version.
 }
-  \item{scaleFactor}{
-    Single numeric value, scaling factor to convert pixel sizes in \code{tkrplot} scale units. \code{NA} will use the OS dependant default values.
-}
   \item{updateLimit}{
     Single numeric value, minimal time (in seconds) between two image updates when move or zoom key are continuously pressed. This is used to limit zoom and move speed on fast computers.
+}
+  \item{render}{
+    Single character value from the ones listed, defining the rendering engine for the plot. "png" is recommended and the default on any platform supporting it (needs Tcl-tk version 8.6 or higher, already available on Linux and MacOS and on Windows with R version 3.4.0 or above), and consists in displaying an export to a PNG file. "tkrplot" is more limited and kept only for backward compatibility, it relies on the external package \code{tkrplot} and the Windows "metafile" format. "auto" (the dzfault) will select the best engine considering to the capabilities of your installation.
+}
+  \item{tkrplot.scale}{
+    Single numeric value, defining a multiplying factor for plot size with the "tkrplot" engine. This argument is mainly provided to temper a bug with the "Font size multiplication factor" feature of last Windows operating system version, and get plots filling the whole Rgb window. As an example if you use a 150% factor in Windows, you should define this argument to 1.5. This has no effect with the "png" engine used on other platforms.
+}
+  \item{png.res}{
+    Single integer value, the resolution of the plot in Pixels Per Inches. Passed to \code{\link{png}}, see the corresponding manual for further details. This has no effect with the "tkrplot" engine used on Windows prior to R version 3.4.0.
+}
+  \item{png.file}{
+    Single character value, the path to the PNG file that is displayed in the main window. The default behavior is to hide it in a temporary location, however you can define this argument to have an easier access to the images displayed in Rgb (the image will be replaced each time Rgb refresh its display). This has no effect with the "tkrplot" engine used on Windows prior to R version 3.4.0.
 }
   \item{chrom}{
     Single character value, the chromosome to plot.
