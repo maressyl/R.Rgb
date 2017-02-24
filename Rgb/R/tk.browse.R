@@ -196,6 +196,13 @@ tk.browse <- function(
 		)
 	}
 	
+	# Welcome screen
+	plot.empty <- function() {
+		par(bg="#FFFFFF", mar=c(0,0,0,0))
+		plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xlab="", ylab="", xaxt="n", yaxt="n", bty="n")
+		text(x=0.5, y=0.5, labels="Welcome to Rgb !\n\n1. Click \"Tracks\" to select data files to visualize.\n2. Enter genomic coordinates and click \"Jump\".")
+	}
+	
 	# Replot using 'png' rendered
 	plot.png <- function(empty) {
 		# Produce image file
@@ -206,13 +213,8 @@ tk.browse <- function(
 		dev.off()
 		
 		# Refresh image
-		tcltk::tkconfigure(plotImage, file=png.file)
-	}
-	
-	plot.empty <- function() {
-		par(bg="#FFFFFF")
-		plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xlab="", ylab="", xaxt="n", yaxt="n", bty="n")
-		text(x=0.5, y=0.5, labels="Welcome to Rgb !\n\n1. Click \"Tracks\" to select data files to visualize.\n2. Enter genomic coordinates and click \"Jump\".")
+		tcltk::tkconfigure(plotImage, file=png.file, width=width, height=height)
+		tcltk::tkconfigure(plotWidget, width=width, height=height)
 	}
 	
 	# Replot using 'tkrplot' rendered
@@ -229,7 +231,6 @@ tk.browse <- function(
 	replot <- function(empty=FALSE) {
 		# Check coordinates
 		if(!isTRUE(empty)) empty <- !checkPlot()
-		print(empty)
 		
 		# Cursor
 		tcltk::tkconfigure(topLevel, cursor="watch")
@@ -625,6 +626,9 @@ tk.browse <- function(
 		vscale <- autoHeight("scale")
 		hscale <- autoWidth("scale")
 		
+		replot(empty=TRUE)
+	} else {
+		# Welcome screen
 		replot(empty=TRUE)
 	}
 	
