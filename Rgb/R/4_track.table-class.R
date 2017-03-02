@@ -370,9 +370,9 @@ show = function(include=FALSE, fieldWidth=10) {
 
 size = function(chrom, start, end) {
 "Count elements in the specified window.
-- chrom      : single integer, numeric or character value, the chromosomal location.
-- start      : single integer or numeric value, inferior boundary of the window.
-- end        : single integer or numeric value, superior boundary of the window."
+- chrom   : single integer, numeric or character value, the chromosomal location.
+- start   : single integer or numeric value, inferior boundary of the window.
+- end     : single integer or numeric value, superior boundary of the window."
 	
 	if(is.numeric(chrom)) chrom <- as.integer(chrom)
 	if(is.numeric(start)) start <- as.integer(start)

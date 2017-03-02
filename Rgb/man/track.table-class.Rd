@@ -67,7 +67,8 @@
     \item{\code{checktrack}:}{A \code{call} to the C external "checktrack", for faster object check (see the \code{check} method).}
     \item{\code{index}:}{\code{integer} vector, giving the index of the first row in each chromosome. See the \code{\link{subtrack}} function for further details.}
     \item{\code{organism}:}{Single \code{character} value, the name of the organism whose data is stored in the object. Must have length 1, should not be \code{NA}.}
-    \item{\code{subtrack}:}{A \code{call} to the C external "subtrack", for faster slicing (see the \code{slice} method).}
+    \item{\code{sizetrack}:}{A \code{call} to the C external "track", for faster row counting (see the \code{size} method).}
+    \item{\code{subtrack}:}{A \code{call} to the C external "track", for faster slicing (see the \code{slice} method).}
   }
   The following fields are inherited (from the corresponding class):
   \itemize{
@@ -115,8 +116,18 @@
       Detects whether the 'chrom' column refers to whole chromosomes or chromosome arms.
     }
     \item{\code{segMerge(...)}:}{
-      Apply the segMerge() function to the track content.
+      Apply the segMerge() function to the track content.\cr
       - \strong{...}   : arguments to be passed to segMerge().
+    }
+    \item{\code{segOverlap(...)}:}{
+      Apply the segOverlap() function to the track content.\cr
+      - \strong{...}   : arguments to be passed to segOverlap().
+    }
+    \item{\code{size(chrom, start, end)}:}{
+      Count elements in the specified window.\cr
+      - \strong{chrom}   : single integer, numeric or character value, the chromosomal location.\cr
+      - \strong{start}   : single integer or numeric value, inferior boundary of the window.\cr
+      - \strong{end}     : single integer or numeric value, superior boundary of the window.
     }
   }
   The following methods are inherited (from the corresponding class):

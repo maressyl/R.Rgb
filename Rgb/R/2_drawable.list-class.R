@@ -35,7 +35,8 @@ add = function(file, track=NULL, hidden=FALSE, ...) {
 "Add a track to the list.
 - file     : single character value, the path to the file containing the 'drawable' object to add.
 - track    : a 'drawable' object to add. If NULL, will be extracted from 'file'.
-- hidden   : single logical value, whether the track is to be shown on plots or hidden. This value can be changed later."
+- hidden   : single logical value, whether the track is to be shown on plots or hidden. This value can be changed later.
+- ...      : further arguments to be passed to drawableFromFile.EXTENSION or drawableFromClass.CLASS, if relevant."
 	
 	# Checks
 	if(length(file) != 1)   stop("'file' must refer to a single existing file")
