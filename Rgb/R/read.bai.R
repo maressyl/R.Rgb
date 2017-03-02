@@ -12,7 +12,7 @@ read.bai <- function(fileName, quiet=FALSE) {
 	if(!identical(magic, charToRaw("BAI\1"))) stop("Wrong magic number")
 	
 	# Get reference count
-	n_ref <- .Internal(readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE, swap=FALSE))
+	n_ref <- readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE)
 	
 	# Allocate reference list
 	out <- vector(mode="list", length=n_ref)
@@ -20,7 +20,7 @@ read.bai <- function(fileName, quiet=FALSE) {
 	dn <- list(NULL, c("start", "end"))
 	if(n_ref > 0) for(r in 1:n_ref) {
 		# Get bin count
-		n_bin <- .Internal(readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE, swap=FALSE))
+		n_bin <- readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE)
 		
 		# Allocate bin list
 		refBins <- vector(mode="list", length=n_bin)
@@ -33,7 +33,7 @@ read.bai <- function(fileName, quiet=FALSE) {
 			binIds[b] <- readU32(con)
 			
 			# Get chunk count
-			n_chunk <- .Internal(readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE, swap=FALSE))
+			n_chunk <- readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE)
 			
 			# Get chunk coordinates (2 by chunk)
 			coord <- readU64s(con, n=n_chunk*2L)
@@ -46,7 +46,7 @@ read.bai <- function(fileName, quiet=FALSE) {
 		names(refBins) <- binIds
 		
 		# Get interval count
-		n_intv <- .Internal(readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE, swap=FALSE))
+		n_intv <- readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE)
 		
 		# Allocate and fill interval vector
 		refIntervals <- readU64s(con, n=n_intv)

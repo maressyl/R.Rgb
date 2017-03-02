@@ -3,7 +3,7 @@
 # License : GPL3 http://www.gnu.org/licenses/gpl.html
 
 readU32 <- function(con) {
-	bytes <- .Internal(readBin(con=con, what="integer", n=2L, size=2L, signed=FALSE, swap=FALSE))
+	bytes <- readBin(con=con, what="integer", n=2L, size=2L, signed=FALSE)
 	output <- bytes[2L] * 65536 + bytes[1L]
 	return(output)
 }

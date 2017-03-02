@@ -4,7 +4,7 @@
 
 readCigar <- function(con, n) {
 	# Working with integer bytes
-	x <- .Internal(readBin(con=con, what="integer", n=n*4L, size=1L, signed=FALSE, swap=FALSE))
+	x <- readBin(con=con, what="integer", n=n*4L, size=1L, signed=FALSE)
 	if(length(x) > 0L) {
 		xint <- matrix(x, nrow=4L)
 	

@@ -17,27 +17,27 @@ rm(alpha)
 # License : GPL3 http://www.gnu.org/licenses/gpl.html
 readRead <- function(con, block_size, start, end, SN, verbosity) {
 	# Parse read content
-	refID       <- .Internal(readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE, swap=FALSE))
-	pos         <- .Internal(readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE, swap=FALSE)) + 1L
-	l_read_name <- .Internal(readBin(con=con, what="integer", n=1L, size=1L, signed=FALSE, swap=FALSE))
-	mapq        <- .Internal(readBin(con=con, what="integer", n=1L, size=1L, signed=FALSE, swap=FALSE))
-	bin         <- .Internal(readBin(con=con, what="integer", n=1L, size=2L, signed=FALSE, swap=FALSE))
-	n_cigar_op  <- .Internal(readBin(con=con, what="integer", n=1L, size=2L, signed=FALSE, swap=FALSE))
-	flag        <- .Internal(readBin(con=con, what="integer", n=1L, size=2L, signed=FALSE, swap=FALSE))
-	l_seq       <- .Internal(readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE, swap=FALSE))
-	next_refID  <- .Internal(readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE, swap=FALSE))
-	next_pos    <- .Internal(readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE, swap=FALSE)) + 1L
-	tlen        <- .Internal(readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE, swap=FALSE))
-	read_name   <- .Internal(readBin(con=con, what="character", n=1L, size=l_read_name, signed=FALSE, swap=FALSE))
+	refID       <- readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE)
+	pos         <- readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE) + 1L
+	l_read_name <- readBin(con=con, what="integer", n=1L, size=1L, signed=FALSE)
+	mapq        <- readBin(con=con, what="integer", n=1L, size=1L, signed=FALSE)
+	bin         <- readBin(con=con, what="integer", n=1L, size=2L, signed=FALSE)
+	n_cigar_op  <- readBin(con=con, what="integer", n=1L, size=2L, signed=FALSE)
+	flag        <- readBin(con=con, what="integer", n=1L, size=2L, signed=FALSE)
+	l_seq       <- readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE)
+	next_refID  <- readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE)
+	next_pos    <- readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE) + 1L
+	tlen        <- readBin(con=con, what="integer", n=1L, size=4L, signed=TRUE)
+	read_name   <- readBin(con=con, what="character", n=1L, size=l_read_name, signed=FALSE)
 	cigar       <- readCigar(con, n=n_cigar_op)
 	seq_size    <- floor((l_seq+1L)/2L)
-	seq         <- .Internal(readBin(con=con, what="integer", n=seq_size, size=1L, signed=FALSE, swap=FALSE))
+	seq         <- readBin(con=con, what="integer", n=seq_size, size=1L, signed=FALSE)
 	seqChar     <- unlist(strsplit(dict[ seq ], split=""))[ 1L : l_seq ]
-	qual        <- .Internal(readBin(con=con, what="integer", n=l_seq, size=1L, signed=FALSE, swap=FALSE))
+	qual        <- readBin(con=con, what="integer", n=l_seq, size=1L, signed=FALSE)
 
 	# TODO optionnal tag-values
 	opt_size    <- block_size - (32L + l_read_name + n_cigar_op * 4L + seq_size + l_seq)
-	opt         <- .Internal(readBin(con=con, what="raw", n=opt_size, size=NA_integer_, signed=FALSE, swap=FALSE))
+	opt         <- readBin(con=con, what="raw", n=opt_size, size=NA_integer_, signed=FALSE)
 
 	# Unmapped
 	if(refID == -1L)      pos <- refID <- NA_integer_

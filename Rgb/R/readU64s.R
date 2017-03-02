@@ -4,10 +4,10 @@
 
 readU64s <- function(con, n) {
 	if(n > 0) {
-		bytes <- .Internal(readBin(con=con, what="integer", n=n*4L, size=2L, signed=FALSE, swap=FALSE))
+		bytes <- readBin(con=con, what="integer", n=n*4L, size=2L, signed=FALSE)
 		bytes <- matrix(bytes, nrow=4L)
 		bytes <- bytes * 65536L^(0:3)
-		output <- .Internal(colSums(matrix=bytes, nrow=4L, ncol=n, na.rm=FALSE))
+		output <- colSums(x=bytes, na.rm=FALSE)
 		return(output)
 	} else {
 		return(double(0))
