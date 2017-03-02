@@ -67,19 +67,20 @@ chromosomes = function() {
 	return(header$SN)
 },
 
-coverage = function(chrom, start, end, binLevel=5L) {
+coverage = function(chrom, start=NA, end=NA, tracks=TRUE, binLevel=5L, rawSize=FALSE) {
 "Fast estimation of depth coverage in a genomic window, from indexing data. Values are normalized into [0:1] over the genomic window.
 - chrom      : single integer, numeric or character value, the chromosomal location.
-- start      : single integer or numeric value, inferior boundary of the window.
-- end        : single integer or numeric value, superior boundary of the window.
+- start      : single integer or numeric value, inferior boundary of the window. If NA, the whole chromosome is considered.
+- end        : single integer or numeric value, superior boundary of the window. If NA, the whole chromosome is considered.
+- tracks     : single logical value, whether to return a data.frame or a track.table.
 - binLevel   : single integer value, the higher bin order to allow
                0 = 537Mb, 1 = 67Mb, 2 = 8Mb, 3 = 1Mb, 4 = 130kb, 5 = 16kb
-               incrementing this value enhances boundary precision but discards reads located at bin junctions."
+               incrementing this value enhances boundary precision but discards reads located at bin junctions.
+- rawSize    : single logical value, whether to output raw size or normalize by the maximum encountered."
 	
 	# Coordinate check
 	if(is.numeric(start)) start <- as.integer(start)
 	if(is.numeric(end))   end <- as.integer(end)
-	if(start > end)       stop("'start' must be lesser or equal to 'end'")
 	
 	# Translate chrom names into indexes
 	if(length(chrom) != 1L) stop("'chrom' must refer to a single chromosome")
@@ -87,17 +88,24 @@ coverage = function(chrom, start, end, binLevel=5L) {
 	chromIndex <- match(chrom, header$SN)
 	if(is.na(chromIndex)) stop("'chrom' not found in BAM header")
 	
-	# All bins overlapping the region (whatever the chromosome)
-	bins <- coord2bins(start=start, end=end)
+	if(is.na(start) || is.na(end)) {
+		# All registered bins on the chromosome (excpet pseudo-bins)
+		bins <- as.integer(names(index[[ chromIndex ]]$bins))
+		bins <- setdiff(bins, 37450L)
+	} else {
+		# All bins overlapping the region (whatever the chromosome)
+		if(start > end) stop("'start' must be lesser or equal to 'end'")
+		bins <- coord2bins(start=start, end=end)
+	}
 	
 	# Bin level filtering
-	if(binLevel > 0) {
+	if(binLevel > 0L) {
 		blockStarts <- as.integer(c(0, 1, 9, 73, 585, 4681))
 		blockEnds <- as.integer(c(0, 8, 72, 584, 4680, 37449))
 		for(i in 1:binLevel) bins <- setdiff(bins, blockStarts[i]:blockEnds[i])
 	}
 	
-	if(length(bins) > 0) {
+	if(length(bins) > 0L) {
 		# Extract non-NA chunks from these bins
 		chunkList <- index[[ chromIndex ]]$bins[ as.character(bins) ]
 		chunkList <- chunkList[ !is.na(names(chunkList)) ]
@@ -115,7 +123,7 @@ coverage = function(chrom, start, end, binLevel=5L) {
 		# Aggregate by bin number
 		chunkBins <- rep(names(chunkList), sapply(chunkList, nrow))
 		sizes <- tapply(chunkSizes, chunkBins, sum)
-		sizes <- sizes / max(sizes)
+		if(!isTRUE(rawSize)) sizes <- sizes / max(sizes)
 		
 		# Convert bin numbers into genomic coordinates
 		coord <- bins2coord(bins=as.integer(names(sizes)))
@@ -138,11 +146,23 @@ coverage = function(chrom, start, end, binLevel=5L) {
 			start = integer(0),
 			end = integer(0),
 			strand = factor(character(0), levels=c("-","+")),
-			value = double(0)
+			value = double(0),
+			stringsAsFactors = FALSE
 		)
 	}
 	
-	return(results)
+	# Output
+	if(isTRUE(tracks)) {
+		# track.table
+		return(
+			track.table(
+				results,
+				.organism = organism,
+				.assembly = assembly,
+				.name = sprintf("%s (coverage)", name)
+			)
+		)
+	} else return(results)
 },
 
 crawl = function(chrom, start, end, addChr=.self$addChr, maxRange=.self$getParam("maxRange"), verbosity=0, ..., init, loop, final) {
@@ -165,14 +185,12 @@ crawl = function(chrom, start, end, addChr=.self$addChr, maxRange=.self$getParam
 	if(end - start < maxRange) {
 		# Translate chrom name into index
 		SN <- header$SN
-		if(isTRUE(addChr) && chrom != "*") chrom <- sprintf("chr%s", chrom)
+		if(isTRUE(addChr)) chrom <- sprintf("chr%s", chrom)
 		chromIndex <- match(chrom, SN)
 		if(is.na(chromIndex)) stop("'chrom' not found in BAM header")
 	
 		if(verbosity > 0) message("Get chunks for given window ...")
-		if(chrom == "*") { offsets <- index[[chromIndex]]
-		} else           { offsets <- getOffsets(index=index, chromIndex=chromIndex, start=start, end=end)
-		}
+		offsets <- getOffsets(index=index, chromIndex=chromIndex, start=start, end=end)
 		
 		# Custom initialization
 		if(verbosity > 0) message("Evaluate initialization ...")
@@ -473,86 +491,32 @@ slice = function(chrom, start, end, mode=.self$getParam("mode"), ...) {
 	eval(substitute(.self$FUN(chrom=CHROM, start=START, end=END, ...), list(FUN=mode, CHROM=chrom, START=start, END=end, ...)))
 },
 
-summary = function(chrom=NA, merge=TRUE, tracks=TRUE, binLevel=5L) {
+summary = function(chrom=NA, tracks=TRUE, binLevel=5L, rawSize=FALSE) {
 "Fast estimation of depth coverage for the whole genome, from indexing data. Values are normalized into [0:1] over the whole genome.
 - chrom      : character vector, the names of the chromosome to query. If NA, all chromosomes will be queried.
-- merge      : single logical value, whether to merge overlapping bins or not.
 - tracks     : single logical value, whether to return a data.frame or a track.table.
 - binLevel   : single integer value, the higher bin order to allow
                0 = 537Mb, 1 = 67Mb, 2 = 8Mb, 3 = 1Mb, 4 = 130kb, 5 = 16kb
-               incrementing this value enhances boundary precision but discards reads located at bin junctions"
+               incrementing this value enhances boundary precision but discards reads located at bin junctions
+- rawSize    : single logical value, whether to output raw size or normalize by the maximum encountered."
 	
-	if(!is.na(chrom)) {
-		# Translate chrom names into indexes
-		if(isTRUE(addChr)) { chromIndexes <- match(sprintf("chr%s", chrom), header$SN)
-		} else             { chromIndexes <- match(chrom, header$SN)
+	if(is.na(chrom)) {
+		if(isTRUE(addChr)) { chrom <- sub("^chr", "", header$SN)
+		} else             { chrom <- header$SN
 		}
-		if(is.na(chromIndexes)) stop("'chrom' not found in BAM header")
-	} else {
-		# All chromosomes
-		chrom <- header$SN
-		chromIndexes <- 1:length(index)
 	}
 	
-	# Output
-	out <- list(
-		bin = integer(0),
-		chrom = integer(0),
-		start = integer(0),
-		end = integer(0),
-		value = double(0)
-	)
-	
-	for(chromIndex in chromIndexes) {
-		# Bin level filtering
-		bins <- names(index[[ chromIndex ]]$bins)
-		if(binLevel > 0) {
-			blockStarts <- as.integer(c(0, 1, 9, 73, 585, 4681))
-			blockEnds <- as.integer(c(0, 8, 72, 584, 4680, 37449))
-			for(i in 1:binLevel) bins <- setdiff(bins, blockStarts[i]:blockEnds[i])
-		}
-		
-		# Extract defined chunks from this chromosome
-		chunkList <- index[[ chromIndex ]]$bins[ bins ]
-		chunks <- do.call(rbind, args=chunkList)
-		
-		# Translate into real coordinates
-		coffsets <- chunks %/% 2^16
-		uoffsets <- chunks %% 2^16
-		
-		# Estimate uncompressed size
-		csizes <- coffsets[,2L] - coffsets[,1L]
-		usizes <- uoffsets[,2L] - uoffsets[,1L]
-		chunkSizes <- csizes * compression + usizes
-		
-		# Aggregate by bin number
-		chunkBins <- rep(names(chunkList), sapply(chunkList, nrow))
-		sizes <- tapply(chunkSizes, chunkBins, sum)
-		sizes <- sizes / max(sizes)
-		bins <- as.integer(names(sizes))
-		
-		# Convert bin numbers into genomic coordinates
-		coord <- bins2coord(bins=bins)
-		
-		# Record
-		out$bin   <- c(out$bin,   bins)
-		out$chrom <- c(out$chrom, rep(chromIndex, length(bins)))
-		out$start <- c(out$start, coord$start)
-		out$end   <- c(out$end,   coord$end)
-		out$value <- c(out$value, as.double(sizes))
+	results <- NULL
+	for(chr in chrom) {
+		# Run coverage() on each chromosome
+		results <- rbind(
+			results,
+			.self$coverage(chrom=chr, start=NA, end=NA, tracks=FALSE, binLevel=binLevel, rawSize=TRUE)
+		)
 	}
 	
-	# Output
-	results <- data.frame(
-		name = sprintf("bin#%s", out$bin),
-		chrom = as.factor(out$chrom),
-		start = out$start,
-		end = out$end,
-		strand = factor(NA, levels=c("-","+")),
-		value = out$value,
-		stringsAsFactors = FALSE
-	)
-	levels(results$chrom) <- header$SN
+	# Normalize size
+	if(!isTRUE(rawSize)) results$value <- results$value / max(results$value)
 	
 	# Output
 	if(isTRUE(tracks)) {
@@ -599,25 +563,13 @@ track.bam <- function(bamPath, baiPath, addChr, quiet=FALSE, .name, .organism, .
 	# Parse BAM header
 	object$header <- read.bam.header(bamPath)
 	
-	# Offsets for unplaced reads ("*" chromosome)
-	offsets <- matrix(as.double(NA), nrow=1, ncol=4, dimnames=list(NULL, c("c.start", "c.end", "u.start", "u.end")))
-	secondBlock <- object$getBlocks(limit=2, quiet=TRUE)[2,]
-	offsets[1,"c.start"] <- secondBlock[1,"coffset"]
-	offsets[1,"c.end"] <- file.info(bamPath)[1,"size"]
-	offsets[1,"u.start"] <- 0
-	offsets[1,"u.end"] <- 0
-	
 	# Parse BAI
 	if(is.na(baiPath)) {
 		# Unaligned BAM file
-		object$index <- list(offsets)
+		stop("Unaligned BAM files are not yet handled")
 	} else {
 		# Aligned BAM file
 		object$index <- read.bai(baiPath, quiet=quiet)
-		
-		# Add unplaced reads as "*" chromosome
-		warning("Not yet implemented")
-		object$index[[ length(object$index) + 1 ]] <- offsets
 	}
 	
 	# Add 'chr' default
