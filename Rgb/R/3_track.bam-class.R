@@ -185,12 +185,14 @@ crawl = function(chrom, start, end, addChr=.self$addChr, maxRange=.self$getParam
 	if(end - start < maxRange) {
 		# Translate chrom name into index
 		SN <- header$SN
-		if(isTRUE(addChr)) chrom <- sprintf("chr%s", chrom)
+		if(isTRUE(addChr) && chrom != "*") chrom <- sprintf("chr%s", chrom)
 		chromIndex <- match(chrom, SN)
 		if(is.na(chromIndex)) stop("'chrom' not found in BAM header")
 	
 		if(verbosity > 0) message("Get chunks for given window ...")
-		offsets <- getOffsets(index=index, chromIndex=chromIndex, start=start, end=end)
+		if(chrom == "*") { offsets <- index[[chromIndex]]
+		} else           { offsets <- getOffsets(index=index, chromIndex=chromIndex, start=start, end=end)
+		}
 		
 		# Custom initialization
 		if(verbosity > 0) message("Evaluate initialization ...")
@@ -563,13 +565,25 @@ track.bam <- function(bamPath, baiPath, addChr, quiet=FALSE, .name, .organism, .
 	# Parse BAM header
 	object$header <- read.bam.header(bamPath)
 	
+	# Offsets for unplaced reads ("*" chromosome)
+	offsets <- matrix(as.double(NA), nrow=1, ncol=4, dimnames=list(NULL, c("c.start", "c.end", "u.start", "u.end")))
+	secondBlock <- object$getBlocks(limit=2, quiet=TRUE)[2,]
+	offsets[1,"c.start"] <- secondBlock[1,"coffset"]
+	offsets[1,"c.end"] <- file.info(bamPath)[1,"size"]
+	offsets[1,"u.start"] <- 0
+	offsets[1,"u.end"] <- 0
+	
 	# Parse BAI
 	if(is.na(baiPath)) {
 		# Unaligned BAM file
-		stop("Unaligned BAM files are not yet handled")
+		object$index <- list(offsets)
 	} else {
 		# Aligned BAM file
 		object$index <- read.bai(baiPath, quiet=quiet)
+		
+		# Add unplaced reads as "*" chromosome
+		warning("Handling of unaligned reads is experimental")
+		object$index[[ length(object$index) + 1 ]] <- offsets
 	}
 	
 	# Add 'chr' default

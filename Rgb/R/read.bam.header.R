@@ -46,6 +46,9 @@ read.bam.header <- function(fileName) {
 		tab <- data.frame(SN=character(0), stringsAsFactors=FALSE)
 	}
 	
+	# Add unplaced chromosome
+	tab[ nrow(tab) + 1L , "SN" ] <- "*"
+	
 	return(tab)
 }
 
