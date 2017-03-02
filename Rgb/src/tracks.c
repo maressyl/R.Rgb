@@ -3,6 +3,23 @@
 
 #include "tracks.h"
 
+// Routine registration (executed at package loading)
+void attribute_visible R_init_Rgb(DllInfo *info) {
+	// External() calls
+	R_ExternalMethodDef externalMethods[] = {
+		{"track", (DL_FUNC) &track, -1},
+		{"checktrack", (DL_FUNC) &checktrack, -1},
+		{NULL, NULL, 0}
+	};
+	
+	// Register all entry points
+	R_registerRoutines(info, NULL, NULL, NULL, externalMethods);
+	
+	// Prevent access to all non-registered entry points on Linux, except "attribute_visible" ones
+	// Remember to update "src/Rgb-win.def" file for Windows !
+	R_useDynamicSymbols(info, FALSE);
+}
+
 // Counts vectors in an argList, unfolding the first level of data.frames
 int argsColCount(SEXP args) {
 	SEXP column;

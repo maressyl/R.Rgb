@@ -3,7 +3,7 @@
 # License : GPL3 http://www.gnu.org/licenses/gpl.html
 
 .onLoad <- function(libname, pkgname) {
-	library.dynam(pkgname, pkgname, libname)
+	library.dynam("Rgb", pkgname, libname)
 }
 .onUnload <- function(libpath) {
 	library.dynam.unload("Rgb", libpath)
