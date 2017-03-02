@@ -10,7 +10,7 @@
 
 \usage{
   singlePlot(drawables, columns = 4, exclude = c("X", "Y"), add = c(5e6, 15e6),
-    vertical = FALSE, capWidth = lcm(1), spacer = lcm(1), finalize = TRUE,
+    vertical = FALSE, capWidth = "1 cm", spacer = "1 cm", finalize = TRUE,
     cap.border = "black", cap.font.col = "black", cap.bg.col = NA, cap.adj = c(0.5, 0.5),
     cap.cex = 2, cap.font = 2, mar = c(0,0,0,0), bty = "n", xaxt = "n", xgrid = FALSE,
     yaxt = "n", ylab = "", ysub = "", ...)
