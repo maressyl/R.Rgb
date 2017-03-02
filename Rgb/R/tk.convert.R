@@ -115,7 +115,7 @@ tk.convert = function(
 			# READ
 			if(inputFormat == ".csv" || inputFormat == ".txt") {
 				# Import content
-				tabularContent <- read.table(inputFile, header=TRUE, sep=inputSep, dec=inputDec, quote=inputQuote, stringsAsFactors=FALSE, comment.char=inputMeta)
+				tabularContent <- utils::read.table(inputFile, header=TRUE, sep=inputSep, dec=inputDec, quote=inputQuote, stringsAsFactors=FALSE, comment.char=inputMeta)
 				
 				# Import metadata
 				if(inputMeta != "") {
@@ -154,7 +154,7 @@ tk.convert = function(
 			if(outputFormat == ".csv" || outputFormat == ".txt") {
 				# Write in file
 				if(outputMeta != "") cat(sprintf("%s%s=%s\n", outputMeta, names(metaData), metaData), file=outputFile, append=FALSE, sep="")
-				suppressWarnings(write.table(tabularContent, file=outputFile, sep=outputSep, dec=outputDec, quote=outputQuote, col.names=TRUE, row.names=FALSE, append=(outputMeta != "")))
+				suppressWarnings(utils::write.table(tabularContent, file=outputFile, sep=outputSep, dec=outputDec, quote=outputQuote, col.names=TRUE, row.names=FALSE, append=(outputMeta != "")))
 			} else if(outputFormat == ".rdt") {
 				# Factor conversions
 				if("chrom" %in% names(tabularContent) && !is.factor(tabularContent$chrom)) tabularContent$chrom <- factor(tabularContent$chrom)

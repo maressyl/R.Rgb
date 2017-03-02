@@ -10,7 +10,7 @@ track.exons.CCDS = function(
 		)
 	{
 	# Extraction
-	CCDS = read.table(
+	CCDS = utils::read.table(
 		file = file,
 		header = TRUE,
 		sep = "\t",

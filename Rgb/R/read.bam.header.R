@@ -40,7 +40,7 @@ read.bam.header <- function(fileName) {
 	
 		# Convert to data.frame
 		tab <- as.data.frame(mtx, stringsAsFactors=FALSE)
-		for(k in 1:ncol(tab)) tab[[k]] <- type.convert(tab[[k]], as.is=TRUE)
+		for(k in 1:ncol(tab)) tab[[k]] <- utils::type.convert(tab[[k]], as.is=TRUE)
 	} else {
 		# Empty header
 		tab <- data.frame(SN=character(0), stringsAsFactors=FALSE)

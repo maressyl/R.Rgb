@@ -27,7 +27,7 @@ saveRDT <- function(
 	
 	
 	# Temporary storage of the flag element
-	assign(".saveRDT.rdt", value=as.character(packageVersion("Rgb")), envir=object$values)
+	assign(".saveRDT.rdt", value=as.character(utils::packageVersion("Rgb")), envir=object$values)
 	on.exit(rm(list=".saveRDT.rdt", envir=object$values), add=TRUE)
 	
 	# Temporary storage of the class name

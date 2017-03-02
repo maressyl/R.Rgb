@@ -179,7 +179,7 @@ track.fasta.multi <- function(fastaFile, indexFile, .name, .organism, .assembly,
 	if(!missing(.parameters)) object$parameters <- .parameters
 	
 	# Parse and reshape FASTA index
-	index <- read.table(indexFile, sep="\t", header=FALSE, col.names=c("NAME", "LENGTH", "OFFSET", "LINEBASES", "LINEWIDTH"), stringsAsFactors=FALSE)
+	index <- utils::read.table(indexFile, sep="\t", header=FALSE, col.names=c("NAME", "LENGTH", "OFFSET", "LINEBASES", "LINEWIDTH"), stringsAsFactors=FALSE)
 	object$files <- data.frame(
 		file = normalizePath(fastaFile),
 		header = as.character(NA),

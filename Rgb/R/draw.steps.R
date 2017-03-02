@@ -109,7 +109,7 @@ draw.steps = function(
 			
 			# Plot polygons
 			for(i in 1:nrow(slice)) {
-				polygon(
+				graphics::polygon(
 					x = x[i,],
 					y = (y * (1 - spacing) + spacing / 2 + slice[i,"plotLine"]) / maxLine,
 					border = border,
@@ -120,8 +120,8 @@ draw.steps = function(
 			# Box labels
 			if(isTRUE(label)) {
 				# Background
-				charHeight <- yinch(par("cin")[2]) * labelCex
-				rect(
+				charHeight <- graphics::yinch(graphics::par("cin")[2]) * labelCex
+				graphics::rect(
 					xleft = boxes$start.lab,
 					xright = boxes$end.lab,
 					ybottom = (boxes$yline + 0.1) / maxLine,
@@ -156,16 +156,16 @@ draw.steps = function(
 				}
 				
 				# Execute plotting
-				do.call(text, args)
+				do.call(graphics::text, args)
 			}
 		}
 	}
 	
 	# Plot only a message
 	if(!is.na(errorMessage)) {
-		text(
-			x = mean(par("usr")[1:2]),
-			y = mean(par("usr")[3:4]),
+		graphics::text(
+			x = mean(graphics::par("usr")[1:2]),
+			y = mean(graphics::par("usr")[3:4]),
 			label = errorMessage,
 			col = "#000000",
 			adj = c(0.5, 0.5),
@@ -174,7 +174,7 @@ draw.steps = function(
 	}
 	
 	# Surrounding box
-	box(
+	graphics::box(
 		which = "plot",
 		col = "#000000",
 		bty = bty

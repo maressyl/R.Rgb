@@ -52,7 +52,7 @@ draw.hist = function(
 		if(identical(border, "color")) border <- boxColor
 		
 		# Boxes
-		rect(
+		graphics::rect(
 			xleft = slice$start,
 			xright = slice$end,
 			ytop = slice[[column]],
@@ -62,9 +62,9 @@ draw.hist = function(
 		)
 	} else {
 		# No box (not enough)
-		text(
-			x = mean(par("usr")[1:2]),
-			y = mean(par("usr")[3:4]),
+		graphics::text(
+			x = mean(graphics::par("usr")[1:2]),
+			y = mean(graphics::par("usr")[3:4]),
 			label = paste(nrow(slice), "element(s) in this range"),
 			col = "#000000",
 			adj = c(0.5, 0.5),
@@ -73,7 +73,7 @@ draw.hist = function(
 	}
 	
 	# Surrounding box
-	box(
+	graphics::box(
 		which = "plot",
 		col = "#000000",
 		bty = bty

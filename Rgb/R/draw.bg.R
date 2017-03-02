@@ -35,8 +35,8 @@ draw.bg = function(
 	if(any(is.na(yaxp))) yaxp <- NULL
 	
 	# Background
-	par(cex=1, mar=mar, new=new)
-	plot(
+	graphics::par(cex=1, mar=mar, new=new)
+	graphics::plot(
 		x=NA, y=NA,
 		xlim = c(start, end),
 		ylim = ylim,
@@ -54,7 +54,7 @@ draw.bg = function(
 	
 	# Secondary ylab (assembly)
 	if(yaxt == "n" && !is.na(ysub)) {
-		mtext(
+		graphics::mtext(
 			side = 2,
 			text = ysub,
 			line = 1,
@@ -67,17 +67,17 @@ draw.bg = function(
 	at <- pretty(c(start, end), n=12)
 	if(xaxt != "n") {
 		# With axis labels
-		if(isTRUE(xgrid)) { axis(side=1, at=at, las=las, tck=1, col="#CCCCCC", lty="dotted", cex.axis=cex.lab, labels=at/1e6, padj=-1)
-		} else            { axis(side=1, at=at, las=las, cex.axis=cex.lab, labels=at/1e6, padj=-1)
+		if(isTRUE(xgrid)) { graphics::axis(side=1, at=at, las=las, tck=1, col="#CCCCCC", lty="dotted", cex.axis=cex.lab, labels=at/1e6, padj=-1)
+		} else            { graphics::axis(side=1, at=at, las=las, cex.axis=cex.lab, labels=at/1e6, padj=-1)
 		}
 	} else {
 		# Without axis labels
-		if(isTRUE(xgrid)) { axis(side=1, at=at, las=las, tck=1, col="#CCCCCC", lty="dotted", cex.axis=cex.lab, labels=FALSE, padj=-1)
+		if(isTRUE(xgrid)) { graphics::axis(side=1, at=at, las=las, tck=1, col="#CCCCCC", lty="dotted", cex.axis=cex.lab, labels=FALSE, padj=-1)
 		}
 	}
 	
 	# Proper box
-	box(
+	graphics::box(
 		which = "plot",
 		col = "#000000",
 		bty = bty

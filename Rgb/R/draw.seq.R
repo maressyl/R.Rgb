@@ -52,16 +52,16 @@ draw.seq = function(
 		col <- bases[ toupper(slice) ]
 		
 		# Colored boxes
-		rect(xleft=x-0.5, xright=x+0.5, ybottom=0, ytop=1, col=col, border=col)
+		graphics::rect(xleft=x-0.5, xright=x+0.5, ybottom=0, ytop=1, col=col, border=col)
 		
 		# Label only if wide enough
-		charWidth <- round(xinch(par("cin")[1]) * labelCex)
-		if(charWidth <= 1) text(x=x, y=0.5, labels=slice, cex=labelCex)
+		charWidth <- round(graphics::xinch(graphics::par("cin")[1]) * labelCex)
+		if(charWidth <= 1) graphics::text(x=x, y=0.5, labels=slice, cex=labelCex)
 	} else {
 		# Plot only a message
-		text(
-			x = mean(par("usr")[1:2]),
-			y = mean(par("usr")[3:4]),
+		graphics::text(
+			x = mean(graphics::par("usr")[1:2]),
+			y = mean(graphics::par("usr")[3:4]),
 			label = errorMessage,
 			col = "#000000",
 			adj = c(0.5, 0.5),
@@ -70,7 +70,7 @@ draw.seq = function(
 	}
 	
 	# Surrounding box
-	box(
+	graphics::box(
 		which = "plot",
 		col = "#000000",
 		bty = bty

@@ -46,7 +46,7 @@ draw.points = function(
 		}
 		
 		# Points
-		points(
+		graphics::points(
 			x = (slice$start + slice$end)/2,
 			y = slice[[column]],
 			pch = pch,
@@ -55,9 +55,9 @@ draw.points = function(
 		)
 	} else {
 		# No box (not enough)
-		text(
-			x = mean(par("usr")[1:2]),
-			y = mean(par("usr")[3:4]),
+		graphics::text(
+			x = mean(graphics::par("usr")[1:2]),
+			y = mean(graphics::par("usr")[3:4]),
 			label = paste(nrow(slice), "element(s) in this range"),
 			col = "#000000",
 			adj = c(0.5, 0.5),
@@ -66,7 +66,7 @@ draw.points = function(
 	}
 	
 	# Surrounding box
-	box(
+	graphics::box(
 		which = "plot",
 		col = "#000000",
 		bty = bty

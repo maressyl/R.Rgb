@@ -65,7 +65,7 @@ read.gtf <- function(file, attr=c("split", "intact", "skip"), features=NULL, qui
 		
 		# Convert character matrix to typed data.frame
 		attDf <- as.data.frame(attMtx, stringsAsFactors=FALSE)
-		for(i in 1:ncol(attDf)) attDf[[i]] <- type.convert(attDf[[i]], as.is=TRUE)
+		for(i in 1:ncol(attDf)) attDf[[i]] <- utils::type.convert(attDf[[i]], as.is=TRUE)
 		
 		# Append to content
 		content$attributes <- NULL

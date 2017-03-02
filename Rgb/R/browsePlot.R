@@ -35,8 +35,8 @@ browsePlot = function(
 			}
 			
 			# Warnings
-			if(length(unique(na.omit(assemblies))) > 1) warning("'drawables' contains objects from distinct assemblies")
-			if(length(unique(na.omit(organisms))) > 1)  warning("'drawables' contains objects from distinct organisms")
+			if(length(unique(stats::na.omit(assemblies))) > 1) warning("'drawables' contains objects from distinct assemblies")
+			if(length(unique(stats::na.omit(organisms))) > 1)  warning("'drawables' contains objects from distinct organisms")
 			
 			# Default values
 			if(is.na(chrom)) stop("'chrom' must be provided")
@@ -75,12 +75,12 @@ browsePlot = function(
 				heights = heights + sum(!absolute) * 0.2
 				
 				# Check
-				if(heights > par("din")[2]) stop("Plot area too small")
+				if(heights > graphics::par("din")[2]) stop("Plot area too small")
 				
 				
 				## LAYOUT ##
 				
-				layout(
+				graphics::layout(
 					matrix(
 						data = 1:length(toLay),
 						ncol = 1
@@ -88,7 +88,7 @@ browsePlot = function(
 					heights = trackHeights
 				)
 				
-				on.exit(layout(1), add=FALSE)
+				on.exit(graphics::layout(1), add=FALSE)
 				
 			}
 			
@@ -97,7 +97,7 @@ browsePlot = function(
 			
 			for(i in toProcess) {
 				
-				if(i == tail(toProcess, 1)) {
+				if(i == toProcess[ length(toProcess) ]) {
 					# X axis for last track
 					if(xaxt != "n") {
 						# Get 'mar'
@@ -116,7 +116,7 @@ browsePlot = function(
 					}
 					
 					# Track graphical parameters to return
-					outPar <- par()
+					outPar <- graphics::par()
 					outPar$chrom <- chrom
 				} else {
 					# Plot track

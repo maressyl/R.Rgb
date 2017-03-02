@@ -10,7 +10,7 @@ track.CNV.DGV = function(
 		)
 	{
 	# Extraction
-	DGV <- read.table(
+	DGV <- utils::read.table(
 		file = file,
 		header = TRUE,
 		sep = "\t",

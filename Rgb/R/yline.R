@@ -21,8 +21,8 @@ yline <- function(
 	if(!"label" %in% colnames(boxes)      || !is.character(boxes$label))    stop("boxes$label must be a character")
 	
 	# Label widths
-	if(labelSrt == 0)         { labelWidths <- round(xinch(par("cin")[1]) * (nchar(boxes$label) + ifelse(labelStrand, 3, 1)) * labelCex) * 0.66
-	} else if(labelSrt == 90) { labelWidths <- rep(round(xinch(par("cin")[2]) * 1 * labelCex) * 0.66, nrow(boxes))
+	if(labelSrt == 0)         { labelWidths <- round(graphics::xinch(graphics::par("cin")[1]) * (nchar(boxes$label) + ifelse(labelStrand, 3, 1)) * labelCex) * 0.66
+	} else if(labelSrt == 90) { labelWidths <- rep(round(graphics::xinch(graphics::par("cin")[2]) * 1 * labelCex) * 0.66, nrow(boxes))
 	} else                    { labelWidths <- rep(0, nrow(boxes)) #TODO
 	}
 	

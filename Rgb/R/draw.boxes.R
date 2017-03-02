@@ -106,10 +106,10 @@ draw.boxes = function(
 				size.i  <- as.integer(lapply(X=split(x=slice[[ groupSize ]],     f=slice[[ groupBy ]]), FUN="[", i=1L))
 				
 				# Enlarge partially displayed boxes to drawing boundary
-				boxes[ boxes$strand == "+" & start.i > 1L , "start.plot" ] <- as.integer(par("usr")[1])
-				boxes[ boxes$strand == "-" & start.i > 1L , "end.plot" ] <- as.integer(par("usr")[2])
-				boxes[ boxes$strand == "+" & end.i < size.i , "end.plot" ] <- as.integer(par("usr")[2])
-				boxes[ boxes$strand == "-" & end.i < size.i , "start.plot" ] <- as.integer(par("usr")[1])
+				boxes[ boxes$strand == "+" & start.i > 1L , "start.plot" ] <- as.integer(graphics::par("usr")[1])
+				boxes[ boxes$strand == "-" & start.i > 1L , "end.plot" ] <- as.integer(graphics::par("usr")[2])
+				boxes[ boxes$strand == "+" & end.i < size.i , "end.plot" ] <- as.integer(graphics::par("usr")[2])
+				boxes[ boxes$strand == "-" & end.i < size.i , "start.plot" ] <- as.integer(graphics::par("usr")[1])
 			}
 		}
 		
@@ -161,7 +161,7 @@ draw.boxes = function(
 			
 			# Group bonds
 			if(!is.na(groupBy)) {
-				segments(
+				graphics::segments(
 					x0 = boxes$start.plot,
 					y0 = (boxes$yline + 0.5) / maxLine,
 					x1 = boxes$end.plot,
@@ -172,9 +172,9 @@ draw.boxes = function(
 			}
 			
 			# Individual boxes (limit to plotting range to work around R plot bug)
-			slice$start <- pmax(par("usr")[1], slice$start)
-			slice$end   <- pmin(par("usr")[2], slice$end)
-			rect(
+			slice$start <- pmax(graphics::par("usr")[1], slice$start)
+			slice$end   <- pmin(graphics::par("usr")[2], slice$end)
+			graphics::rect(
 				xleft = slice$start,
 				xright = slice$end,
 				ytop = (slice$plotLine + (1 - spacing/2)) / maxLine,
@@ -187,8 +187,8 @@ draw.boxes = function(
 			if(isTRUE(label)) {
 				# Background
 				if(!is.na(groupBy)) {
-					charHeight <- yinch(par("cin")[2]) * labelCex
-					rect(
+					charHeight <- graphics::yinch(graphics::par("cin")[2]) * labelCex
+					graphics::rect(
 						xleft = boxes$start.lab,
 						xright = boxes$end.lab,
 						ybottom = (boxes$yline + 0.5) / maxLine - charHeight/2,
@@ -224,16 +224,16 @@ draw.boxes = function(
 				}
 				
 				# Execute plotting
-				do.call(text, args)
+				do.call(graphics::text, args)
 			}
 		}
 	}
 	
 	# Plot only a message
 	if(!is.na(errorMessage)) {
-		text(
-			x = mean(par("usr")[1:2]),
-			y = mean(par("usr")[3:4]),
+		graphics::text(
+			x = mean(graphics::par("usr")[1:2]),
+			y = mean(graphics::par("usr")[3:4]),
 			label = errorMessage,
 			col = "#000000",
 			adj = c(0.5, 0.5),
@@ -242,7 +242,7 @@ draw.boxes = function(
 	}
 	
 	# Surrounding box
-	box(
+	graphics::box(
 		which = "plot",
 		col = "#000000",
 		bty = bty

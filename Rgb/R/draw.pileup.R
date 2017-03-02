@@ -64,8 +64,8 @@ draw.pileup = function(
 			alpha <- alpha * (1-alphaMin) + alphaMin             # Adjust theoretical min to alphaMin
 			
 			# Apply transparency (not using alpha mecanism of rgb() because of non-compatible devices)
-			mtx <- col2rgb(bases)[, sorted.base ]
-			col <- rgb(t(mtx-255) * rep(alpha, each=4) + 255, maxColorValue=255)
+			mtx <- grDevices::col2rgb(bases)[, sorted.base ]
+			col <- grDevices::rgb(t(mtx-255) * rep(alpha, each=4) + 255, maxColorValue=255)
 			
 			# Base positions (as empty positions are not in the slice)
 			positions <- as.integer(colnames(slice))
@@ -98,24 +98,24 @@ draw.pileup = function(
 	
 	if(is.na(errorMessage)) {
 		# Plot
-		rect(xleft=x-0.5, xright=x+0.5, ybottom=ybot, ytop=ytop, col=col, border=col)
+		graphics::rect(xleft=x-0.5, xright=x+0.5, ybottom=ybot, ytop=ytop, col=col, border=col)
 		
 		# Depth level
-		lines(
+		graphics::lines(
 			x = rep(positions, each=2L) + c(-0.5, 0.5),
 			y = rep(colSums(slice), each=2L)
 		)
 		
 		if(isTRUE(label)) {
 			# Label only bars wide enough
-			charWidth <- round(xinch(par("cin")[1]) * labelCex)
+			charWidth <- round(graphics::xinch(graphics::par("cin")[1]) * labelCex)
 			if(charWidth <= 1) {
 				# Label only bars high enough
-				charHeight <- round(yinch(par("cin")[2]) * labelCex)
+				charHeight <- round(graphics::yinch(graphics::par("cin")[2]) * labelCex)
 				labelable <- sorted.count[ filter ] >= charHeight
 		
 				# Nucleotides for significant bars
-				text(
+				graphics::text(
 					x = x[ labelable ],
 					y = ybot[ labelable ],
 					labels = sorted.base[ filter ][ labelable ],
@@ -126,9 +126,9 @@ draw.pileup = function(
 		}
 	} else {
 		# Plot only a message
-		text(
-			x = mean(par("usr")[1:2]),
-			y = mean(par("usr")[3:4]),
+		graphics::text(
+			x = mean(graphics::par("usr")[1:2]),
+			y = mean(graphics::par("usr")[3:4]),
 			label = errorMessage,
 			col = "#000000",
 			adj = c(0.5, 0.5),
@@ -137,7 +137,7 @@ draw.pileup = function(
 	}
 	
 	# Surrounding box
-	box(
+	graphics::box(
 		which = "plot",
 		col = "#000000",
 		bty = bty

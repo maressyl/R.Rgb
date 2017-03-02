@@ -20,7 +20,7 @@ tk.memory <- function(
 		var <- eval(parse(text=drawCall), envir=attr(drawCalls, "envir"))
 		drawNames <- c(drawNames, var$name)
 		drawClasses <- c(drawClasses, class(var))
-		drawIDs <- c(drawIDs, sub("^<environment: (.+)>$", "\\1", capture.output(as.environment(var))))
+		drawIDs <- c(drawIDs, sub("^<environment: (.+)>$", "\\1", utils::capture.output(as.environment(var))))
 	}
 	
 	

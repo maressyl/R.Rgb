@@ -187,7 +187,7 @@ tk.browse <- function(
 	
 	# browsePlot() call to produce the plot
 	plot.core <- function() {
-		par(bg="#FFFFFF")
+		graphics::par(bg="#FFFFFF")
 		savePar <<- browsePlot(
 			drawables = drawables,
 			chrom = as.character(tcltk::tcl(chromCombo, "get")),
@@ -198,19 +198,19 @@ tk.browse <- function(
 	
 	# Welcome screen
 	plot.empty <- function() {
-		par(bg="#FFFFFF", mar=c(0,0,0,0))
-		plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xlab="", ylab="", xaxt="n", yaxt="n", bty="n")
-		text(x=0.5, y=0.5, labels="Welcome to Rgb !\n\n1. Click \"Tracks\" to select data files to visualize.\n2. Enter genomic coordinates and click \"Jump\".")
+		graphics::par(bg="#FFFFFF", mar=c(0,0,0,0))
+		graphics::plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xlab="", ylab="", xaxt="n", yaxt="n", bty="n")
+		graphics::text(x=0.5, y=0.5, labels="Welcome to Rgb !\n\n1. Click \"Tracks\" to select data files to visualize.\n2. Enter genomic coordinates and click \"Jump\".")
 	}
 	
 	# Replot using 'png' rendered
 	plot.png <- function(empty) {
 		# Produce image file
-		png(png.file, width=width, height=height, res=png.res)
+		grDevices::png(png.file, width=width, height=height, res=png.res)
 		if(isTRUE(empty)) { plot.empty()
 		} else            { plot.core()
 		}
-		dev.off()
+		grDevices::dev.off()
 		
 		# Refresh image
 		tcltk::tkconfigure(plotImage, file=png.file, width=width, height=height)

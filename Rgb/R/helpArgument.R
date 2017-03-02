@@ -4,11 +4,11 @@
 
 helpArgument <- function(funName, argName) {
 	# Path to the help page
-	helpPath <- help(funName, help_type="text")
+	helpPath <- utils::help(funName, help_type="text")
 	if(length(helpPath) == 0) stop("No help page found for this function")
 	
 	# Content of the help page (Rd class)
-	getHelpFile <- getAnywhere(".getHelpFile")[[2]][[1]]
+	getHelpFile <- utils::getAnywhere(".getHelpFile")[[2]][[1]]
 	content <- getHelpFile(helpPath)
 	
 	# Locate arguments

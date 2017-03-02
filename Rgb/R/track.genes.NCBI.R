@@ -11,7 +11,7 @@ track.genes.NCBI = function(
 		)
 	{
 	# Extraction
-	NCBI = read.table(
+	NCBI = utils::read.table(
 		file = file,
 		header = TRUE,
 		sep = "\t",

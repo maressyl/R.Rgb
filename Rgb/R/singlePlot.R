@@ -8,8 +8,8 @@ singlePlot <- function(
 		exclude = c("X", "Y"),
 		add = c(5e6, 15e6),
 		vertical = FALSE,
-		capWidth = lcm(1),
-		spacer = lcm(1),
+		capWidth = "1 cm",
+		spacer = "1 cm",
 		finalize = TRUE,
 		cap.border = "black",
 		cap.font.col = "black",
@@ -110,15 +110,15 @@ singlePlot <- function(
 	lay[ is.nan(lay) ] <- max(lay, na.rm=TRUE) + 1L
 	
 	# Apply layout
-	layout(lay, widths=widths, heights=heights)
-	if(isTRUE(finalize)) on.exit(layout(1))
+	graphics::layout(lay, widths=widths, heights=heights)
+	if(isTRUE(finalize)) on.exit(graphics::layout(1))
 	
 	# Draw caps
 	for(chrom in chromosomes) {
-		par(mar=c(0,0,0,0))
-		plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xlab="", ylab="", xaxt="n", yaxt="n", bty="o", xaxs="i", yaxs="i")
-		rect(xleft=0, xright=1, ybottom=0, ytop=1, col=cap.bg.col, border=cap.border)
-		text(x=cap.adj[1], y=cap.adj[2], labels=chrom, cex=cap.cex, font=cap.font, col=cap.font.col, srt=if(isTRUE(vertical)){ 90 } else { 0 })
+		graphics::par(mar=c(0,0,0,0))
+		graphics::plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xlab="", ylab="", xaxt="n", yaxt="n", bty="o", xaxs="i", yaxs="i")
+		graphics::rect(xleft=0, xright=1, ybottom=0, ytop=1, col=cap.bg.col, border=cap.border)
+		graphics::text(x=cap.adj[1], y=cap.adj[2], labels=chrom, cex=cap.cex, font=cap.font, col=cap.font.col, srt=if(isTRUE(vertical)){ 90 } else { 0 })
 	}
 	
 	# Draw chromosomes
@@ -153,8 +153,8 @@ singlePlot <- function(
 	
 	# Fill empty space
 	if(isTRUE(finalize) && isTRUE(emptySpace)) {
-		par(mar=c(0,0,0,0))
-		plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xlab="", ylab="", xaxt="n", yaxt="n", bty="n")
+		graphics::par(mar=c(0,0,0,0))
+		graphics::plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xlab="", ylab="", xaxt="n", yaxt="n", bty="n")
 	}
 }
 

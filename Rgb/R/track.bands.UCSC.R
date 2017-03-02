@@ -10,7 +10,7 @@ track.bands.UCSC = function(
 		)
 	{
 	# Extraction
-	UCSC = read.table(
+	UCSC = utils::read.table(
 		file = file,
 		header = FALSE,
 		colClasses = c("character", "integer", "integer", "character", "character"),
