@@ -1,9 +1,16 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
-\section{Changes in version 1.5.0 (2017-02-24)}{
+\section{Changes in version 1.5.0 (2017-03-03)}{
   \itemize{
     \item{Better rendering for plots in tk.browse() for Linux and/or R >= 3.4.0.}
     \item{Better automatic sizing of the plot in tk.browse().}
+    \item{All reference class manual pages are now up to date.}
+    \item{Non-base package functions are now properly identified, to comply with R CMD check.}
+    \item{External() C entry points are now registered, to comply with R CMD check.}
+    \item{BAM related functions to longer use .Internal(), to comply with R CMD check.}
+    \item{track.bam$crawl() now uses dedidcated environments, to comply with R CMD check.}
+    \item{track.bam$summary() stabilized, unaligned BAM files are no more handled.}
+    \item{track.bam$extract() return objects have now a proper print method.}
     \item{Welcome message added in tk.browse().}
     \item{tk.browse() no longer display errors when resizing an empty plot.}
     \item{No more warning in tk.browse() when 'maxDepth' is reached by some track.}
