@@ -1,5 +1,5 @@
 // Memory and time efficient subsetting of chromosomal tracks (chrom, start, end)
-// Author : Sylvain Mareschal <maressyl@gmail.com>
+// Author : Sylvain Mareschal <mareschal@ovsa.fr>
 
 #include "tracks.h"
 
