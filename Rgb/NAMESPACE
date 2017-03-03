@@ -38,3 +38,6 @@ export("track.bands.UCSC")
 export(tk.tracks, browsePlot, tk.browse, tk.convert)
 export(tk.file, tk.files, tk.folder, handle)
 
+# S3 methods
+S3method(print, bamSlice)
+
