@@ -58,19 +58,27 @@
                      incrementing this value enhances boundary precision but discards reads located at bin junctions.\cr
       - \strong{rawSize}    : single logical value, whether to output raw size or normalize by the maximum encountered.
     }
-    \item{\code{crawl(chrom, start, end, addChr = , maxRange = , verbosity = , ..., init, loop, final)}:}{
-      Apply a custom processing to reads in a genomic window.\cr
-      - \strong{chrom}       : single integer, numeric or character value, the chromosomal location. NA is not handled.\cr
-      - \strong{start}       : single integer or numeric value, inferior boundary of the window. NA is not handled.\cr
-      - \strong{end}         : single integer or numeric value, superior boundary of the window. NA is not handled.\cr
-      - \strong{addChr}      : single logical value, whether to systematically add 'chr' in front of the 'chrom' value or not.\cr
-      - \strong{maxRange}    : single integer value, no extraction will be attempted if end and start are more than this value away (returns NULL).\cr
-      - \strong{verbosity}   : single integer value, the level of verbosity during processing (0, 1 or 2).\cr
-      - \strong{...}         : arguments to be passed to 'init', 'loop' or 'final'.\cr
-      - \strong{init}        : an expression to be evaluated before looping on reads.\cr
-      - \strong{loop}        : a function with taking at least 'read' and '...' as arguments, modifying 'output' in the parent environment.\cr
-                      The 'earlyBreak' logical can also be modified in the parent environment to stop the looping immediately.\cr
-      - \strong{final}       : an expression to be evaluated after looping on reads.
+    \item{\code{crawl(chrom, start, end, addChr = , maxRange = , maxRangeWarn = , verbosity = , ..., init, loop, final)}:}{
+      Apply a custom processing to reads in a genomic window (used by 'depth', 'extract' and 'pileup' methods).\cr
+      - \strong{chrom}          : single integer, numeric or character value, the chromosomal location. NA is not handled.\cr
+      - \strong{start}          : single integer or numeric value, inferior boundary of the window. NA is not handled.\cr
+      - \strong{end}            : single integer or numeric value, superior boundary of the window. NA is not handled.\cr
+      - \strong{addChr}         : single logical value, whether to systematically add 'chr' in front of the 'chrom' value or not.\cr
+      - \strong{maxRange}       : single integer value, no extraction will be attempted if end and start are more than this value away (returns NULL).\cr
+      - \strong{maxRangeWarn}   : single logical value, whether to throw a warning when 'maxRange' is exceeded and NULL is returned or not.\cr
+      - \strong{verbosity}      : single integer value, the level of verbosity during processing (0, 1 or 2).\cr
+      - \strong{...}            : arguments to be passed to 'init', 'loop' or 'final'.\cr
+      - \strong{init}           : a function taking a single storage environment as argument, to be evaluated before looping on reads for initialization.\cr
+                         This environment has R 'base' environment as parent and contains :\cr
+                         * all arguments passed to crawl()\cr
+                         * a 'self' reference to the current object.\cr
+                         * 'earlyBreak', a single logical value forcing crawl() to return immediately if set to TRUE.\cr
+                         * 'output', a place-holder for the variable to be returned by crawl().\cr
+                         * 'totalReads', the number of matching reads seen since the beginning of the whole looping process.\cr
+                         * 'blockReads', the number of matching reads seen since the beginning of the current BGZF block.\cr
+                         The 'init', 'loop' and 'final' functions defined by the user can freely store additionnal variables in this environment to share them.                   \cr
+      - \strong{loop}           : a function taking a list-shapped read and the storage environment, to be evaluated for each read with matching coordinates.\cr
+      - \strong{final}          : a function taking the storage environment as argument, to be evaluated once all reads were processed for finalization.
     }
     \item{\code{depth(..., qBase = , qMap = )}:}{
       Counts covering bases for each genomic position, similarly to SAMtools' depth.\cr

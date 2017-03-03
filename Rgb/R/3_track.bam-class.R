@@ -165,19 +165,27 @@ coverage = function(chrom, start=NA, end=NA, tracks=TRUE, binLevel=5L, rawSize=F
 	} else return(results)
 },
 
-crawl = function(chrom, start, end, addChr=.self$addChr, maxRange=.self$getParam("maxRange"), verbosity=0, ..., init, loop, final) {
-"Apply a custom processing to reads in a genomic window.
-- chrom       : single integer, numeric or character value, the chromosomal location. NA is not handled.
-- start       : single integer or numeric value, inferior boundary of the window. NA is not handled.
-- end         : single integer or numeric value, superior boundary of the window. NA is not handled.
-- addChr      : single logical value, whether to systematically add 'chr' in front of the 'chrom' value or not.
-- maxRange    : single integer value, no extraction will be attempted if end and start are more than this value away (returns NULL).
-- verbosity   : single integer value, the level of verbosity during processing (0, 1 or 2).
-- ...         : arguments to be passed to 'init', 'loop' or 'final'.
-- init        : an expression to be evaluated before looping on reads.
-- loop        : a function with taking at least 'read' and '...' as arguments, modifying 'output' in the parent environment.
-                The 'earlyBreak' logical can also be modified in the parent environment to stop the looping immediately.
-- final       : an expression to be evaluated after looping on reads."
+crawl = function(chrom, start, end, addChr=.self$addChr, maxRange=.self$getParam("maxRange"), maxRangeWarn=TRUE, verbosity=0, ..., init, loop, final) {
+"Apply a custom processing to reads in a genomic window (used by 'depth', 'extract' and 'pileup' methods).
+- chrom          : single integer, numeric or character value, the chromosomal location. NA is not handled.
+- start          : single integer or numeric value, inferior boundary of the window. NA is not handled.
+- end            : single integer or numeric value, superior boundary of the window. NA is not handled.
+- addChr         : single logical value, whether to systematically add 'chr' in front of the 'chrom' value or not.
+- maxRange       : single integer value, no extraction will be attempted if end and start are more than this value away (returns NULL).
+- maxRangeWarn   : single logical value, whether to throw a warning when 'maxRange' is exceeded and NULL is returned or not.
+- verbosity      : single integer value, the level of verbosity during processing (0, 1 or 2).
+- ...            : arguments to be passed to 'init', 'loop' or 'final'.
+- init           : a function taking a single storage environment as argument, to be evaluated before looping on reads for initialization.
+                   This environment has R 'base' environment as parent and contains :
+                   * all arguments passed to crawl()
+                   * a 'self' reference to the current object.
+                   * 'earlyBreak', a single logical value forcing crawl() to return immediately if set to TRUE.
+                   * 'output', a place-holder for the variable to be returned by crawl().
+                   * 'totalReads', the number of matching reads seen since the beginning of the whole looping process.
+                   * 'blockReads', the number of matching reads seen since the beginning of the current BGZF block.
+                   The 'init', 'loop' and 'final' functions defined by the user can freely store additionnal variables in this environment to share them.                   
+- loop           : a function taking a list-shapped read and the storage environment, to be evaluated for each read with matching coordinates.
+- final          : a function taking the storage environment as argument, to be evaluated once all reads were processed for finalization."
 	
 	if(is.numeric(start)) start <- as.integer(start)
 	if(is.numeric(end))   end <- as.integer(end)
@@ -192,17 +200,32 @@ crawl = function(chrom, start, end, addChr=.self$addChr, maxRange=.self$getParam
 		if(verbosity > 0) message("Get chunks for given window ...")
 		offsets <- getOffsets(index=index, chromIndex=chromIndex, start=start, end=end)
 		
+		# Prepare environment with arguments for functions
+		if(verbosity > 0) message("Prepare environment ...")
+		env <- list2env(
+			x = list(
+				chrom = chrom,
+				start = start,
+				end = end,
+				addChr = addChr,
+				maxRange = maxRange,
+				verbosity = verbosity,
+				...,
+				self = .self,
+				earlyBreak = FALSE,
+				output = NULL,
+				totalReads = as.integer(NA),
+				blockReads = as.integer(NA)
+			),
+			parent = baseenv()
+		)
+		
 		# Custom initialization
 		if(verbosity > 0) message("Evaluate initialization ...")
-		output <- NULL
-		eval(init)
-		
-		# Bind loop
-		earlyBreak <- FALSE
-		environment(loop) <- environment()
+		init(env)
 		
 		# BAI may return multiple intervals to collect
-		totalReads <- 0L
+		env$totalReads <- 0L
 		if(nrow(offsets) > 0) for(h in 1:nrow(offsets)) {
 			if(verbosity > 0) message("Chunk #", h)
 			
@@ -221,6 +244,7 @@ crawl = function(chrom, start, end, addChr=.self$addChr, maxRange=.self$getParam
 				bsize <- readBin(con, what=0L, signed=FALSE, n=1L, size=2L) + 1L
 				if(length(bsize) == 0) {
 					if(verbosity > 0) message("End of file reached")
+					close(con)
 					break
 				}
 				
@@ -242,7 +266,7 @@ crawl = function(chrom, start, end, addChr=.self$addChr, maxRange=.self$getParam
 				}
 				
 				# Loop on reads parsed
-				blockReads <- 0L
+				env$blockReads <- 0L
 				repeat {
 					# End on chunk reached, stop parsing
 					if(blockStart == offsets[h,"c.end"] && u >= offsets[h,"u.end"]) {	### FIXME last read to be kept or not ?
@@ -250,28 +274,28 @@ crawl = function(chrom, start, end, addChr=.self$addChr, maxRange=.self$getParam
 						break
 					}
 					
-					if(verbosity > 1) message("Parsing read #", totalReads + 1L, " at uoffset ", u, appendLF=FALSE)
+					if(verbosity > 1) message("Parsing read #", env$totalReads + 1L, " at uoffset ", u, appendLF=FALSE)
 					block_size  <- readBin(con, what=0L, n=1L, size=4L, signed=TRUE)
 					if(length(block_size) <= 0) {
 						if(verbosity > 1) message(", cancelled as reaching end of BGZF block")
 						break
 					}
-					blockReads <- blockReads + 1L
-					totalReads <- totalReads + 1L
+					env$blockReads <- env$blockReads + 1L
+					env$totalReads <- env$totalReads + 1L
 					
 					# Add (or not) to read list
 					read <- readRead(con, block_size=block_size, start=start, end=end, SN=SN, verbosity=verbosity)
 					
 					if(is.null(read)) {
 						# Discarded read (out of region)
-						totalReads <- totalReads - 1L
+						env$totalReads <- env$totalReads - 1L
 					} else {
 						# Read custom processing
-						loop(read, ...)
+						loop(read, env)
 					}
 					
 					# Requested break
-					if(isTRUE(earlyBreak)) {
+					if(isTRUE(env$earlyBreak)) {
 						if(verbosity > 1) message("Early break requested by looping function")
 						break
 					}
@@ -284,22 +308,27 @@ crawl = function(chrom, start, end, addChr=.self$addChr, maxRange=.self$getParam
 				close(con)
 				
 				# Requested break
-				if(isTRUE(earlyBreak)) break
+				if(isTRUE(env$earlyBreak)) break
 				
 				# Next BGZF block
 				blockStart <- blockStart + bsize
-				if(verbosity > 0) message("Going to next BGZF block, ", blockReads, " reads parsed in current one")
+				if(verbosity > 0) message("Going to next BGZF block, ", env$blockReads, " reads parsed in current one")
 			}
 			
-			if(verbosity > 0) message("Parsing complete, ", totalReads, " reads parsed")
+			if(verbosity > 0) message("Parsing complete, ", env$totalReads, " reads parsed")
 		}
 		
 		# Final custom processing
 		if(verbosity > 0) message("Evaluate finalization ...")
-		eval(final)
+		final(env)
+		
+		# Get results
+		output <- env$output
 	} else {
 		# Range too large
-		if(verbosity > 0) message("maxRange (", maxRange, ") reached, no processing")
+		if(isTRUE(maxRangeWarn)) { warning("maxRange (", maxRange, ") reached, no processing")
+		} else if(verbosity > 0) { message("maxRange (", maxRange, ") reached, no processing")
+		}
 		output <- NULL
 	}
 	
@@ -350,8 +379,6 @@ extract = function(...) {
 
 	crawl(
 		...,
-		qBase = qBase,
-		qMap = qMap,
 		init = extract.init,
 		loop = extract.loop,
 		final = extract.final
@@ -479,16 +506,22 @@ show = function(include=FALSE, fieldWidth=10) {
 	callSuper(include=TRUE, fieldWidth=fieldWidth)
 },
 
-slice = function(chrom, start, end, mode=.self$getParam("mode"), ...) {
+slice = function(chrom, start, end, mode=.self$getParam("mode"), maxRangeWarn=FALSE, ...) {
 "Extracts elements in the specified window, in a format suitable to draw().
-- chrom   : single integer, numeric or character value, the chromosomal location. NA is not handled.
-- start   : single integer or numeric value, inferior boundary of the window. NA is not handled.
-- end     : single integer or numeric value, superior boundary of the window. NA is not handled.
-- end     : single integer or numeric value, superior boundary of the window. NA is not handled.
-- mode    : single character value, the name of the method to actually call to extract data (typically 'pileup' or 'coverage').
-- ...     : to be passed to the crawl() method.
+- chrom          : single integer, numeric or character value, the chromosomal location. NA is not handled.
+- start          : single integer or numeric value, inferior boundary of the window. NA is not handled.
+- end            : single integer or numeric value, superior boundary of the window. NA is not handled.
+- end            : single integer or numeric value, superior boundary of the window. NA is not handled.
+- mode           : single character value, the name of the method to actually call to extract data (typically 'pileup' or 'coverage').
+- maxRangeWarn   : single logical value, whether to throw a warning when 'maxRange' is exceeded and NULL is returned or not.
+- ...            : to be passed to the crawl() method.
 "
-	eval(substitute(.self$FUN(chrom=CHROM, start=START, end=END, ...), list(FUN=mode, CHROM=chrom, START=start, END=end, ...)))
+	eval(
+		expr = substitute(
+			expr = .self$FUN(chrom=CHROM, start=START, end=END, maxRangeWarn=maxRangeWarn, ...),
+			env = list(FUN=mode, CHROM=chrom, START=start, END=end, maxRangeWarn=maxRangeWarn, ...)
+		)
+	)
 },
 
 summary = function(chrom=NA, tracks=TRUE, binLevel=5L, rawSize=FALSE) {

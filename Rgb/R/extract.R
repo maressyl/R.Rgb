@@ -2,29 +2,44 @@
 # Author : Sylvain Mareschal <maressyl@gmail.com>
 # License : GPL3 http://www.gnu.org/licenses/gpl.html
 
-extract.init <- expression({
-	output <- vector("list", 5000L)
-})
-
-extract.loop <- function(read, ...) {
-	# Extend output list if necessary
-	if(totalReads > length(output)) output <<- c(output, vector("list", 5000L))
+extract.init <- function(env) {
+	env$output <- vector("list", 5000L)
 	
-	# Store whole read
-	output[[ totalReads ]] <<- read
+	return(TRUE)
 }
 
-extract.final <- expression({
-	# Remove unused read slots
-	output <- output[ 1:totalReads ]
+extract.loop <- function(read, env) {
+	# Extend output list if necessary
+	if(env$totalReads > length(env$output)) {
+		eval(expression(output <- c(output, vector("list", 5000L))), envir=env)
+	}
 	
-	# Apply S3 class
-	attr(output, "bam") <- bamPath
-	attr(output, "chrom") <- chrom
-	attr(output, "start") <- start
-	attr(output, "end") <- end
-	class(output) <- "bamSlice"
-})
+	# Store whole read
+	env$read <- read
+	eval(expression(output[[ totalReads ]] <- read), envir=env)
+	
+	return(TRUE)
+}
+
+extract.final <- function(env) {
+	# Remove unused read slots
+	eval(
+		expression({
+			# Remove unused read slots
+			output <- output[ 1:totalReads ]
+			
+			# Apply S3 class
+			attr(output, "bam") <- self$bamPath
+			attr(output, "chrom") <- chrom
+			attr(output, "start") <- start
+			attr(output, "end") <- end
+			class(output) <- "bamSlice"
+		}),
+		envir = env
+	)
+	
+	return(TRUE)
+}
 
 # S3 method for BAI printing
 print.bamSlice <- function(x, ...) {
@@ -36,8 +51,10 @@ print.bamSlice <- function(x, ...) {
 		reads <- x[[1]]$QNAME
 		if(length(x) > 1) reads <- sprintf("%s ...", reads)
 		reads <- sprintf(" (%s)", reads)
-	} else { reads <- ""
+	} else {
+		reads <- ""
 	}
 	cat("- Reads  : ", length(x), reads, "\n", sep="")
+	invisible(x)
 }
 
