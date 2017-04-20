@@ -1,7 +1,9 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
-\section{Changes in version 1.5.1 (2017-03-13)}{
+\section{Changes in version 1.5.1 (2017-04-20)}{
   \itemize{
+    \item{tk.browse() error message on Windows with R < 3.4.0 fixed.}
+    \item{tk.browse() no longer requires tkrplot with render = 'png'.}
     \item{draw.hist() now accepts a column name as 'origin'.}
   }
 }

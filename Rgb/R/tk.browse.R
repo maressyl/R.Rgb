@@ -20,24 +20,32 @@ tk.browse <- function(
 	render <- match.arg(render)
 	tcltkVer <- as.double(sub("^([0-9]+\\.[0-9]+).+$", "\\1", tcltk::tclVersion()))
 	if(tcltkVer >= 8.6) {
-		# PNG is not compatible
+		# PNG is compatible
 		if(render == "auto") render <- "png"
 	} else {
-		# PNG is compatible
-		if(render == "auto")       { render <- "tkrplot"
-		} else if(render == "png") { stop("PNG rendering requires tcltk 8.6 or above")
+		# PNG is not compatible
+		if(render == "auto") {
+			render <- "tkrplot"
+		} else if(render == "png") {
+			tcltk::tkmessageBox(
+				icon = "error",
+				type = "ok",
+				title = "PNG rendering not available on your system",
+				message = "Setting 'render' to 'png' is only possible with Tcl-tk version 8.6 and above (shipped with R version 3.4.0 and above on Windows)."
+			)
+			stop("PNG rendering not available on your system")
 		}
 	}
 	
 	# Check if tkrplot is installed
-	if(length(find.package("tkrplot", quiet=TRUE)) == 0L) {
+	if(render == "tkrplot" && length(suppressWarnings(find.package("tkrplot", quiet=TRUE))) == 0L) {
 		tcltk::tkmessageBox(
-			parent = topLevel,
-			icon = "info",
+			icon = "error",
 			type = "ok",
 			title = "tkrplot package missing",
-			message = "The optional 'tkrplot' package is required to use tk.browse(), please install it and try again."
+			message = "The 'render' argument is set to 'tkrplot', but the 'tkrplot' R package is not installed.\n\nYou can either install it or set 'render' to 'png', the later being possible only with Tcl-tk version 8.6 and above (shipped with R version 3.4.0 and above on Windows)."
 		)
+		stop("tkrplot package missing")
 	}
 	
 	
