@@ -56,7 +56,7 @@ draw.hist = function(
 			xleft = slice$start,
 			xright = slice$end,
 			ytop = slice[[column]],
-			ybottom = origin,
+			ybottom = if(is.numeric(origin)) { origin } else { slice[[origin]] },
 			col = boxColor,
 			border = border
 		)

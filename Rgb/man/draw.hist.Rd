@@ -40,7 +40,7 @@
     The relative character size of x and y axis labels (default: 1). See \code{par}.
 }
   \item{origin}{
-    Single numeric value, the Y value of the horizontal side common to all boxes.
+    Single numeric value, the Y value of the horizontal side common to all boxes. Can also be the name of a \code{slice} numeric column to use as a segment-specific origin.
 }
   \item{bty}{
     A character string which determined the type of box which is drawn about plots. If bty is one of "o" (the default), "l", "7", "c", "u", or "]" the resulting box resembles the corresponding upper case letter. A value of "n" suppresses the box. See \code{par}.

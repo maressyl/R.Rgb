@@ -1,5 +1,10 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
+\section{Changes in version 1.5.1 (2017-03-13)}{
+  \itemize{
+    \item{draw.hist() now accepts a column name as 'origin'.}
+  }
+}
 \section{Changes in version 1.5.0 (2017-03-03)}{
   \itemize{
     \item{Better rendering for plots in tk.browse() for Linux and/or R >= 3.4.0.}
