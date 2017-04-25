@@ -17,8 +17,8 @@
   tk.browse(drawables = drawable.list(), blocking = FALSE, updateLimit = 0.4,
     render = c("auto", "png", "tkrplot"), tkrplot.scale = 1, png.res = 100,
     png.file = tempfile(fileext=".png"))
-  browsePlot(drawables, chrom = NA, start = NA, end = NA,
-    customLayout = FALSE, xaxt = "s", xaxm = 1.5, ...)
+  browsePlot(drawables, chrom = NA, start = NA, end = NA, customLayout = FALSE,
+    xaxt = "s", xaxm = 1.5, panelWidth = "5 cm", panel = NA, ...)
 }
 
 \arguments{
@@ -60,6 +60,9 @@
 }
   \item{xaxm}{
     Minimal bottom margin for the last track (see \code{par}). It assures enough margin is reserved for X axis showing (see \code{xaxt}).
+}
+  \item{panelWidth}{
+    Single value, the width of the panel displays on the left of the tracks, if any is to be plotted. This is handled by the \code{width} argument of the \code{layout} function, and thus can be defined as a fixed size in centimeters or a relative size considering that the main display has a weight of 1.
 }
   \item{\dots}{
     Further arguments are passed through to the \code{draw} method of each track in \code{trackList}.

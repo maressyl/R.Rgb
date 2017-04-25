@@ -76,6 +76,7 @@ defaultParams = function(...) {
 	params$height <- 1
 	params$mar <- c(0.2, 5, 0.2, 1)
 	params$new <- FALSE
+	params$panel <- FALSE
 	
 	return(params)
 },
@@ -90,6 +91,17 @@ Overloading methods should use .self$callParams(chrom, start, end ...) to handle
 - ...     : additionnal drawing parameters (precede but do not overwrite parameters stored in the object)."
 	
 	stop("draw() is a virtual method, it must be overloaded by inheriting classes")
+},
+
+drawPanel = function(chrom=NA, start=NA, end=NA, ...) {
+"Draws a genome-level summary of the content, to be optionnally displayed as a panel on the left of draw() output. Default draws a blank plot.
+Overloading methods should consider .self$callParams(chrom, start, end ...) to handle drawing parameters and NA coordinates in a consistent way.
+- chrom   : single integer, numeric or character value, the chromosomal location.
+- start   : single integer or numeric value, inferior boundary of the window. NA should refer to 0.
+- end     : single integer or numeric value, superior boundary of the window. NA should refer to .self$getChromEnd().
+- ...     : additionnal drawing parameters (precede but do not overwrite parameters stored in the object)."
+	
+	plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xaxt="n", yaxt="n", xlab="", ylab="", bty="n")
 },
 
 fix.param = function(parent=NULL) {

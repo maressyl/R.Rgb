@@ -1,5 +1,10 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
+\section{Changes in version 1.6.0 (2017-04-25)}{
+  \itemize{
+    \item{drawable class now implements drawPanel(), used by browsePlot().}
+  }
+}
 \section{Changes in version 1.5.1 (2017-04-20)}{
   \itemize{
     \item{tk.browse() error message on Windows with R < 3.4.0 fixed.}
