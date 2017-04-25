@@ -105,6 +105,34 @@ check = function(warn=TRUE) {
 	return(TRUE)
 },
 
+chromosomes = function(mode=c("union", "intersect")) {
+"Returns the chromosome list of the tracks as a vector.
+- mode   : single character value defining how to deal with distinct chromosome lists between tracks."
+	
+	# Check
+	mode <- match.arg(mode)
+	
+	# Collect list
+	if(.self$count == 0L) {
+		# No drawable
+		out <- character(0)
+	} else if(mode == "union") {
+		# Union
+		out <- character(0)
+		for(i in 1:.self$count) {
+			out <- union(out, .self$get(i)$chromosomes())
+		}
+	} else {
+		# Intersect
+		out <- .self$get(1)$chromosomes()
+		if(.self$count > 1L) for(i in 2:.self$count) {
+			out <- intersect(out, .self$get(i)$chromosomes())
+		}
+	}
+	
+	return(out)
+},
+
 fix.files = function(parent=NULL) {
 "Edit drawable list using a Tcl-tk GUI
 - parent   : tcltk parent frame for inclusion, or NULL."
@@ -165,10 +193,18 @@ getByPositions = function(positions, what="objects") {
 getChromEnd = function(chrom) {
 "Returns as a single integer value the maximal ending position of the object descriptions of the given chromosome.
 - chrom   : single integer, numeric or character value, the chromosomal location."
+	
+	# Check
+	if(.self$count == 0L) stop("Unable to predict chromosome end, there is no drawable in this drawable list.")
+	
+	# Collect track-level ends
 	ends <- integer(.self$count)
 	for(i in 1:.self$count) ends[i] <- .self$get(i)$getChromEnd(chrom)
+	
+	# Get maximum
 	if(all(is.na(ends))) stop("Unable to predict chromosome end. Set 'end' manually or use at least one drawable object whose getChromEnd() method does not return NA.")
 	end <- max(ends, na.rm=TRUE)
+	
 	return(end)
 },
 

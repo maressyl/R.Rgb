@@ -71,7 +71,7 @@
 
 \section{Interactive browsing}{
   \subsection{Jump to specific location}{The left upper panel can be used to jump to specific coordinates, defined by a chromosome name, a starting position and an ending position (as floating point numerics in millions of base pairs.}
-  \subsection{Move along a chromosome}{The left and right arrow keys may be used to shift the window to the corresponding side.}
+  \subsection{Move along a chromosome}{The left and right arrow keys may be used to shift the window to the corresponding side. The page-up and page-down keys can be used to switch chromosome, without changing genomic numeric position.}
   \subsection{Generic zoom}{The up and down arrow keys, as well as the vertical mouse wheel, may be used to zoom in or out on the current location.}
   \subsection{Localized zoom in}{A zoom can also be achieved with a mouse drag on the region to investigate : maintain a left click on the position to use as the new left boundary, and release the click at the position of the new right boundary.}
   \subsection{Resize plot area}{The plot area size is defined by \code{hscale} and \code{vscale}. During interactive browsing, resize the browser window and use the "r" key to adjust the plot area to the window size.}

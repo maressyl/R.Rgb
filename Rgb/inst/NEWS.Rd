@@ -3,6 +3,8 @@
 \section{Changes in version 1.6.0 (2017-04-25)}{
   \itemize{
     \item{drawable class now implements drawPanel(), used by browsePlot().}
+    \item{tk.browse() now only warns about inconsistent chromosome lists.}
+    \item{Page-up and Page-down keys now allows to switch chromosome in tk.browse().}
   }
 }
 \section{Changes in version 1.5.1 (2017-04-20)}{

@@ -158,6 +158,14 @@ tk.browse <- function(
 		move("right")
 	}
 	
+	keyPressPageUp <- function() {
+		moveChrom("previous")
+	}
+	
+	keyPressPageDown <- function() {
+		moveChrom("next")
+	}
+	
 	dragFrom <- NA
 	mousePress <- function(x, y) {
 		dragFrom <<- formatCoordinate(xConvert(as.double(x)) / 1e6)
@@ -335,6 +343,36 @@ tk.browse <- function(
 		}
 	}
 	
+	moveChrom <- function(way) {
+		updateT1 <<- proc.time()['elapsed']
+		if(updateT1 - updateT0 > updateLimit) {
+			if(checkPlot()) {
+				# New chromosome
+				chrom <- tcltk::tclvalue(tcltk::tcl(chromCombo, "get"))
+				chromList <- drawables$chromosomes()
+				chromIndex <- match(chrom, chromList)
+				if(way == "previous") {
+					if(chromIndex == 1L) { chrom <- tail(chromList, 1L)
+					} else               { chrom <- chromList[ chromIndex - 1L ]
+					}
+				} else {
+					if(chromIndex == length(chromList)) { chrom <- chromList[1]
+					} else                              { chrom <- chromList[ chromIndex + 1L ]
+					}
+				}
+					
+				# Update combobox
+				tcltk::tcl(chromCombo, "set", chrom)
+				
+				# Refresh timer
+				updateT0 <<- updateT1
+				
+				# Replot
+				replot()
+			}
+		}
+	}
+	
 	zoom <- function(way) {
 		updateT1 <<- proc.time()['elapsed']
 		if(updateT1 - updateT0 > updateLimit) {
@@ -365,32 +403,22 @@ tk.browse <- function(
 	
 	refreshChromCombo <- function() {
 		# Get consensus chromosome list
-		chromList <- NULL
-		if(drawables$count > 0) {
-			for(i in 1:drawables$count) {
-				tmp <- drawables$get(i)$chromosomes()
-				if(!is.null(tmp)) {
-					if(is.null(chromList)) {
-						# Use the first non-NULL list
-						chromList <- tmp
-					} else if(!setequal(chromList, tmp)) {
-						# Make sure other lists are compatible
-						tcltk::tkmessageBox(
-							parent = topLevel,
-							icon = "error",
-							type = "ok",
-							title = "Invalid chromosome lists",
-							message = sprintf("Selected objects have chromosome lists that do not totally overlap.")
-						)
-						chromList <- NULL
-						break
-					}
-				}
-			}
+		chromUnion <- drawables$chromosomes(mode="union")
+		chromIntersect <- drawables$chromosomes(mode="intersect")
+		
+		if(!setequal(chromUnion, chromIntersect)) {
+			# Warn about chromosome list inconsistencies
+			tcltk::tkmessageBox(
+				parent = topLevel,
+				icon = "warning",
+				type = "ok",
+				title = "Chromosome list inconsistencies",
+				message = "Selected objects have chromosome lists that do not perfectly overlap."
+			)
 		}
 		
 		# Refresh the combobox
-		tcltk::tkconfigure(chromCombo, values=chromList)
+		tcltk::tkconfigure(chromCombo, values=chromUnion)
 	}
 	
 	refreshSearchCombo <- function() {
@@ -654,6 +682,8 @@ tk.browse <- function(
 	tcltk::tkbind(topLevel, "<KeyPress-Down>", keyPressDown)
 	tcltk::tkbind(topLevel, "<KeyPress-Left>", keyPressLeft)
 	tcltk::tkbind(topLevel, "<KeyPress-Right>", keyPressRight)
+	tcltk::tkbind(topLevel, "<KeyPress-Prior>", keyPressPageUp)
+	tcltk::tkbind(topLevel, "<KeyPress-Next>", keyPressPageDown)
 	tcltk::tkbind(topLevel, "<KeyPress-r>", resize)
 	tcltk::tkbind(topLevel, "<KeyPress-f>", searchAction)
 	tcltk::tkbind(topLevel, "<KeyPress-j>", replot)
