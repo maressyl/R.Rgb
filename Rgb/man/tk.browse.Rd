@@ -16,7 +16,7 @@
 \usage{
   tk.browse(drawables = drawable.list(), blocking = FALSE, updateLimit = 0.4,
     render = c("auto", "png", "tkrplot"), tkrplot.scale = 1, png.res = 100,
-    png.file = tempfile(fileext=".png"))
+    png.file = tempfile(fileext=".png"), panelWidth = "5 cm", panel = NA)
   browsePlot(drawables, chrom = NA, start = NA, end = NA, customLayout = FALSE,
     xaxt = "s", xaxm = 1.5, panelWidth = "5 cm", panel = NA, ...)
 }
@@ -43,6 +43,12 @@
   \item{png.file}{
     Single character value, the path to the PNG file that is displayed in the main window. The default behavior is to hide it in a temporary location, however you can define this argument to have an easier access to the images displayed in Rgb (the image will be replaced each time Rgb refresh its display). This has no effect with the "tkrplot" engine used on Windows prior to R version 3.4.0.
 }
+  \item{panelWidth}{
+    Single value, the width of the panel displays on the left of the tracks, if any is to be plotted. This is handled by the \code{width} argument of the \code{layout} function, and thus can be defined as a fixed size in centimeters or a relative size considering that the main display has a weight of 1.
+}
+  \item{panel}{
+    Single logical value, wheter to force a panel to be displayed or to not be displayed. Default value of \code{NA} let the function decide according to the current track settings.
+}
   \item{chrom}{
     Single character value, the chromosome to plot.
 }
@@ -60,9 +66,6 @@
 }
   \item{xaxm}{
     Minimal bottom margin for the last track (see \code{par}). It assures enough margin is reserved for X axis showing (see \code{xaxt}).
-}
-  \item{panelWidth}{
-    Single value, the width of the panel displays on the left of the tracks, if any is to be plotted. This is handled by the \code{width} argument of the \code{layout} function, and thus can be defined as a fixed size in centimeters or a relative size considering that the main display has a weight of 1.
 }
   \item{\dots}{
     Further arguments are passed through to the \code{draw} method of each track in \code{trackList}.

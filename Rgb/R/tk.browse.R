@@ -9,7 +9,9 @@ tk.browse <- function(
 		render = c("auto", "png", "tkrplot"),
 		tkrplot.scale = 1,
 		png.res = 100,
-		png.file = tempfile(fileext=".png")
+		png.file = tempfile(fileext=".png"),
+		panelWidth = "5 cm",
+		panel = NA
 		)
 	{
 	# Check tracks
@@ -133,12 +135,25 @@ tk.browse <- function(
 	
 	savePar <- list()
 	xConvert <- function(x) {
-		# Plot area coordinates in pixels
-		width <- as.numeric(tcltk::tclvalue(tcltk::tkwinfo("reqwidth", plotWidget)))
-		xMin <- savePar$plt[1] * width
-		xMax <- savePar$plt[2] * width
+		# Plot area (panel + main)
+		areaWidth <- as.numeric(tcltk::tclvalue(tcltk::tkwinfo("reqwidth", plotWidget)))
 		
-		# From pixel area to x range
+		# Panel width
+		if(is.numeric(panelWidth)) {
+			# Relative width
+			panelWidthPx <- areaWidth * panelWidth / (panelWidth + 1L)
+		} else if(grepl("^([0-9\\.]+) cm$", panelWidth)) {
+			# Absolute width
+			panelWidthCm <- as.numeric(sub("^([0-9\\.]+) cm$", "\\1", panelWidth))
+			panelWidthPx <- round(panelWidthCm / 2.54 * png.res)
+		} else stop("Invalid 'panelWidth' (must be either numeric or 'X cm')")
+		
+		# Plot area coordinates in pixels
+		mainWidth <- areaWidth - panelWidthPx
+		xMin <- savePar$plt[1] * mainWidth + panelWidthPx
+		xMax <- savePar$plt[2] * mainWidth + panelWidthPx
+		
+		# From pixel to user coordinate
 		return((x - xMin) / (xMax - xMin) * (savePar$usr[2] - savePar$usr[1]) + savePar$usr[1])
 	}
 	
@@ -208,7 +223,9 @@ tk.browse <- function(
 			drawables = drawables,
 			chrom = as.character(tcltk::tcl(chromCombo, "get")),
 			start = as.double(tcltk::tclvalue(startValue)) * 1e6,
-			end = as.double(tcltk::tclvalue(endValue)) * 1e6
+			end = as.double(tcltk::tclvalue(endValue)) * 1e6,
+			panelWidth = panelWidth,
+			panel = panel
 		)
 	}
 	
