@@ -132,6 +132,7 @@ browsePlot = function(
 					# Track graphical parameters to return
 					outPar <- graphics::par()
 					outPar$chrom <- chrom
+					outPar$panel <- panel
 				} else {
 					# Plot track
 					if(panel) drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt="n", ...)

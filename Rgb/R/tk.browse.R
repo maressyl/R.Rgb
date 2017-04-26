@@ -139,7 +139,10 @@ tk.browse <- function(
 		areaWidth <- as.numeric(tcltk::tclvalue(tcltk::tkwinfo("reqwidth", plotWidget)))
 		
 		# Panel width
-		if(is.numeric(panelWidth)) {
+		if(!isTRUE(savePar$panel)) {
+			# No panel
+			panelWidthPx <- 0L
+		} else if(is.numeric(panelWidth)) {
 			# Relative width
 			panelWidthPx <- areaWidth * panelWidth / (panelWidth + 1L)
 		} else if(grepl("^([0-9\\.]+) cm$", panelWidth)) {
@@ -181,18 +184,42 @@ tk.browse <- function(
 		moveChrom("next")
 	}
 	
-	dragFrom <- NA
+	# Coordinates of the zoom movement (pixels, length 2)
+	zoomDrag <- NULL
+	
 	mousePress <- function(x, y) {
-		dragFrom <<- formatCoordinate(xConvert(as.double(x)) / 1e6)
+		if(!isEmpty) {
+			# Zoom coordinates
+			zoomDrag <<- as.integer(c(x, NA))
+		
+			# Zoom rectangle
+			tcltk::tkcreate(plotWidget, "rect", zoomDrag[1], 1L, zoomDrag[1], height-1L, tag="zoom", outline="black")
+		}
 	}
 	
-	dragTo <- NA
+	mouseMotion <- function(x, y) {
+		if(!is.null(zoomDrag)) {
+			# Refresh the rectangle
+			zoomDrag[2] <<- as.integer(x)
+			tcltk::tkcoords(plotWidget, "zoom", zoomDrag[1], 1L, zoomDrag[2], height-1L)
+		}
+	}
+	
 	mouseRelease <- function(x, y) {
-		dragTo <<- formatCoordinate(xConvert(as.double(x)) / 1e6)
-		if(dragFrom != dragTo) {
-			tcltk::tclvalue(startValue) <- min(as.numeric(dragFrom), as.numeric(dragTo))
-			tcltk::tclvalue(endValue) <- max(as.numeric(dragFrom), as.numeric(dragTo))
-			replot()
+		if(!is.null(zoomDrag)) {
+			# Release coordinate
+			zoomDrag[2] <<- as.integer(x)
+			
+			# Update coordinates
+			if(zoomDrag[1] != zoomDrag[2]) {
+				tcltk::tclvalue(startValue) <- formatCoordinate(xConvert(min(zoomDrag)) / 1e6)
+				tcltk::tclvalue(endValue) <- formatCoordinate(xConvert(max(zoomDrag)) / 1e6)
+				replot()
+			} else {
+				# Still remove selection rectangle (replot already does)
+				tcltk::tkdelete(plotWidget, "rect", "zoom")
+				zoomDrag <<- NULL
+			}
 		}
 	}
 	
@@ -237,11 +264,11 @@ tk.browse <- function(
 	}
 	
 	# Replot using 'png' rendered
-	plot.png <- function(empty) {
+	plot.png <- function() {
 		# Produce image file
 		grDevices::png(png.file, width=width, height=height, res=png.res)
-		if(isTRUE(empty)) { plot.empty()
-		} else            { plot.core()
+		if(isEmpty) { plot.empty()
+		} else      { plot.core()
 		}
 		grDevices::dev.off()
 		
@@ -251,19 +278,23 @@ tk.browse <- function(
 	}
 	
 	# Replot using 'tkrplot' rendered
-	plot.tkrplot <- function(empty) {
+	plot.tkrplot <- function() {
 		tkrplot::tkrreplot(
 			lab = plotWidget,
-			fun = if(isTRUE(empty)) { plot.empty } else { plot.core },
+			fun = if(isEmpty) { plot.empty } else { plot.core },
 			hscale = hscale,
 			vscale = vscale
 		)
 	}
 	
+	# Is the current plot empty
+	isEmpty <- TRUE
+	
 	# Replot common workflow
 	replot <- function(empty=FALSE) {
 		# Check coordinates
 		if(!isTRUE(empty)) empty <- !checkPlot()
+		isEmpty <<- empty
 		
 		# Cursor
 		tcltk::tkconfigure(topLevel, cursor="watch")
@@ -272,11 +303,15 @@ tk.browse <- function(
 		# Grab focus to avoid keyboard shortcuts quirks
 		tcltk::tkfocus(plotWidget)
 		
+		# Cancel any ongoing zoom attempt
+		tcltk::tkdelete(plotWidget, "rect", "zoom")
+		zoomDrag <<- NULL
+		
 		# Replot
 		handle(
 			expr = {
-				if(render == "png")            { plot.png(empty=empty)
-				} else if(render == "tkrplot") { plot.tkrplot(empty=empty)
+				if(render == "png")            { plot.png()
+				} else if(render == "tkrplot") { plot.tkrplot()
 				}
 			},
 			# Silently ignore message()
@@ -708,6 +743,7 @@ tk.browse <- function(
 	
 	# Plot region events
 	tcltk::tkbind(plotWidget, "<ButtonPress-1>", mousePress)
+	tcltk::tkbind(plotWidget, "<Motion>", mouseMotion)
 	tcltk::tkbind(plotWidget, "<ButtonRelease-1>", mouseRelease)
 	
 	# Entry events
