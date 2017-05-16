@@ -36,7 +36,7 @@ defaultParams = function(...) {
 			"mobile element insertion" = "#88FF88",
 			"insertion"                = "#88FF88"		
 		)
-		output <- colors[ slice$type ]
+		output <- colors[ as.character(slice$type) ]
 		output[ is.na(output) ] <- "#888888"
 		return(output)
 	}
