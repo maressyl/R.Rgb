@@ -511,7 +511,6 @@ slice = function(chrom, start, end, mode=.self$getParam("mode"), maxRangeWarn=FA
 - chrom          : single integer, numeric or character value, the chromosomal location. NA is not handled.
 - start          : single integer or numeric value, inferior boundary of the window. NA is not handled.
 - end            : single integer or numeric value, superior boundary of the window. NA is not handled.
-- end            : single integer or numeric value, superior boundary of the window. NA is not handled.
 - mode           : single character value, the name of the method to actually call to extract data (typically 'pileup' or 'coverage').
 - maxRangeWarn   : single logical value, whether to throw a warning when 'maxRange' is exceeded and NULL is returned or not.
 - ...            : to be passed to the crawl() method.
