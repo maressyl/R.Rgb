@@ -1,12 +1,13 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
-\section{Changes in version 1.6.0 (2017-05-16)}{
+\section{Changes in version 1.6.0 (2017-05-19)}{
   \itemize{
     \item{drawable class now implements drawPanel(), used by browsePlot().}
     \item{tk.browse() now only warns about inconsistent chromosome lists.}
     \item{Page-up and Page-down keys now allows to switch chromosome in tk.browse().}
     \item{Drag-and-drop zoom in tk.browse() now shows a live rectangle.}
     \item{'colorFun' fixed for class track.CNV.}
+    \item{'.chromosomes' argument is now handled properly by track.table.GTF().}
   }
 }
 \section{Changes in version 1.5.1 (2017-04-20)}{

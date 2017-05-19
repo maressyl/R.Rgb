@@ -8,6 +8,7 @@ track.table.GTF = function(
 		attr = "split",
 		features = "exon",
 		quiet = FALSE,
+		.chromosomes,
 		...
 		)
 	{
@@ -21,7 +22,9 @@ track.table.GTF = function(
 	gtf$strand <- factor(gtf$strand, levels=c("-","+"))
 	
 	# Consider "seqname" as chromosome name
-	gtf$chrom <- factor(sub("^chr", "", gtf$seqname))
+	if(missing(.chromosomes)) { gtf$chrom <- factor(sub("^chr", "", gtf$seqname))
+	} else                    { gtf$chrom <- factor(sub("^chr", "", gtf$seqname), levels=.chromosomes)
+	}
 	gtf$seqname <- NULL
 	
 	# Use "source" as name if unique
