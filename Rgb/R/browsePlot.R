@@ -120,12 +120,24 @@ browsePlot = function(
 						# Update lower margin
 						mar[1] <- max(mar[1], xaxm)
 						
+						# Plot panel
+						if(panel) {
+							if(drawables$get(i)$getParam("panel")) { drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt=xaxt, mar=mar, ...)
+							} else                                 { plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xaxt="n", yaxt="n", xlab="", ylab="", bty="n")
+							}
+						}
+						
 						# Plot track
-						if(panel) drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt=xaxt, mar=mar, ...)
 						drawables$get(i)$draw(chrom=chrom, start=start, end=end, xaxt=xaxt, mar=mar, ...)
 					} else {
+						# Plot panel
+						if(panel) {
+							if(drawables$get(i)$getParam("panel")) { drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt="n", ...)
+							} else                                 { plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xaxt="n", yaxt="n", xlab="", ylab="", bty="n")
+							}
+						}
+						
 						# Plot track
-						if(panel) drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt="n", ...)
 						drawables$get(i)$draw(chrom=chrom, start=start, end=end, xaxt="n", ...)
 					}
 					
@@ -134,8 +146,14 @@ browsePlot = function(
 					outPar$chrom <- chrom
 					outPar$panel <- panel
 				} else {
+					# Plot panel
+					if(panel) {
+						if(drawables$get(i)$getParam("panel")) { drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt="n", ...)
+						} else                                 { plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xaxt="n", yaxt="n", xlab="", ylab="", bty="n")
+						}
+					}
+					
 					# Plot track
-					if(panel) drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt="n", ...)
 					drawables$get(i)$draw(chrom=chrom, start=start, end=end, xaxt="n", ...)
 				}
 			}

@@ -1,6 +1,6 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
-\section{Changes in version 1.6.0 (2017-05-19)}{
+\section{Changes in version 1.6.0 (2017-05-22)}{
   \itemize{
     \item{drawable class now implements drawPanel(), used by browsePlot().}
     \item{tk.browse() now only warns about inconsistent chromosome lists.}
