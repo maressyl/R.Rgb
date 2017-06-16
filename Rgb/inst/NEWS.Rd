@@ -1,5 +1,10 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
+\section{Changes in version 1.6.1 (2017-06-16)}{
+  \itemize{
+    \item{Axis control arguments added to draw.bg().}
+  }
+}
 \section{Changes in version 1.6.0 (2017-05-22)}{
   \itemize{
     \item{drawable class now implements drawPanel(), used by browsePlot().}

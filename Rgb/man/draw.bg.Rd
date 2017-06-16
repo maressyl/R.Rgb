@@ -10,8 +10,9 @@
 
 \usage{
   draw.bg(start, end, ylab = "", ysub = as.character(NA), mar = c(0.2, 5, 0.2, 1),
-    xaxt = "s", yaxt = "n", yaxs = "r", yaxp = as.numeric(NA), ylim = c(0, 1),
-    cex.lab = 1, bty = "o", las = 0, xgrid = TRUE, new = FALSE, ...)
+    xaxt = "s", yaxt = "n", yaxs = "r", ylim = c(0, 1), cex.lab = 1, cex.axis = 1,
+    mgp = c(3, 1, 0), tck = NA, tcl = -0.5, xaxp = as.numeric(NA), yaxp = as.numeric(NA),
+    bty = "o", las = 0, xgrid = TRUE, new = FALSE, ...)
 }
 
 \arguments{
@@ -39,14 +40,29 @@
   \item{yaxs}{
     Y axis style, "r" enlarges the Y limits by 4 percents on each side for a cleaner look, "i" will not. See \code{par}.
 }
-  \item{yaxp}{
-    A numerical vector of the form "c(first, last, intervalCount)" which defines the Y axis ticks. Use \code{NA} to let R select pretty values itself. See \code{par}.
-}
   \item{ylim}{
     The Y axis limits as a numerical vector of the form "c(start, end)" of the plot. Note that start > end is allowed and leads to a "reversed axis". Use "NULL" to guess the axis range from the data. See \code{plot.default}.
 }
   \item{cex.lab}{
     The relative character size of x and y axis labels (default: 1). See \code{par}.
+}
+  \item{cex.axis}{
+    The relative character size of x and y axis annotations (default: 1). See \code{par}.
+}
+  \item{mgp}{
+    Length 3 vector defining the distance between the plot area and respectively the Y axis label, Y axis annotations and Y axis line (default: 3, 1, 0). See \code{par}.
+}
+  \item{tck}{
+    The length of tick marks as a fraction of the smaller of the width or height of the plot (default: NA, meaning using \code{tcl} instead). See \code{par}.
+}
+  \item{tcl}{
+    The absolute length of a tick marks. Note that positive numbers put them inside the plot area (default: -0.5). See \code{par}.
+}
+  \item{xaxp}{
+    Length 3 vector defining the ticks on the X axis : X of first tick, X of last tick and number of intervals between them (default: NA). See \code{par}.
+}
+  \item{yaxp}{
+    Length 3 vector defining the ticks on the Y axis : Y of first tick, Y of last tick and number of intervals between them (default: NA). See \code{par}.
 }
   \item{bty}{
     A character string which determined the type of box which is drawn about plots. If bty is one of "o" (the default), "l", "7", "c", "u", or "]" the resulting box resembles the corresponding upper case letter. A value of "n" suppresses the box. See \code{par}.

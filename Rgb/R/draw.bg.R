@@ -11,9 +11,14 @@ draw.bg = function(
 		xaxt = "s",
 		yaxt = "n",
 		yaxs = "r",
-		yaxp = as.numeric(NA),
 		ylim = c(0, 1),
 		cex.lab = 1,
+		cex.axis = 1,
+		mgp = c(3, 1, 0),
+		tck = NA,
+		tcl = -0.5,
+		xaxp = as.numeric(NA),
+		yaxp = as.numeric(NA),
 		bty = "o",
 		las = 0,
 		xgrid = TRUE,
@@ -31,7 +36,8 @@ draw.bg = function(
 	# pretty() acuraccy workaround
 	if(start == -1) start <- 0L
 	
-	# yaxp default to NULL
+	# xaxp / yaxp default to NULL
+	if(any(is.na(xaxp))) xaxp <- NULL
 	if(any(is.na(yaxp))) yaxp <- NULL
 	
 	# Background
@@ -49,7 +55,11 @@ draw.bg = function(
 		yaxp = yaxp,
 		bty = "n",
 		las = las,
-		cex.lab = cex.lab
+		cex.lab = cex.lab,
+		cex.axis = cex.axis,
+		mgp = mgp,
+		tck = tck,
+		tcl = tcl
 	)
 	
 	# Secondary ylab (assembly)
@@ -64,15 +74,17 @@ draw.bg = function(
 	}
 	
 	# X grid and axis (Mb)
-	at <- pretty(c(start, end), n=12)
+	if(length(xaxp) != 3L) { at <- pretty(c(start, end), n=12)
+	} else                 { at <- pretty(c(xaxp[1], xaxp[2]), n=xaxp[3])
+	}
 	if(xaxt != "n") {
 		# With axis labels
-		if(isTRUE(xgrid)) { graphics::axis(side=1, at=at, las=las, tck=1, col="#CCCCCC", lty="dotted", cex.axis=cex.lab, labels=at/1e6, padj=-1)
-		} else            { graphics::axis(side=1, at=at, las=las, cex.axis=cex.lab, labels=at/1e6, padj=-1)
+		if(isTRUE(xgrid)) { graphics::axis(side=1, at=at, las=las, tck=1, col="#CCCCCC", lty="dotted", cex.axis=cex.axis, labels=at/1e6, padj=-1)
+		} else            { graphics::axis(side=1, at=at, las=las, cex.axis=cex.axis, labels=at/1e6, padj=-1)
 		}
 	} else {
 		# Without axis labels
-		if(isTRUE(xgrid)) { graphics::axis(side=1, at=at, las=las, tck=1, col="#CCCCCC", lty="dotted", cex.axis=cex.lab, labels=FALSE, padj=-1)
+		if(isTRUE(xgrid)) { graphics::axis(side=1, at=at, las=las, tck=1, col="#CCCCCC", lty="dotted", cex.axis=cex.axis, labels=FALSE, padj=-1)
 		}
 	}
 	
