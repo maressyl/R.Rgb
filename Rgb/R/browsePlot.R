@@ -123,7 +123,7 @@ browsePlot = function(
 						# Plot panel
 						if(panel) {
 							if(drawables$get(i)$getParam("panel")) { drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt=xaxt, mar=mar, ...)
-							} else                                 { plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xaxt="n", yaxt="n", xlab="", ylab="", bty="n")
+							} else                                 { graphics::plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xaxt="n", yaxt="n", xlab="", ylab="", bty="n")
 							}
 						}
 						
@@ -133,7 +133,7 @@ browsePlot = function(
 						# Plot panel
 						if(panel) {
 							if(drawables$get(i)$getParam("panel")) { drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt="n", ...)
-							} else                                 { plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xaxt="n", yaxt="n", xlab="", ylab="", bty="n")
+							} else                                 { graphics::plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xaxt="n", yaxt="n", xlab="", ylab="", bty="n")
 							}
 						}
 						
@@ -149,7 +149,7 @@ browsePlot = function(
 					# Plot panel
 					if(panel) {
 						if(drawables$get(i)$getParam("panel")) { drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt="n", ...)
-						} else                                 { plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xaxt="n", yaxt="n", xlab="", ylab="", bty="n")
+						} else                                 { graphics::plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xaxt="n", yaxt="n", xlab="", ylab="", bty="n")
 						}
 					}
 					

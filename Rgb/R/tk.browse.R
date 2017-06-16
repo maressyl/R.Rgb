@@ -404,7 +404,7 @@ tk.browse <- function(
 				chromList <- drawables$chromosomes()
 				chromIndex <- match(chrom, chromList)
 				if(way == "previous") {
-					if(chromIndex == 1L) { chrom <- tail(chromList, 1L)
+					if(chromIndex == 1L) { chrom <- chromList[ length(chromList) ]
 					} else               { chrom <- chromList[ chromIndex - 1L ]
 					}
 				} else {
