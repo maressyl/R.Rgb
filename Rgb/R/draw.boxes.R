@@ -208,8 +208,8 @@ draw.boxes = function(
 				args <- with(
 					boxes[ (isTRUE(label) && isTRUE(labelOverflow)) | !boxes$overflow ,],
 					list(
-						x = (boxes$start.lab + boxes$end.lab) / 2,
-						y = (boxes$yline + 0.5) / maxLine,
+						x = (start.lab + end.lab) / 2,
+						y = (yline + 0.5) / maxLine,
 						label = label,
 						col = "#000000",
 						adj = c(0.5, 0.5),
