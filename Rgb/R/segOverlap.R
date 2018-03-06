@@ -46,8 +46,8 @@ segOverlap = function(
 					}
 				} else if("" %in% names(fun)) {
 					# Default function
-					if(is.function(fun$""))   { FUN <- fun$""
-					} else                    { stop("fun$\"\" is not a function")
+					if(is.function(fun[[ match("", names(fun)) ]])) { FUN <- fun[[ match("", names(fun)) ]]
+					} else                                          { stop("The unnamed element of fun is not a function")
 					}
 				} else { stop("'fun' must contain a function for each column, or at least a default one")
 				}
