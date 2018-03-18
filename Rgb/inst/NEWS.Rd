@@ -1,10 +1,11 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
-\section{Changes in version 1.6.1 (2018-03-06)}{
+\section{Changes in version 1.6.1 (2018-03-18)}{
   \itemize{
     \item{Axis control arguments added to draw.bg().}
     \item{Shifted labelling in draw.boxes() when some are masked fixed.}
     \item{Calls to unnamed list elements fixed for future R version compatibility.}
+    \item{Fixed the example URL in track.genes.NCBI() man page.}
   }
 }
 \section{Changes in version 1.6.0 (2017-05-22)}{
