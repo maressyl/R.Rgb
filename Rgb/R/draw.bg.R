@@ -103,7 +103,12 @@ draw.bg = function(
 	}
 	
 	# Y axis (to set 'fg')
-	if(yaxt != "n") graphics::axis(side=2, las=las, cex.axis=cex.axis, col.axis=fg, col.ticks=fg)
+	if(yaxt != "n") {
+		if(length(yaxp) != 3L) { at <- pretty(c(ylim[1], ylim[2]), n=2)
+		} else                 { at <- pretty(c(yaxp[1], yaxp[2]), n=yaxp[3])
+		}
+		graphics::axis(side=2, las=las, at=at, cex.axis=cex.axis, col.axis=fg, col.ticks=fg)
+	}
 	
 	# X grid and axis (Mb)
 	if(length(xaxp) != 3L) { at <- pretty(c(start, end), n=12)
