@@ -15,6 +15,7 @@ draw.pileup = function(
 		cex.lab = 1,
 		alphaOrder = 3,
 		alphaMin = 0.1,
+		fg = "#000000",
 		...
 	) {
 	# Coercions
@@ -93,6 +94,7 @@ draw.pileup = function(
 		ylim = ylim,
 		cex.lab = cex.lab,
 		bty = bty,
+		fg = fg,
 		...
 	)
 	
@@ -130,7 +132,7 @@ draw.pileup = function(
 			x = mean(graphics::par("usr")[1:2]),
 			y = mean(graphics::par("usr")[3:4]),
 			label = errorMessage,
-			col = "#000000",
+			col = fg,
 			adj = c(0.5, 0.5),
 			cex = cex.lab
 		)
@@ -139,7 +141,7 @@ draw.pileup = function(
 	# Surrounding box
 	graphics::box(
 		which = "plot",
-		col = "#000000",
+		col = fg,
 		bty = bty
 	)
 }

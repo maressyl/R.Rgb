@@ -11,6 +11,7 @@ draw.seq = function(
 		bases = c(A="#44CC44", C="#4444CC", G="#FFCC00", T="#CC4444"),
 		maxRange = 500,
 		cex.lab = 1,
+		fg = "#000000",
 		...
 	) {
 	# Coercions
@@ -43,6 +44,7 @@ draw.seq = function(
 		end = end,
 		cex.lab = cex.lab,
 		bty = bty,
+		fg = fg,
 		...
 	)
 	
@@ -63,7 +65,7 @@ draw.seq = function(
 			x = mean(graphics::par("usr")[1:2]),
 			y = mean(graphics::par("usr")[3:4]),
 			label = errorMessage,
-			col = "#000000",
+			col = fg,
 			adj = c(0.5, 0.5),
 			cex = cex.lab
 		)
@@ -72,7 +74,7 @@ draw.seq = function(
 	# Surrounding box
 	graphics::box(
 		which = "plot",
-		col = "#000000",
+		col = fg,
 		bty = bty
 	)
 }

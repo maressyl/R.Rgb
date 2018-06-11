@@ -25,6 +25,7 @@ draw.boxes = function(
 		groupPosition = NA,
 		groupSize = NA,
 		groupLwd = 1,
+		fg = "#000000",
 		...
 	) {
 	# Coercions
@@ -46,6 +47,7 @@ draw.boxes = function(
 		end = end,
 		cex.lab = cex.lab,
 		bty = bty,
+		fg = fg,
 		...	
 	)
 	
@@ -211,7 +213,7 @@ draw.boxes = function(
 						x = (start.lab + end.lab) / 2,
 						y = (yline + 0.5) / maxLine,
 						label = label,
-						col = "#000000",
+						col = fg,
 						adj = c(0.5, 0.5),
 						cex = labelCex,
 						srt = labelSrt
@@ -235,7 +237,7 @@ draw.boxes = function(
 			x = mean(graphics::par("usr")[1:2]),
 			y = mean(graphics::par("usr")[3:4]),
 			label = errorMessage,
-			col = "#000000",
+			col = fg,
 			adj = c(0.5, 0.5),
 			cex = cex.lab
 		)
@@ -244,7 +246,7 @@ draw.boxes = function(
 	# Surrounding box
 	graphics::box(
 		which = "plot",
-		col = "#000000",
+		col = fg,
 		bty = bty
 	)
 }

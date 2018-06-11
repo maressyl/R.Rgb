@@ -11,7 +11,7 @@
 \usage{
   draw.pileup(slice, start, end, ylim = NA, bty = "o", label = TRUE, labelCex = 0.75,
     bases = c(A = "#44CC44", C = "#4444CC", G = "#FFCC00", T = "#CC4444"),
-    maxRange = 500, cex.lab = 1, alphaOrder = 3, alphaMin = 0.1, ...)
+    maxRange = 500, cex.lab = 1, alphaOrder = 3, alphaMin = 0.1, fg = "#000000", ...)
 }
 
 \arguments{
@@ -50,6 +50,9 @@
 }
   \item{alphaMin}{
     Single numeric value, the minimal intensity in the formula controlling the transparency (between 0 and 1). Perfectly homozyguous positions will typically use this intensity of color.
+}
+  \item{fg}{
+    Single character value, defining the color of the foreground (axes, labels...) as an english name or a hexadecimal code. Similar to \code{par}'s argument but not relying on it.
 }
   \item{\dots}{
     Further arguments to be passed to \code{\link{draw.bg}}.

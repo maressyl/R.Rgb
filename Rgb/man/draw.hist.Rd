@@ -11,7 +11,7 @@
 \usage{
   draw.hist(slice, start, end, column = "value", colorVal = "#666666",
     colorFun = function() NULL, border = "#666666", cex.lab = 1, origin = 0,
-    bty = "o", ...)
+    bty = "o", fg = "#000000", ...)
 }
 
 \arguments{
@@ -44,6 +44,9 @@
 }
   \item{bty}{
     A character string which determined the type of box which is drawn about plots. If bty is one of "o" (the default), "l", "7", "c", "u", or "]" the resulting box resembles the corresponding upper case letter. A value of "n" suppresses the box. See \code{par}.
+}
+  \item{fg}{
+    Single character value, defining the color of the foreground (axes, labels...) as an english name or a hexadecimal code. Similar to \code{par}'s argument but not relying on it.
 }
   \item{\dots}{
     Further arguments to be passed to \code{\link{draw.bg}}.

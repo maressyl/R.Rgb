@@ -10,7 +10,8 @@
 
 \usage{
   draw.points(slice, start, end, column = "value", colorVal = "#666666",
-    colorFun = function() NULL, cex.lab = 1, cex = 0.6, pch = "+", bty = "o", ...)
+    colorFun = function() NULL, cex.lab = 1, cex = 0.6, pch = "+", bty = "o",
+    fg = "#000000", ...)
 }
 
 \arguments{
@@ -43,6 +44,9 @@
 }
   \item{bty}{
     See \code{par}.
+}
+  \item{fg}{
+    Single character value, defining the color of the foreground (axes, labels...) as an english name or a hexadecimal code. Similar to \code{par}'s argument but not relying on it.
 }
   \item{\dots}{
     Further arguments to be passed to \code{\link{draw.bg}}.

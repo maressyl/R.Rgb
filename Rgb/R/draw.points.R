@@ -13,6 +13,7 @@ draw.points = function(
 		cex = 0.6,
 		pch = "+",
 		bty = "o",
+		fg = "#000000",
 		...
 	) {
 	# Coercions
@@ -33,7 +34,8 @@ draw.points = function(
 		end = end,
 		cex.lab = cex.lab,
 		bty = bty,
-		...	
+		fg = fg,
+		...
 	)
 	
 	if(nrow(slice) > 0) {
@@ -59,7 +61,7 @@ draw.points = function(
 			x = mean(graphics::par("usr")[1:2]),
 			y = mean(graphics::par("usr")[3:4]),
 			label = paste(nrow(slice), "element(s) in this range"),
-			col = "#000000",
+			col = fg,
 			adj = c(0.5, 0.5),
 			cex = cex.lab
 		)
@@ -68,7 +70,7 @@ draw.points = function(
 	# Surrounding box
 	graphics::box(
 		which = "plot",
-		col = "#000000",
+		col = fg,
 		bty = bty
 	)
 }

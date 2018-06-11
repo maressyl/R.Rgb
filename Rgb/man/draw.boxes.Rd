@@ -13,7 +13,8 @@
     labelStrand = FALSE, labelCex = 1, labelSrt = 0, labelAdj = "center",
     labelOverflow = TRUE, labelFamily = "sans", colorVal = "#BBBBBB",
     colorFun = function() NULL, border = "#666666", cex.lab = 1, spacing = 0.2,
-    bty = "o", groupBy = NA, groupPosition = NA, groupSize = NA, groupLwd = 1, ...)
+    bty = "o", groupBy = NA, groupPosition = NA, groupSize = NA, groupLwd = 1,
+    fg = "#000000", ...)
 }
 
 \arguments{
@@ -82,6 +83,9 @@
 }
   \item{groupLwd}{
     Single numeric value, the width of the line drawn to group elements.
+}
+  \item{fg}{
+    Single character value, defining the color of the foreground (axes, labels...) as an english name or a hexadecimal code. Similar to \code{par}'s argument but not relying on it.
 }
   \item{\dots}{
     Further arguments to be passed to \code{\link{draw.bg}}.
