@@ -60,7 +60,6 @@ draw.bg = function(
 		las = las,
 		cex.lab = cex.lab,
 		cex.axis = cex.axis,
-		mgp = mgp,
 		tck = tck,
 		tcl = tcl,
 		col = fg,
@@ -88,7 +87,7 @@ draw.bg = function(
 	}
 	
 	# Main ylab
-	graphics::title(ylab=ylab, col.lab=fg)
+	graphics::title(ylab=ylab, col.lab=fg, line=mgp[1])
 	
 	# Secondary ylab (assembly)
 	if(yaxt == "n" && !is.na(ysub)) {
@@ -107,7 +106,7 @@ draw.bg = function(
 		if(length(yaxp) != 3L) { at <- pretty(c(ylim[1], ylim[2]), n=2)
 		} else                 { at <- pretty(c(yaxp[1], yaxp[2]), n=yaxp[3])
 		}
-		graphics::axis(side=2, las=las, at=at, cex.axis=cex.axis, col.axis=fg, col.ticks=fg)
+		graphics::axis(side=2, las=las, at=at, cex.axis=cex.axis, col.axis=fg, col.ticks=fg, mgp=mgp)
 	}
 	
 	# X grid and axis (Mb)

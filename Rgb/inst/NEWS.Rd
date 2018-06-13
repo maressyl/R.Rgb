@@ -1,6 +1,6 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
-\section{Changes in version 1.6.1 (2018-06-11)}{
+\section{Changes in version 1.6.1 (2018-06-13)}{
   \itemize{
     \item{Axis control arguments added to draw.bg().}
     \item{Shifted labelling in draw.boxes() when some are masked fixed.}
