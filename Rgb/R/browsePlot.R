@@ -83,13 +83,13 @@ browsePlot = function(
 				
 				# Check
 				if(heights > graphics::par("din")[2]) stop("Plot area too small")
-						
+				
 				
 				## LAYOUT ##
 				
 				if(panel) {
 					graphics::layout(
-						mat = matrix(data=1:(2 * length(toLay)), ncol=2, byrow=TRUE),
+						mat = matrix(data=1:(2 * length(toLay)), ncol=2),
 						widths = c(panelWidth, 1),
 						heights = trackHeights
 					)
@@ -107,56 +107,48 @@ browsePlot = function(
 			
 			## TRACKS ##
 			
-			for(i in toProcess) {
+			# X axis for last track
+			if(xaxt != "n") {
+				# Focus on last track
+				lastTrack <- toProcess[ length(toProcess) ]
 				
-				if(i == toProcess[ length(toProcess) ]) {
-					# X axis for last track
-					if(xaxt != "n") {
-						# Get 'mar'
-						mar <- drawables$get(i)$getParam("mar")
-						arguments <- list(...)
-						if("mar" %in% names(arguments)) mar <- arguments$mar
-						
-						# Update lower margin
-						mar[1] <- max(mar[1], xaxm)
-						
-						# Plot panel
-						if(panel) {
-							if(drawables$get(i)$getParam("panel")) { drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt=xaxt, mar=mar, ...)
-							} else                                 { graphics::plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xaxt="n", yaxt="n", xlab="", ylab="", bty="n")
-							}
+				# Get last track's 'mar'
+				mar <- drawables$get(lastTrack)$getParam("mar")
+				arguments <- list(...)
+				if("mar" %in% names(arguments)) mar <- arguments$mar
+			
+				# Update lower margin
+				mar[1] <- max(mar[1], xaxm)
+			}
+			
+			# Panels
+			if(panel) {
+				for(i in toProcess) {
+					# new=TRUE must apply to both tracks and panels
+					if(isTRUE(drawables$get(i)$getParam("new"))) graphics::par(new=new)
+					
+					if(drawables$get(i)$getParam("panel")) {
+						if(xaxt != "n" && i == lastTrack) { drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt=xaxt, mar=mar, ...)
+						} else                            { drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt="n", ...)
 						}
-						
-						# Plot track
-						drawables$get(i)$draw(chrom=chrom, start=start, end=end, xaxt=xaxt, mar=mar, ...)
 					} else {
-						# Plot panel
-						if(panel) {
-							if(drawables$get(i)$getParam("panel")) { drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt="n", ...)
-							} else                                 { graphics::plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xaxt="n", yaxt="n", xlab="", ylab="", bty="n")
-							}
-						}
-						
-						# Plot track
-						drawables$get(i)$draw(chrom=chrom, start=start, end=end, xaxt="n", ...)
+						# No panel, draw an empty plot
+						graphics::plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xaxt="n", yaxt="n", xlab="", ylab="", bty="n")
 					}
-					
-					# Track graphical parameters to return
-					outPar <- graphics::par()
-					outPar$chrom <- chrom
-					outPar$panel <- panel
-				} else {
-					# Plot panel
-					if(panel) {
-						if(drawables$get(i)$getParam("panel")) { drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt="n", ...)
-						} else                                 { graphics::plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xaxt="n", yaxt="n", xlab="", ylab="", bty="n")
-						}
-					}
-					
-					# Plot track
-					drawables$get(i)$draw(chrom=chrom, start=start, end=end, xaxt="n", ...)
 				}
 			}
+			
+			# Tracks
+			for(i in toProcess) {
+				if(xaxt != "n" && i == lastTrack) { drawables$get(i)$draw(chrom=chrom, start=start, end=end, xaxt=xaxt, mar=mar, ...)
+				} else                            { drawables$get(i)$draw(chrom=chrom, start=start, end=end, xaxt="n", ...)
+				}
+			}
+			
+			# Track graphical parameters to return (last track)
+			outPar <- graphics::par()
+			outPar$chrom <- chrom
+			outPar$panel <- panel
 			
 			invisible(outPar)
 		}

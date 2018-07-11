@@ -1,12 +1,13 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
-\section{Changes in version 1.6.1 (2018-06-13)}{
+\section{Changes in version 1.6.1 (2018-07-11)}{
   \itemize{
     \item{Axis control arguments added to draw.bg().}
     \item{Shifted labelling in draw.boxes() when some are masked fixed.}
     \item{Calls to unnamed list elements fixed for future R version compatibility.}
     \item{Fixed the example URL in track.genes.NCBI() man page.}
     \item{'bg', 'bg.inner' and 'fg' added to control background / foreground colors.}
+    \item{Mixes of tracks with and without panels no longer crash browsePlot() with par(new=TRUE).}
   }
 }
 \section{Changes in version 1.6.0 (2017-05-22)}{
