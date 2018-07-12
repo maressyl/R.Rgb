@@ -27,7 +27,7 @@
     The name of the Y axis. See \code{par}.
 }
   \item{ysub}{
-    Similar to \code{ylab}, but written on a closer line when \code{yxat} is "n". Can be \code{NA} to disable it.
+    Similar to \code{ylab}, but written on a closer line when \code{yaxt} is "n". Can be \code{NA} to disable it.
 }
   \item{mar}{
     A numerical vector of the form "c(bottom, left, top, right)" which gives the number of lines of margin to be specified on the four sides of the plot. See \code{par}.
