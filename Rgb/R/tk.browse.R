@@ -207,6 +207,10 @@ tk.browse <- function(
 		tcltk::tcl(widget, "icursor", "end")
 	}
 	
+	reFocus <- function() {
+		tcltk::tkfocus(plotWidget)
+	}
+	
 	# browsePlot() call to produce the plot
 	plot.core <- function() {
 		graphics::par(bg="#FFFFFF")
@@ -630,7 +634,7 @@ tk.browse <- function(
 				
 			tcltk::tkgrid(searchFrame, column=3, row=1, padx=5, pady=5)
 		
-		tcltk::tkgrid(locationMainFrame, column=1, row=1)
+		tcltk::tkgrid(locationMainFrame, column=1, row=1, sticky="nsew")
 		
 		# Plot frame
 		plotFrame <- tcltk::tkframe(parent=topLevel)
@@ -662,22 +666,23 @@ tk.browse <- function(
 	
 	## LAUNCH ##
 	
-	# General events
-	tcltk::tkbind(topLevel, "<MouseWheel>", mouseWheel)          # Windows
-	tcltk::tkbind(topLevel, "<Button-4>", mouseWheelUp)          # Linux
-	tcltk::tkbind(topLevel, "<Button-5>", mouseWheelDown)        # Linux
-	tcltk::tkbind(topLevel, "<KeyPress-Up>", keyPressUp)
-	tcltk::tkbind(topLevel, "<KeyPress-Down>", keyPressDown)
-	tcltk::tkbind(topLevel, "<KeyPress-Left>", keyPressLeft)
-	tcltk::tkbind(topLevel, "<KeyPress-Right>", keyPressRight)
-	tcltk::tkbind(topLevel, "<KeyPress-Prior>", keyPressPageUp)
-	tcltk::tkbind(topLevel, "<KeyPress-Next>", keyPressPageDown)
-	tcltk::tkbind(topLevel, "<KeyPress-r>", function() { resize(active=TRUE) })
-	tcltk::tkbind(topLevel, "<KeyPress-f>", searchAction)
-	tcltk::tkbind(topLevel, "<KeyPress-j>", replot)
-	tcltk::tkbind(topLevel, "<KeyPress-t>", trackAction)
+	# Unfocus
+	tcltk::tkbind(locationMainFrame, "<ButtonPress-1>", reFocus)
 	
 	# Plot region events
+	tcltk::tkbind(plotWidget, "<MouseWheel>", mouseWheel)          # Windows
+	tcltk::tkbind(plotWidget, "<Button-4>", mouseWheelUp)          # Linux
+	tcltk::tkbind(plotWidget, "<Button-5>", mouseWheelDown)        # Linux
+	tcltk::tkbind(plotWidget, "<KeyPress-Up>", keyPressUp)
+	tcltk::tkbind(plotWidget, "<KeyPress-Down>", keyPressDown)
+	tcltk::tkbind(plotWidget, "<KeyPress-Left>", keyPressLeft)
+	tcltk::tkbind(plotWidget, "<KeyPress-Right>", keyPressRight)
+	tcltk::tkbind(plotWidget, "<KeyPress-Prior>", keyPressPageUp)
+	tcltk::tkbind(plotWidget, "<KeyPress-Next>", keyPressPageDown)
+	tcltk::tkbind(plotWidget, "<KeyPress-r>", function() { resize(active=TRUE) })
+	tcltk::tkbind(plotWidget, "<KeyPress-f>", searchAction)
+	tcltk::tkbind(plotWidget, "<KeyPress-j>", replot)
+	tcltk::tkbind(plotWidget, "<KeyPress-t>", trackAction)
 	tcltk::tkbind(plotWidget, "<ButtonPress-1>", mousePress)
 	tcltk::tkbind(plotWidget, "<Motion>", mouseMotion)
 	tcltk::tkbind(plotWidget, "<ButtonRelease-1>", mouseRelease)

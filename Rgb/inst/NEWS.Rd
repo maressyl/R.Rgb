@@ -4,6 +4,7 @@
   \itemize{
     \item{'tkrplot' rendering no longer supported in tk.browse().}
     \item{'png.height' and vertical scrollbar added to tk.browse().}
+    \item{Better handling of focus and shortcuts in tk.browse().}
   }
 }
 \section{Changes in version 1.6.1 (2018-07-11)}{
