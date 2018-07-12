@@ -1,5 +1,11 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
+\section{Changes in version 1.7.0 (2018-07-12)}{
+  \itemize{
+    \item{'tkrplot' rendering no longer supported in tk.browse().}
+    \item{'png.height' and vertical scrollbar added to tk.browse().}
+  }
+}
 \section{Changes in version 1.6.1 (2018-07-11)}{
   \itemize{
     \item{Axis control arguments added to draw.bg().}

@@ -1,8 +1,8 @@
 Package: Rgb
 Type: Package
 Title: The R Genome Browser
-Version: 1.6.1
-Date: 2018-07-11
+Version: 1.7.0
+Date: 2018-07-12
 Author: Sylvain Mareschal
 Maintainer: Sylvain Mareschal <maressyl@gmail.com>
 URL: http://bioinformatics.ovsa.fr/Rgb
@@ -11,4 +11,5 @@ Description: Classes and methods to efficiently handle (slice, annotate, draw ..
 License: GPL (>= 3)
 Depends: R (>= 3.0.0), methods
 Imports: utils, stats
-Suggests: tcltk, tkrplot, graphics, grDevices
+Suggests: tcltk, graphics, grDevices
+SystemRequirements: tk.browse() requires Tcl-tk >= 8.6 (shipped with R >= 3.4.0 on Windows, may have to be manually updated on other systems)

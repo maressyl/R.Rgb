@@ -6,8 +6,7 @@ tk.browse <- function(
 		drawables = drawable.list(),
 		blocking = FALSE,
 		updateLimit = 0.4,
-		render = c("auto", "png", "tkrplot"),
-		tkrplot.scale = 1,
+		png.height = NA,
 		png.res = 100,
 		png.file = tempfile(fileext=".png"),
 		panelWidth = "5 cm",
@@ -18,37 +17,9 @@ tk.browse <- function(
 	if(!is(drawables, "drawable.list")) stop("'drawables' must be a 'drawable.list' object")
 	drawables$check(warn=FALSE)
 	
-	# Check renderer
-	render <- match.arg(render)
+	# Check Tcl-tk
 	tcltkVer <- as.double(sub("^([0-9]+\\.[0-9]+).+$", "\\1", tcltk::tclVersion()))
-	if(tcltkVer >= 8.6) {
-		# PNG is compatible
-		if(render == "auto") render <- "png"
-	} else {
-		# PNG is not compatible
-		if(render == "auto") {
-			render <- "tkrplot"
-		} else if(render == "png") {
-			tcltk::tkmessageBox(
-				icon = "error",
-				type = "ok",
-				title = "PNG rendering not available on your system",
-				message = "Setting 'render' to 'png' is only possible with Tcl-tk version 8.6 and above (shipped with R version 3.4.0 and above on Windows)."
-			)
-			stop("PNG rendering not available on your system")
-		}
-	}
-	
-	# Check if tkrplot is installed
-	if(render == "tkrplot" && length(suppressWarnings(find.package("tkrplot", quiet=TRUE))) == 0L) {
-		tcltk::tkmessageBox(
-			icon = "error",
-			type = "ok",
-			title = "tkrplot package missing",
-			message = "The 'render' argument is set to 'tkrplot', but the 'tkrplot' R package is not installed.\n\nYou can either install it or set 'render' to 'png', the later being possible only with Tcl-tk version 8.6 and above (shipped with R version 3.4.0 and above on Windows)."
-		)
-		stop("tkrplot package missing")
-	}
+	if(tcltkVer < 8.6) stop("tk.browse() requires Tcl-tk >= 8.6 (shipped with R version 3.4.0 and above on Windows")
 	
 	
 	
@@ -102,35 +73,28 @@ tk.browse <- function(
 	}
 	
 	# Compute current plot area height
-	autoHeight <- function(unit) {
-		if(unit == "px")           { out <- max(300L, as.integer(tcltk::tclvalue(tcltk::tkwinfo("height", plotFrame))))
-		} else if(unit == "scale") { out <- autoHeight("px") / scaleFactor * tkrplot.scale
+	autoHeight <- function(png.height) {
+		if(is.na(png.height)) { out <- max(300L, as.integer(tcltk::tclvalue(tcltk::tkwinfo("height", plotFrame))) - 5L)
+		} else                { out <- png.height
 		}
-		
 		return(out)
 	}
 	
 	# Compute current plot area width, in pixels
-	autoWidth <- function(unit) {
-		if(unit == "px")           { out <- max(300L, as.integer(tcltk::tclvalue(tcltk::tkwinfo("width", plotFrame))))
-		} else if(unit == "scale") { out <- autoWidth("px") / scaleFactor * tkrplot.scale
-		}
-		
+	autoWidth <- function() {
+		out <- max(300L, as.integer(tcltk::tclvalue(tcltk::tkwinfo("width", plotFrame))) - 20L)
 		return(out)
 	}
 	
-	resize <- function() {
+	resize <- function(active) {
 		# Automatic sizes
-		if(render == "tkrplot") {
-			vscale <<- autoHeight("scale")
-			hscale <<- autoWidth("scale")
-		} else if(render == "png") {
-			height <<- autoHeight("px")
-			width <<- autoWidth("px")
-		}
+		imageHeight <<- autoHeight(png.height)
+		imageWidth <<- autoWidth()
+		canvasHeight <<- min(autoHeight(NA), imageHeight)
+		canvasWidth <<- min(autoWidth(), imageWidth)
 		
 		# Refresh
-		replot()
+		if(active) replot()
 	}
 	
 	savePar <- list()
@@ -193,7 +157,7 @@ tk.browse <- function(
 			zoomDrag <<- as.integer(c(x, NA))
 		
 			# Zoom rectangle
-			tcltk::tkcreate(plotWidget, "rect", zoomDrag[1], 1L, zoomDrag[1], height-1L, tag="zoom", outline="black")
+			tcltk::tkcreate(plotWidget, "rect", zoomDrag[1], 1L, zoomDrag[1], imageHeight-1L, tag="zoom", outline="black")
 		}
 	}
 	
@@ -201,7 +165,7 @@ tk.browse <- function(
 		if(!is.null(zoomDrag)) {
 			# Refresh the rectangle
 			zoomDrag[2] <<- as.integer(x)
-			tcltk::tkcoords(plotWidget, "zoom", zoomDrag[1], 1L, zoomDrag[2], height-1L)
+			tcltk::tkcoords(plotWidget, "zoom", zoomDrag[1], 1L, zoomDrag[2], imageHeight-1L)
 		}
 	}
 	
@@ -266,25 +230,15 @@ tk.browse <- function(
 	# Replot using 'png' rendered
 	plot.png <- function() {
 		# Produce image file
-		grDevices::png(png.file, width=width, height=height, res=png.res)
+		grDevices::png(png.file, width=imageWidth, height=imageHeight, res=png.res)
 		if(isEmpty) { plot.empty()
 		} else      { plot.core()
 		}
 		grDevices::dev.off()
 		
 		# Refresh image
-		tcltk::tkconfigure(plotImage, file=png.file, width=width, height=height)
-		tcltk::tkconfigure(plotWidget, width=width, height=height)
-	}
-	
-	# Replot using 'tkrplot' rendered
-	plot.tkrplot <- function() {
-		tkrplot::tkrreplot(
-			lab = plotWidget,
-			fun = if(isEmpty) { plot.empty } else { plot.core },
-			hscale = hscale,
-			vscale = vscale
-		)
+		tcltk::tkconfigure(plotImage, file=png.file, width=imageWidth, height=imageHeight)
+		tcltk::tkconfigure(plotWidget, width=canvasWidth, height=canvasHeight)
 	}
 	
 	# Is the current plot empty
@@ -310,9 +264,7 @@ tk.browse <- function(
 		# Replot
 		handle(
 			expr = {
-				if(render == "png")            { plot.png()
-				} else if(render == "tkrplot") { plot.tkrplot()
-				}
+				plot.png()
 			},
 			# Silently ignore message()
 			messageHandler = NULL,
@@ -380,10 +332,10 @@ tk.browse <- function(
 					LEnd = as.double(tcltk::tclvalue(endValue))
 				
 					# Coordinate update
-					width = (LEnd - LStart) / LFactor
-					if (way == "left") { width = -width }
-					tcltk::tclvalue(startValue) <- formatCoordinate(LStart + width)
-					tcltk::tclvalue(endValue) <- formatCoordinate(LEnd + width)
+					shift = (LEnd - LStart) / LFactor
+					if (way == "left") { shift = -shift }
+					tcltk::tclvalue(startValue) <- formatCoordinate(LStart + shift)
+					tcltk::tclvalue(endValue) <- formatCoordinate(LEnd + shift)
 					
 					# Refresh timer
 					updateT0 <<- updateT1
@@ -439,9 +391,9 @@ tk.browse <- function(
 					modifier = if (way == "out") { -1 } else { LFactor }
 				
 					# Coordinates update
-					width = (LEnd - LStart) * (LFactor-1) / modifier / 2
-					tcltk::tclvalue(startValue) <- formatCoordinate(LStart + width)
-					tcltk::tclvalue(endValue) <- formatCoordinate(LEnd - width)
+					shift = (LEnd - LStart) * (LFactor-1) / modifier / 2
+					tcltk::tclvalue(startValue) <- formatCoordinate(LStart + shift)
+					tcltk::tclvalue(endValue) <- formatCoordinate(LEnd - shift)
 					
 					# Refresh timer
 					updateT0 <<- updateT1
@@ -687,39 +639,23 @@ tk.browse <- function(
 			# R-Plot widget (wait for maximization to apply and propagate)
 			tcltk::.Tcl("update idletasks")
 			
-			if(render == "png") {
-				# Default size
-				height <- autoHeight("px")
-				width <- autoWidth("px")
-				
-				# Display (empty) PNG image
-				plotImage <- tcltk::tkimage.create("photo", width=width, height=height)
-				plotWidget <- tcltk::tkcanvas(plotFrame, width=width, height=height)
-				tcltk::tkcreate(plotWidget, "image", 0, 0, anchor="nw", image=plotImage)
-			} else if(render == "tkrplot") {
-				# tkrplot widget
-				plotWidget <- tkrplot::tkrplot(parent=plotFrame, fun=plot.empty, hscale=1, vscale=1)
-			}
-		
-			tcltk::tkgrid(plotWidget, column=1, row=1)
+			# Default size
+			imageHeight <- imageWidth <- canvasHeight <- canvasWidth <- NA
+			resize(active=FALSE)
+			
+			# Scrollbar
+			plotScroll <- tcltk::tkscrollbar(plotFrame, repeatinterval=5, command=function(...) { tcltk::tkyview(plotWidget,...) })
+			tcltk::tkgrid(plotScroll, column=2, row=1, sticky="nsew")
+			
+			# Display (empty) PNG image
+			plotImage <- tcltk::tkimage.create("photo", width=imageWidth, height=imageHeight)
+			plotWidget <- tcltk::tkcanvas(plotFrame, width=canvasWidth, height=canvasHeight, scrollregion=c(0, 0, imageWidth, imageHeight), confine=TRUE, yscrollcommand=function(...) { tcltk::tkset(plotScroll, ...) })
+			tcltk::tkcreate(plotWidget, "image", 0, 0, anchor="nw", image=plotImage)
+			tcltk::tkgrid(plotWidget, column=1, row=1, padx=c(3, 3))
 	
-	# Guess scale factor from 1 x 1 empty plot
-	if(render == "tkrplot") {
-		# Scale factor (wait for plot update)
-		tcltk::.Tcl("update idletasks")
-		scaleFactor <- as.integer(tcltk::tclvalue(tcltk::tkwinfo("width", plotWidget)))
-		if(scaleFactor < 100) stop("Scale factor detection seems to have failed (", scaleFactor, ")")
-		
-		# Default size
-		vscale <- autoHeight("scale")
-		hscale <- autoWidth("scale")
-		
-		replot(empty=TRUE)
-	} else {
-		# Welcome screen
-		replot(empty=TRUE)
-	}
-	
+	# Welcome screen
+	replot(empty=TRUE)
+
 	
 	
 	
@@ -736,7 +672,7 @@ tk.browse <- function(
 	tcltk::tkbind(topLevel, "<KeyPress-Right>", keyPressRight)
 	tcltk::tkbind(topLevel, "<KeyPress-Prior>", keyPressPageUp)
 	tcltk::tkbind(topLevel, "<KeyPress-Next>", keyPressPageDown)
-	tcltk::tkbind(topLevel, "<KeyPress-r>", resize)
+	tcltk::tkbind(topLevel, "<KeyPress-r>", function() { resize(active=TRUE) })
 	tcltk::tkbind(topLevel, "<KeyPress-f>", searchAction)
 	tcltk::tkbind(topLevel, "<KeyPress-j>", replot)
 	tcltk::tkbind(topLevel, "<KeyPress-t>", trackAction)

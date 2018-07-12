@@ -179,7 +179,7 @@ Notice the file format for such a track is slightly different: we use the RDS fi
 
 \subsubsection{Interactive genome browsing}
 
-The genome browser can be summoned in an interactive session by a single call to \code{tk.browse}. It requires the \code{tcltk} and \code{tkrplot} packages (both available at the CRAN for most operating systems).
+The genome browser can be summoned in an interactive session by a single call to \code{tk.browse}. It requires the \code{tcltk} package (available at the CRAN for most operating systems).
 
 \begin{Scode}{eval=false}
   tk.browse()
