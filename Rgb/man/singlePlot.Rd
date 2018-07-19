@@ -27,10 +27,10 @@
     Character vector, the names of the chromosomes to not plot.
 }
   \item{add}{
-    Numeric vctor of length 2, the margins to add before and after each chromosome, in base pairs.
+    Numeric vector of length 2, the margins to add before and after each chromosome, in base pairs.
 }
   \item{vertical}{
-    Single logical value, whether to produce a plot showing chromsomes horizontally or vertically. Actually the figure will need to be manually rotated in the resulting file.
+    Single logical value, whether to produce a plot showing chromosomes horizontally or vertically. Actually the figure will need to be manually rotated in the resulting file.
 }
   \item{capWidth}{
     Single value defining the width of the chromosome name caps, in a suitable format for \code{layout} \code{widths} argument.
@@ -42,22 +42,22 @@
     Single logical value, whether to fill unused space with a blank plot and return to default layout or allow further manual addition. If \code{FALSE}, the next plot will fill the whole blank space left.
 }
   \item{cap.border}{
-    Single value defining the color of chromosome cap borders. See the \code{border} argument of \code{rect} for futher details.
+    Single value defining the color of chromosome cap borders. See the \code{border} argument of \code{rect} for further details.
 }
   \item{cap.font.col}{
-    Single value defining the color of chromosome names in the caps. See the \code{font} argument of \code{par} for futher details.
+    Single value defining the color of chromosome names in the caps. See the \code{font} argument of \code{par} for further details.
 }
   \item{cap.bg.col}{
-    Single value defining the color of chromosome cap background. See the \code{col} argument of \code{rect} for futher details.
+    Single value defining the color of chromosome cap background. See the \code{col} argument of \code{rect} for further details.
 }
   \item{cap.adj}{
     Numeric vector of length 2 defining the X and Y adjustment of the chromosome names in the caps, ranging between 0 (left / bottom) to 1 (right / top).
 }
   \item{cap.cex}{
-    Single value defining the character expansion factor for chromosome names in the caps. See the \code{cex} argument of \code{par} for futher details.
+    Single value defining the character expansion factor for chromosome names in the caps. See the \code{cex} argument of \code{par} for further details.
 }
   \item{cap.font}{
-    Single value defining the font type of chromosome names in the caps. See the \code{font} argument of \code{par} for futher details.
+    Single value defining the font type of chromosome names in the caps. See the \code{font} argument of \code{par} for further details.
 }
   \item{mar}{
     Refer to \dots described here-after. To disable the overriding and let each track define its own value as usual, set this parameter to \code{NULL}.
