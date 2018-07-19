@@ -1,10 +1,11 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
-\section{Changes in version 1.7.0 (2018-07-12)}{
+\section{Changes in version 1.7.0 (2018-07-19)}{
   \itemize{
     \item{'tkrplot' rendering no longer supported in tk.browse().}
     \item{'png.height' and vertical scrollbar added to tk.browse().}
     \item{Better handling of focus and shortcuts in tk.browse().}
+    \item{draw.boxes() no longer crashes when there is space for no label.}
   }
 }
 \section{Changes in version 1.6.1 (2018-07-11)}{

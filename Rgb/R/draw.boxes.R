@@ -226,7 +226,7 @@ draw.boxes = function(
 				}
 				
 				# Execute plotting
-				do.call(graphics::text, args)
+				if(length(args$label) > 0L) do.call(graphics::text, args)
 			}
 		}
 	}
