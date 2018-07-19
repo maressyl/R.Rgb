@@ -55,7 +55,6 @@ draw.bg = function(
 		ylab = "",
 		yaxt = "n",
 		yaxs = yaxs,
-		yaxp = yaxp,
 		bty = "n",
 		las = las,
 		cex.lab = cex.lab,
