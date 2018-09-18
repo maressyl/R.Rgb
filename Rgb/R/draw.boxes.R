@@ -15,8 +15,8 @@ draw.boxes = function(
 		labelAdj = "center",
 		labelOverflow = TRUE,
 		labelFamily = "sans",
-		colorVal = "#BBBBBB",
-		colorFun = function() NULL,
+		labelColor = "#000000",
+		fillColor = "#BBBBBB",
 		border = "#666666",
 		cex.lab = 1,
 		spacing = 0.2,
@@ -26,6 +26,7 @@ draw.boxes = function(
 		groupSize = NA,
 		groupLwd = 1,
 		fg = "#000000",
+		normalize.y = TRUE,
 		...
 	) {
 	# Coercions
@@ -144,22 +145,27 @@ draw.boxes = function(
 			}
 			
 			# Maximal depth used
-			maxLine <- max(boxes$yline) + 1L
+			if(isTRUE(normalize.y)) { maxLine <- max(boxes$yline) + 1L
+			} else                  { maxLine <- 1L
+			}
 			
 			
 			
 			## FEATURE PLOTING ##
 			
-			# Color function
-			if(is.na(colorVal)) {
-				environment(colorFun) <- environment()
-				color <- colorFun()
-			} else {
-				color <- colorVal
+			# Box filling
+			if(is.function(fillColor)) {
+				environment(fillColor) <- environment()
+				fillColor <- fillColor()
 			}
 			
-			# Repercute to border
-			if(identical(border, "color")) border <- color
+			# Box border
+			if(is.function(border)) {
+				environment(border) <- environment()
+				border <- border()
+			} else if(identical(border, "fillColor")) {
+				border <- fillColor
+			}
 			
 			# Group bonds
 			if(!is.na(groupBy)) {
@@ -181,7 +187,7 @@ draw.boxes = function(
 				xright = slice$end,
 				ytop = (slice$plotLine + (1 - spacing/2)) / maxLine,
 				ybottom = (slice$plotLine + spacing/2) / maxLine,
-				col = color,
+				col = fillColor,
 				border = border
 			)
 			
@@ -206,6 +212,12 @@ draw.boxes = function(
 					boxes[ boxes$strand == "+" , "label" ] <- sprintf("%s >", boxes[ boxes$strand == "+" , "label" ])
 				}
 				
+				# Label color
+				if(is.function(labelColor)) {
+					environment(labelColor) <- environment()
+					labelColor <- labelColor()
+				}
+				
 				# Plotting arguments
 				args <- with(
 					boxes[ (isTRUE(label) && isTRUE(labelOverflow)) | !boxes$overflow ,],
@@ -213,7 +225,7 @@ draw.boxes = function(
 						x = (start.lab + end.lab) / 2,
 						y = (yline + 0.5) / maxLine,
 						label = label,
-						col = fg,
+						col = labelColor,
 						adj = c(0.5, 0.5),
 						cex = labelCex,
 						srt = labelSrt

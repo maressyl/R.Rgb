@@ -1,5 +1,13 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
+\section{Changes in version 1.7.1 (2018-09-18)}{
+  \itemize{
+    \item{'normalize.y' argument added to draw.boxes().}
+    \item{'colorVal' / 'colorFun' graphical parameters replaced by 'fillColor'.}
+    \item{'border' graphical parameter can now be a function.}
+    \item{'labelColor' graphical parameter added.}
+  }
+}
 \section{Changes in version 1.7.0 (2018-07-19)}{
   \itemize{
     \item{'tkrplot' rendering no longer supported in tk.browse().}

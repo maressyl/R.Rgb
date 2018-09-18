@@ -9,9 +9,8 @@
 }
 
 \usage{
-  draw.hist(slice, start, end, column = "value", colorVal = "#666666",
-    colorFun = function() NULL, border = "#666666", cex.lab = 1, origin = 0,
-    bty = "o", fg = "#000000", ...)
+  draw.hist(slice, start, end, column = "value", fillColor = "#666666",
+  border = "#666666", cex.lab = 1, origin = 0, bty = "o", fg = "#000000", ...)
 }
 
 \arguments{
@@ -27,14 +26,11 @@
   \item{column}{
     Single character value, the name of the \code{slice} column to use for bar heights.
 }
-  \item{colorVal}{
-    The color to fill bars with (as a name, an integer or an hexadecimal character description).
-}
-  \item{colorFun}{
-    A function with no arguments, which returns a vector of as many colors than the \code{slice} has rows. It can make use of any argument described on this page (including custom arguments passed via "..."), as its enclosing environment is redefined to the calling one. \code{colorVal} must be \code{NA} for the function to be used.
+  \item{fillColor}{
+    The color to fill vertical bars with (as a name, an integer or an hexadecimal character description). It can alternatively be a function without argument, which returns a vector of as many colors as \code{slice} has rows. It can make direct variable call to any argument described on this page (including custom arguments passed via "...").
 }
   \item{border}{
-    The color to fill boxe borders with (as a name, an integer or an hexadecimal character description).
+    The color to use for box borders (as a name, an integer or an hexadecimal character description). It can alternatively be a function without argument, which returns a vector of as many colors as \code{slice} has rows. It can make direct variable call to any argument described on this page (including custom arguments passed via "..."). Special values \code{NA} and \code{"fillColor"} can also be used to disable borders or use \code{fillColor} respectively.
 }
   \item{cex.lab}{
     The relative character size of x and y axis labels (default: 1). See \code{par}.

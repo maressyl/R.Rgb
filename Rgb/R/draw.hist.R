@@ -7,8 +7,7 @@ draw.hist = function(
 		start,
 		end,
 		column = "value",
-		colorVal = "#666666",
-		colorFun = function() NULL,
+		fillColor = "#666666",
 		border = "#666666",
 		cex.lab = 1,
 		origin = 0,
@@ -42,16 +41,19 @@ draw.hist = function(
 		# Draw high boxes behind
 		slice <- slice[ order(slice[[column]], decreasing=TRUE) ,]
 		
-		# Color function
-		if(is.na(colorVal)) {
-			environment(colorFun) <- environment()
-			boxColor <- colorFun()
-		} else {
-			boxColor <- colorVal
+		# Box filling
+		if(is.function(fillColor)) {
+			environment(fillColor) <- environment()
+			fillColor <- fillColor()
 		}
 		
-		# Repercute to border
-		if(identical(border, "color")) border <- boxColor
+		# Box border
+		if(is.function(border)) {
+			environment(border) <- environment()
+			border <- border()
+		} else if(identical(border, "fillColor")) {
+			border <- fillColor
+		}
 		
 		# Boxes
 		graphics::rect(
@@ -59,7 +61,7 @@ draw.hist = function(
 			xright = slice$end,
 			ytop = slice[[column]],
 			ybottom = if(is.numeric(origin)) { origin } else { slice[[origin]] },
-			col = boxColor,
+			col = fillColor,
 			border = border
 		)
 	} else {

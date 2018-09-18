@@ -7,8 +7,7 @@ draw.points = function(
 		start,
 		end,
 		column = "value",
-		colorVal = "#666666",
-		colorFun = function() NULL,
+		pointColor = "#666666",
 		cex.lab = 1,
 		cex = 0.6,
 		pch = "+",
@@ -39,12 +38,10 @@ draw.points = function(
 	)
 	
 	if(nrow(slice) > 0) {
-		# Color function
-		if(is.na(colorVal)) {
-			environment(colorFun) <- environment()
-			pointColor <- colorFun()
-		} else {
-			pointColor <- colorVal
+		# Point color
+		if(is.function(pointColor)) {
+			environment(pointColor) <- environment()
+			pointColor <- pointColor()
 		}
 		
 		# Points

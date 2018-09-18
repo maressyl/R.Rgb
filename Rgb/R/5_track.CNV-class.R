@@ -21,8 +21,7 @@ defaultParams = function(...) {
 	params$labelCex <- 0.75
 	params$labelSrt <- 0
 	params$labelAdj <- "left"
-	params$colorVal <- as.character(NA)
-	params$colorFun <- function() {
+	params$fillColor <- function() {
 		colors <- c(
 			"loss"                     = "#880000",
 			"loss mobile element"      = "#880000",

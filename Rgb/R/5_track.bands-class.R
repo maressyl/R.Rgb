@@ -22,8 +22,7 @@ defaultParams = function(...) {
 	params$labelSrt <- 90
 	params$labelAdj <- "center"
 	params$labelOverflow <- FALSE
-	params$colorVal <- as.character(NA)
-	params$colorFun <- function() {
+	params$fillColor <- function() {
 		output <- slice$stain
 		output[ output == "gneg" ] <- "#EEEEEE"
 		output[ output == "gpos25" ] <- "#CCCCCC"

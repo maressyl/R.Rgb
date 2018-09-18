@@ -16,8 +16,8 @@ draw.steps = function(
 		labelAdj = "center",
 		labelOverflow = TRUE,
 		labelFamily = "sans",
-		colorVal = "#BBBBBB",
-		colorFun = function() NULL,
+		labelColor = "#000000",
+		fillColor = "#BBBBBB",
 		border = "#666666",
 		cex.lab = 1,
 		spacing = 0.1,
@@ -84,16 +84,19 @@ draw.steps = function(
 			
 			## FEATURE PLOTING ##
 			
-			# Color function
-			if(is.na(colorVal)) {
-				environment(colorFun) <- environment()
-				color <- colorFun()
-			} else {
-				color <- rep(colorVal, nrow(slice))
+			# Box filling
+			if(is.function(fillColor)) {
+				environment(fillColor) <- environment()
+				fillColor <- fillColor()
 			}
 			
-			# Repercute to border
-			if(identical(border, "color")) border <- color
+			# Box border
+			if(is.function(border)) {
+				environment(border) <- environment()
+				border <- border()
+			} else if(identical(border, "fillColor")) {
+				border <- fillColor
+			}
 			
 			# X coordinates
 			x <- NULL
@@ -112,8 +115,8 @@ draw.steps = function(
 				graphics::polygon(
 					x = x[i,],
 					y = (y * (1 - spacing) + spacing / 2 + slice[i,"plotLine"]) / maxLine,
-					border = border,
-					col = color[i]
+					border = rep(border, length=nrow(slice))[i],
+					col = rep(fillColor, length=nrow(slice))[i]
 				)
 			}
 			
@@ -136,6 +139,12 @@ draw.steps = function(
 					boxes[ boxes$strand == "+" , "label" ] <- sprintf("%s >", boxes[ boxes$strand == "+" , "label" ])
 				}
 				
+				# Label color
+				if(is.function(labelColor)) {
+					environment(labelColor) <- environment()
+					labelColor <- labelColor()
+				}
+				
 				# Plotting arguments
 				args <- with(
 					boxes[ (isTRUE(label) && isTRUE(labelOverflow)) | !boxes$overflow ,],
@@ -143,7 +152,7 @@ draw.steps = function(
 						x = (boxes$start.lab + boxes$end.lab) / 2,
 						y = (boxes$yline + 0.1) / maxLine + charHeight/2,
 						label = label,
-						col = "#000000",
+						col = labelColor,
 						adj = c(0.5, 0.5),
 						cex = labelCex,
 						srt = labelSrt
