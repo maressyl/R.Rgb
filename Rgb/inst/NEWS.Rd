@@ -6,6 +6,7 @@
     \item{'colorVal' / 'colorFun' graphical parameters replaced by 'fillColor'.}
     \item{'border' graphical parameter can now be a function.}
     \item{'labelColor' graphical parameter added.}
+    \item{'fg' added to draw.steps().}
   }
 }
 \section{Changes in version 1.7.0 (2018-07-19)}{

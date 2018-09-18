@@ -22,6 +22,7 @@ draw.steps = function(
 		cex.lab = 1,
 		spacing = 0.1,
 		bty = "o",
+		fg = "#000000",
 		...
 	) {
 	# Coercions
@@ -39,6 +40,9 @@ draw.steps = function(
 	draw.bg(
 		start = start,
 		end = end,
+		cex.lab = cex.lab,
+		bty = bty,
+		fg = fg,
 		...	
 	)
 	
@@ -176,7 +180,7 @@ draw.steps = function(
 			x = mean(graphics::par("usr")[1:2]),
 			y = mean(graphics::par("usr")[3:4]),
 			label = errorMessage,
-			col = "#000000",
+			col = fg,
 			adj = c(0.5, 0.5),
 			cex = cex.lab
 		)
@@ -185,7 +189,7 @@ draw.steps = function(
 	# Surrounding box
 	graphics::box(
 		which = "plot",
-		col = "#000000",
+		col = fg,
 		bty = bty
 	)
 }
