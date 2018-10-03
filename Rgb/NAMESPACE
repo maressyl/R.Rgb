@@ -21,11 +21,12 @@ export(segMerge, segOverlap)
 # Draw functions
 export("draw.bg")
 export("draw.boxes", "yline")
-export("draw.steps")
-export("draw.points")
+export("draw.density")
 export("draw.hist")
 export("draw.pileup")
+export("draw.points")
 export("draw.seq")
+export("draw.steps")
 
 # Annotation functions
 export("track.table.GTF")

@@ -1,7 +1,8 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
-\section{Changes in version 1.7.1 (2018-09-18)}{
+\section{Changes in version 1.7.1 (2018-10-03)}{
   \itemize{
+    \item{draw.density() added.}
     \item{'normalize.y' argument added to draw.boxes().}
     \item{'colorVal' / 'colorFun' graphical parameters replaced by 'fillColor'.}
     \item{'border' graphical parameter can now be a function.}

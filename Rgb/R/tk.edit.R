@@ -63,7 +63,7 @@ tk.edit = function(
 		if(argName == "drawFun") {
 			# 'drawFun' special handling
 			titleText <- "drawFun"
-			contentText <- "The name of the R function that will handle the plotting. Rgb provides \"draw.boxes\", \"draw.hist\", \"draw.points\" and \"draw.pileup\", but custom functions defined in the R global environment can be used as well."
+			contentText <- "The name of the R function that will handle the plotting. Rgb provides \"draw.boxes\", \"draw.density\", \"draw.hist\", \"draw.pileup\", \"draw.points\", \"draw.seq\" and \"draw.steps\", but custom functions defined in the R global environment can be used as well."
 		} else if(argName == "height") {
 			# 'height' special handling
 			titleText <- "height"

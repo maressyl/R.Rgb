@@ -100,8 +100,8 @@
 }
 
 \seealso{
-  \code{\link{draw.bg}}, \code{\link{draw.steps}}, \code{\link{draw.hist}}, \code{\link{draw.points}}, \code{\link{draw.pileup}}, \code{\link{draw.seq}}
-  
   \code{\link{yline}}
+  
+  \code{\link{draw.bg}}, \code{\link{draw.density}}, \code{\link{draw.hist}}, \code{\link{draw.pileup}}, \code{\link{draw.points}}, \code{\link{draw.seq}}, \code{\link{draw.steps}}
 }
 
