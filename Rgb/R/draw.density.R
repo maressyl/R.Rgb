@@ -11,6 +11,7 @@ draw.density = function(
 		bty = "o",
 		fg = "#000000",
 		pal = grDevices::grey,
+		border = NA,
 		depth = 8,
 		dpi = 7,
 		bw.x = 0.005,
@@ -69,8 +70,9 @@ draw.density = function(
 		colors <- pal(seq(from=1, to=0, length=depth*(0.5+precision/2)+1))
 		levels <- seq(from=0, to=max(d$z)^(1/skewing), length=depth+1)^skewing
 		
-		# Plot density
-		graphics::.filled.contour(x=d$x*1e6, y=d$y, z=d$z, levels=levels, col=colors)
+		# Plot density (pilled polygons are more efficient than graphics::.filled.contour's tilling)
+		poly <- grDevices::contourLines(x=d$x*1e6, y=d$y, z=d$z, levels=levels)
+		for(i in 1:length(poly)) graphics::polygon(x=poly[[i]]$x, y=poly[[i]]$y, col=colors[ match(poly[[i]]$level, levels) ], border=border)
 	} else {
 		# No box (not enough)
 		graphics::text(

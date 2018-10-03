@@ -10,8 +10,8 @@
 
 \usage{
   draw.density(slice, start, end, column = "value", cex.lab = 1, bty = "o",
-    fg = "#000000", pal = grDevices::grey, depth = 8, dpi = 7, bw.x = 0.005, bw.y = 0.2,
-    precision = 1, skewing = 1.75, ...)
+    fg = "#000000", pal = grDevices::grey, border = NA, depth = 8, dpi = 7, bw.x = 0.005,
+    bw.y = 0.2, precision = 1, skewing = 1.75, ...)
 }
 
 \arguments{
@@ -38,6 +38,9 @@
 }
   \item{pal}{
     A function returning a set of colors when provided a set of intensities between 0 and 1 (typically \code{\link[grDevices]{grey}}), for the various levels of density.
+}
+  \item{border}{
+    The color to use for polygon borders (as a name, an integer or an hexadecimal character description). Special value \code{NA} can also be used to disable borders.
 }
   \item{depth}{
     Single integer value, the amount of different ranges to simplify the density into before plotting (corresponds to the \code{nlevels} argument of the \code{\link[graphics]{filled.contour}} function).
