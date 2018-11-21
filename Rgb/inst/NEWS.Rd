@@ -1,6 +1,6 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
-\section{Changes in version 1.7.1 (2018-10-03)}{
+\section{Changes in version 1.7.1 (2018-11-21)}{
   \itemize{
     \item{draw.density() added.}
     \item{'normalize.y' argument added to draw.boxes().}
@@ -8,6 +8,7 @@
     \item{'border' graphical parameter can now be a function.}
     \item{'labelColor' graphical parameter added.}
     \item{'fg' added to draw.steps().}
+    \item{'fg' now used for group labels and bonds in draw.boxes().}
   }
 }
 \section{Changes in version 1.7.0 (2018-07-19)}{

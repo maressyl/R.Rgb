@@ -174,7 +174,7 @@ draw.boxes = function(
 					y0 = (boxes$yline + 0.5) / maxLine,
 					x1 = boxes$end.plot,
 					y1 = (boxes$yline + 0.5) / maxLine,
-					col = border,
+					col = fg,
 					lwd = groupLwd
 				)
 			}
@@ -202,7 +202,7 @@ draw.boxes = function(
 						ybottom = (boxes$yline + 0.5) / maxLine - charHeight/2,
 						ytop = (boxes$yline + 0.5) / maxLine + charHeight/2,
 						col = "#FFFFFF",
-						border = border
+						border = fg
 					)		
 				}
 				
