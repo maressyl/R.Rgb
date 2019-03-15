@@ -1,5 +1,10 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
+\section{Changes in version 1.7.2 (2019-03-15)}{
+  \itemize{
+    \item{'group' argument added to segMerge().}
+  }
+}
 \section{Changes in version 1.7.1 (2018-11-21)}{
   \itemize{
     \item{draw.density() added.}

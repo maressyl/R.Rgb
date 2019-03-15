@@ -9,7 +9,8 @@
 }
 
 \usage{
-  segMerge(segTable, on = names(segTable), fun = list(unique, start=min, end=max))
+  segMerge(segTable, on = names(segTable), fun = list(unique, start=min, end=max),
+    group = NULL)
 }
 
 \arguments{
@@ -21,6 +22,9 @@
 }
   \item{fun}{
     A \code{list} of \code{function}s, defining how to merge values when merging rows. It should contain an unamed element for the default function, and named elements to deal with specific columns.
+}
+  \item{group}{
+    A vector with as many values as \code{segTable} rows. If provided, \code{on} is ignored and \code{group} is directly used as a grouping factor to merge consecutive rows.
 }
 }
 

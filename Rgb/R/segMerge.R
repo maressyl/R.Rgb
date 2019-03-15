@@ -5,7 +5,8 @@
 segMerge = function(
 		segTable,
 		on = names(segTable),
-		fun = list(unique, start=min, end=max)
+		fun = list(unique, start=min, end=max),
+		group = NULL
 		)
 	{
 	# Arg checks
@@ -29,11 +30,13 @@ segMerge = function(
 		}
 		
 		# Computing groups [time consuming]
-		group <- integer(nrow(segTable))
-		j <- 0L
-		for(i in 2:nrow(segTable)) {
-			if(!identical(segTable[i-1L, on, drop=TRUE], segTable[i, on, drop=TRUE])) j <- j + 1L
-			group[i] <- j
+		if(is.null(group)) {
+			group <- integer(nrow(segTable))
+			j <- 0L
+			for(i in 2:nrow(segTable)) {
+				if(!identical(segTable[i-1L, on, drop=TRUE], segTable[i, on, drop=TRUE])) j <- j + 1L
+				group[i] <- j
+			}
 		}
 		
 		# Grouping rows
