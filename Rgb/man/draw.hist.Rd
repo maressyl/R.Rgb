@@ -10,7 +10,8 @@
 
 \usage{
   draw.hist(slice, start, end, column = "value", fillColor = "#666666",
-  border = "#666666", cex.lab = 1, origin = 0, bty = "o", fg = "#000000", ...)
+    border = "#666666", cex.lab = 1, origin = 0, bty = "o", fg = "#000000",
+    ylim = NA, ...)
 }
 
 \arguments{
@@ -43,6 +44,9 @@
 }
   \item{fg}{
     Single character value, defining the color of the foreground (axes, labels...) as an english name or a hexadecimal code. Similar to \code{par}'s argument but not relying on it.
+}
+  \item{ylim}{
+    Numeric vector of length two, defining the Y axis boundaries. Any or both of them can be NA, meaning the missing boundary will be inferred from the data to plot.
 }
   \item{\dots}{
     Further arguments to be passed to \code{\link{draw.bg}}.

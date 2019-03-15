@@ -13,6 +13,7 @@ draw.hist = function(
 		origin = 0,
 		bty = "o",
 		fg = "#000000",
+		ylim = NA,
 		...
 	) {
 	# Coercions
@@ -27,6 +28,24 @@ draw.hist = function(
 	if(!"end" %in% names(slice))   stop("'slice' needs a 'end' column")
 	if(!column %in% names(slice))  stop("'column' can not be found in 'slice'")
 	
+	# Automatic ylim
+	if(!is.numeric(ylim) || length(ylim) != 2L || all(is.na(ylim))) {
+		# Both boundaries to be guessed
+		if(any(!is.na(slice[[column]]))) { ylim <- range(slice[[column]], na.rm=TRUE)
+		} else                           { ylim <- c(0L, 1L)
+		}
+	} else if(is.na(ylim[1])) {
+		# Bottom only
+		if(any(!is.na(slice[[column]]))) { ylim[1] <- min(slice[[column]], na.rm=TRUE)
+		} else                           { ylim[1] <- 0L
+		}
+	} else if(is.na(ylim[2])) {
+		# Top only
+		if(any(!is.na(slice[[column]]))) { ylim[2] <- max(slice[[column]], na.rm=TRUE)
+		} else                           { ylim[2] <- 0L
+		}
+	}
+	
 	# Background
 	draw.bg(
 		start = start,
@@ -34,6 +53,7 @@ draw.hist = function(
 		cex.lab = cex.lab,
 		bty = bty,
 		fg = fg,
+		ylim = ylim,
 		...
 	)
 	

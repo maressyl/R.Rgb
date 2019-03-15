@@ -3,6 +3,7 @@
 \section{Changes in version 1.7.2 (2019-03-15)}{
   \itemize{
     \item{'group' argument added to segMerge().}
+    \item{Automatic 'ylim' now handled by draw.hist().}
   }
 }
 \section{Changes in version 1.7.1 (2018-11-21)}{
