@@ -1,9 +1,10 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
-\section{Changes in version 1.7.2 (2019-03-15)}{
+\section{Changes in version 1.7.2 (2019-03-19)}{
   \itemize{
     \item{'group' argument added to segMerge().}
     \item{Automatic 'ylim' now handled by draw.hist().}
+    \item{track.exons.GENCODE() function added.}
   }
 }
 \section{Changes in version 1.7.1 (2018-11-21)}{
