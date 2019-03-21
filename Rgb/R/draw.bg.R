@@ -6,6 +6,7 @@ draw.bg = function(
 		start,
 		end,
 		ylab = "",
+		ylab.horiz = FALSE,
 		ysub = as.character(NA),
 		mar = c(0.2, 5, 0.2, 1),
 		xaxt = "s",
@@ -86,7 +87,7 @@ draw.bg = function(
 	}
 	
 	# Main ylab
-	graphics::title(ylab=ylab, col.lab=fg, line=mgp[1])
+	graphics::mtext(side=2, text=ylab, col=fg, las=ifelse(isTRUE(ylab.horiz), 1, 0), line=mgp[1])
 	
 	# Secondary ylab (assembly)
 	if(yaxt == "n" && !is.na(ysub)) {

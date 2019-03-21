@@ -9,11 +9,11 @@
 }
 
 \usage{
-  draw.bg(start, end, ylab = "", ysub = as.character(NA), mar = c(0.2, 5, 0.2, 1),
-    xaxt = "s", yaxt = "n", yaxs = "r", ylim = c(0, 1), cex.lab = 1, cex.axis = 1,
-    mgp = c(3, 1, 0), tck = NA, tcl = -0.5, xaxp = as.numeric(NA), yaxp = as.numeric(NA),
-    bty = "o", las = 0, xgrid = TRUE, new = FALSE, bg = NA, bg.inner = NA, fg = "#000000",
-    ...)
+  draw.bg(start, end, ylab = "", ylab.horiz = FALSE, ysub = as.character(NA),
+    mar = c(0.2, 5, 0.2, 1), xaxt = "s", yaxt = "n", yaxs = "r", ylim = c(0, 1),
+    cex.lab = 1, cex.axis = 1, mgp = c(3, 1, 0), tck = NA, tcl = -0.5,
+    xaxp = as.numeric(NA), yaxp = as.numeric(NA), bty = "o", las = 0, xgrid = TRUE,
+    new = FALSE, bg = NA, bg.inner = NA, fg = "#000000", ...)
 }
 
 \arguments{
@@ -25,6 +25,9 @@
 }
   \item{ylab}{
     The name of the Y axis. See \code{par}.
+}
+  \item{ylab.horiz}{
+    Single logical value, whether to print \code{ylab} horizontally or not.
 }
   \item{ysub}{
     Similar to \code{ylab}, but written on a closer line when \code{yaxt} is "n". Can be \code{NA} to disable it.
