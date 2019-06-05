@@ -39,7 +39,7 @@ defaultParams = function(...) {
 		output[ is.na(output) ] <- "#888888"
 		return(output)
 	}
-	params$border <- "color"
+	params$border <- "fillColor"
 	params$height <- "3 cm"
 	params$xaxt <- "n"
 	params$yaxt <- "n"
