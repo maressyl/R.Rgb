@@ -67,7 +67,7 @@
     The relative character size of x and y axis labels (default: 1). See \code{par}.
 }
   \item{spacing}{
-    Single numeric value, the vertical spacing between boxes, in proportion of the box height.
+    Single numeric value, the vertical spacing between boxes, in proportion of the box height. Can alternatively be a single character value pointing a column to use to provide per-box spacing.
 }
   \item{bty}{
     A character string which determined the type of box which is drawn about plots. If bty is one of "o" (the default), "l", "7", "c", "u", or "]" the resulting box resembles the corresponding upper case letter. A value of "n" suppresses the box. See \code{par}.

@@ -179,6 +179,9 @@ draw.boxes = function(
 				)
 			}
 			
+			# Dynamic spacing
+			if(is.character(spacing)) spacing <- slice[[ spacing ]]
+			
 			# Individual boxes (limit to plotting range to work around R plot bug)
 			slice$start <- pmax(graphics::par("usr")[1], slice$start)
 			slice$end   <- pmin(graphics::par("usr")[2], slice$end)
