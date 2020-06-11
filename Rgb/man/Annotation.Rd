@@ -2,6 +2,7 @@
 \alias{Annotation}
 \alias{track.table.GTF}
 \alias{track.exons.CCDS}
+\alias{track.exons.GENCODE}
 \alias{track.CNV.DGV}
 \alias{track.genes.NCBI}
 \alias{track.bands.UCSC}
