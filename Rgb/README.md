@@ -3,6 +3,11 @@ R genome browser
 
 R package to efficiently browse and handle genomic data.
 
+![Github version](https://bioinformatics.ovsa.fr/badge.php?package=Rgb)
+![CRAN version](https://www.r-pkg.org/badges/version-ago/Rgb)
+![CRAN total downloads](https://cranlogs.r-pkg.org/badges/grand-total/Rgb)
+![CRAN monthly downloads](https://cranlogs.r-pkg.org/badges/Rgb)
+
 
 Availability
 ------------
@@ -14,7 +19,7 @@ A short presentation of the project can be found on my personnal website.
 Release sources and builds can be found in the CRAN repository :
 
 * **WWW** : https://CRAN.R-project.org/package=Rgb
-* **R** : install.packages("Rgb")
+* **R** : `install.packages("Rgb")`
 
 Development sources are freely available on GitHub :
 
