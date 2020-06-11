@@ -56,7 +56,7 @@
     Single integer value, the right boundary of the window to plot. \code{NA} will use the maximal drawable$getChromEnd() value throughout \code{trackList}.
 }
   \item{customLayout}{
-    Single logical value, whether to organize the various plot or not. If \code{FALSE}, \code{\link{layout}} will be called and you will not be able to add custom plots. If \code{TRUE}, it is up to the user to define its \code{\link{layout}} call to handle the track plots that will be issued by the function.
+    Single logical value, whether to organize the various plot or not. If \code{FALSE}, \code{\link{layout}} will be called and you will not be able to add custom plots. If \code{TRUE}, it is up to the user to define its \code{\link{layout}} call to handle the track plots that will be issued by the function. If \code{NA}, no plotting is actually done but the layout that would be used is returned instead, to help building a custom one.
 }
   \item{xaxt}{
     X axis showing (see \code{par}). Only applied to the last track, other ones never show their X axis ("n").

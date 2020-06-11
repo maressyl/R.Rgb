@@ -1,5 +1,10 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
+\section{Changes in version 1.7.4 (2020-01-09)}{
+  \itemize{
+    \item{'customLayout' argument in browsePlot() can now be used to return the default layout.}
+  }
+}
 \section{Changes in version 1.7.3 (2019-06-17)}{
   \itemize{
     \item{Default border color for class track.CNV fixed.}

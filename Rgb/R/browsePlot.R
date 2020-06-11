@@ -85,21 +85,27 @@ browsePlot = function(
 				if(heights > graphics::par("din")[2]) stop("Plot area too small")
 				
 				
+				
 				## LAYOUT ##
 				
 				if(panel) {
-					graphics::layout(
+					layout <- list(
 						mat = matrix(data=1:(2 * length(toLay)), ncol=2),
 						widths = c(panelWidth, 1),
 						heights = trackHeights
 					)
 				} else {
-					graphics::layout(
+					layout <- list(
 						mat = matrix(data=1:length(toLay), ncol=1),
 						heights = trackHeights
 					)
 				}
 				
+				# Get layout
+				if(is.na(customLayout)) return(layout)
+				
+				# Apply layout
+				do.call(what=graphics::layout, args=layout)
 				on.exit(graphics::layout(1), add=FALSE)
 				
 			}
