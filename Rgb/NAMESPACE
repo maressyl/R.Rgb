@@ -9,6 +9,7 @@ export(refTable)
 export(track.table, track.genes, track.bands, track.CNV, track.exons)
 export(track.bam)
 export(track.fasta.multi, track.fasta.collection)
+export(track.bigWig)
 
 # Functions
 export(read.gtf)
