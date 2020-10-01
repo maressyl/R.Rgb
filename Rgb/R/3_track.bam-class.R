@@ -64,7 +64,9 @@ check = function(warn=TRUE) {
 chromosomes = function() {
 "Returns the chromosome list as a vector"
 	
-	return(header$SN)
+	if(addChr) { return(sub("^chr", "", header$SN))
+	} else     { return(header$SN)
+	}
 },
 
 coverage = function(chrom, start=NA, end=NA, tracks=TRUE, binLevel=5L, rawSize=FALSE) {
@@ -89,7 +91,7 @@ coverage = function(chrom, start=NA, end=NA, tracks=TRUE, binLevel=5L, rawSize=F
 	if(is.na(chromIndex)) stop("'chrom' not found in BAM header")
 	
 	if(is.na(start) || is.na(end)) {
-		# All registered bins on the chromosome (excpet pseudo-bins)
+		# All registered bins on the chromosome (except pseudo-bins)
 		bins <- as.integer(names(index[[ chromIndex ]]$bins))
 		bins <- setdiff(bins, 37450L)
 	} else {
