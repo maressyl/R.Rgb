@@ -11,6 +11,7 @@ browsePlot = function(
 		xaxt = "s",
 		xaxm = 1.5,
 		panelWidth = "5 cm",
+		panelSide = "left",
 		panel = NA,
 		...
 		)
@@ -52,66 +53,28 @@ browsePlot = function(
 			end <- as.integer(ceiling(end))
 			if(end == start) end <- end - 1L
 			
-			# Panel display
-			if(is.na(panel)) {
-				# Let tracks decide
-				panel <- FALSE
-				for(i in toProcess) panel <- panel || drawables$get(i)$getParam("panel")
-			} else {
-				# Manually decided
-				panel <- as.logical(panel)
-			}
-			
 			if(!isTRUE(customLayout)) {
-			
-				## LAYOUT CHECK ##
+				# Compute layout
+				layout <- drawables$getLayout(check=TRUE, panel=panel, panelWidth=panelWidth, panelSide=panelSide)
 				
-				# Ignore new=TRUE
-				toLay <- integer(0)
-				for(i in toProcess) if(!drawables$objects[[i]]$getParam("new")) toLay <- c(toLay, i)
-				
-				# Track heights
-				trackHeights <- character(0)
-				for(i in toLay) trackHeights <- c(trackHeights, drawables$get(i)$getParam("height"))
-				
-				# Absolute tracks (from cm to inches)
-				absolute = grepl("^([0-9\\.]+) cm$", trackHeights)
-				heights = sum(as.double(gsub("^([0-9\\.]+) cm$", "\\1", trackHeights[absolute]))) / 2.54
-				
-				# Relative tracks (0.2 inches minimum)
-				heights = heights + sum(!absolute) * 0.2
-				
-				# Check
-				if(heights > graphics::par("din")[2]) stop("Plot area too small")
-				
-				
-				
-				## LAYOUT ##
-				
-				if(panel) {
-					layout <- list(
-						mat = matrix(data=1:(2 * length(toLay)), ncol=2),
-						widths = c(panelWidth, 1),
-						heights = trackHeights
-					)
-				} else {
-					layout <- list(
-						mat = matrix(data=1:length(toLay), ncol=1),
-						heights = trackHeights
-					)
-				}
-				
-				# Get layout
-				if(is.na(customLayout)) return(layout)
+				# Extract panel definitive value
+				panel <- layout$panel
+				layout$panel <- NULL
 				
 				# Apply layout
 				do.call(what=graphics::layout, args=layout)
 				on.exit(graphics::layout(1), add=FALSE)
-				
+			} else {
+				# Panel display
+				if(is.na(panel)) {
+					# Let tracks decide
+					panel <- FALSE
+					for(i in toProcess) panel <- panel || drawables$get(i)$getParam("panel")
+				} else {
+					# Manually decided
+					panel <- as.logical(panel)
+				}
 			}
-			
-			
-			## TRACKS ##
 			
 			# X axis for last track
 			if(xaxt != "n") {
@@ -133,13 +96,9 @@ browsePlot = function(
 					# new=TRUE must apply to both tracks and panels
 					if(isTRUE(drawables$get(i)$getParam("new"))) graphics::par(new=new)
 					
-					if(drawables$get(i)$getParam("panel")) {
-						if(xaxt != "n" && i == lastTrack) { drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt=xaxt, mar=mar, ...)
-						} else                            { drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt="n", ...)
-						}
-					} else {
-						# No panel, draw an empty plot
-						graphics::plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xaxt="n", yaxt="n", xlab="", ylab="", bty="n")
+					# drawPanel() (drawables produce an empty plot as default)
+					if(xaxt != "n" && i == lastTrack) { drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt=xaxt, mar=mar, ...)
+					} else                            { drawables$get(i)$drawPanel(chrom=chrom, start=start, end=end, xaxt="n", ...)
 					}
 				}
 			}

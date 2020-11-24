@@ -1,5 +1,11 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
+\section{Changes in version 1.7.5 (2020-11-24)}{
+  \itemize{
+    \item{Layout computation for browsePlot() is now a drawable.list method, to facilitate custom layouts.}
+    \item{panelSide argument added to browsePlot().}
+  }
+}
 \section{Changes in version 1.7.4 (2020-06-11)}{
   \itemize{
     \item{'customLayout' argument in browsePlot() can now be used to return the default layout.}

@@ -18,7 +18,7 @@
     png.height = NA, png.res = 100, png.file = tempfile(fileext=".png"),
     panelWidth = "5 cm", panel = NA)
   browsePlot(drawables, chrom = NA, start = NA, end = NA, customLayout = FALSE,
-    xaxt = "s", xaxm = 1.5, panelWidth = "5 cm", panel = NA, ...)
+    xaxt = "s", xaxm = 1.5, panelWidth = "5 cm", panelSide = "left", panel = NA, ...)
 }
 
 \arguments{
@@ -42,6 +42,9 @@
 }
   \item{panelWidth}{
     Single value, the width of the panel displays on the left of the tracks, if any is to be plotted. This is handled by the \code{width} argument of the \code{layout} function, and thus can be defined as a fixed size in centimeters or a relative size considering that the main display has a weight of 1.
+}
+  \item{panelSide}{
+    Single character value ("left" or "right"), the side on which to plot the panels, if any. Note that \code{tk.browse} currently only implements left panels.
 }
   \item{panel}{
     Single logical value, wheter to force a panel to be displayed or to not be displayed. Default value of \code{NA} let the function decide according to the current track settings.

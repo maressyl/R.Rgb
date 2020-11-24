@@ -208,6 +208,71 @@ getChromEnd = function(chrom) {
 	return(end)
 },
 
+getLayout = function(check = FALSE, panel = NA, panelWidth = "5 cm", panelSide = "left") {
+"Returns the layout elements
+- check        : single logical value, whether to check if the current plot window is high enough to fit the plot or not.
+- panel        : single logical value, whether to include a panel or not (NA means to plot one only if at least one track requires it).
+- panelWidth   : single value handled by layout(), defining the width of the extra panel column if one is to be plotted.
+- panelSide    : either 'left' or 'right', the side on which to plot the panels, if any.
+"
+	
+	# Ignore hidden objects (showing hidden=NA)
+	toProcess <- which(!sapply(.self$hidden, isTRUE))
+	if(length(toProcess) > 0) {
+		# Panel display
+		if(is.na(panel)) {
+			# Let tracks decide
+			panel <- FALSE
+			for(i in toProcess) panel <- panel || .self$get(i)$getParam("panel")
+		} else {
+			# Manually decided
+			panel <- as.logical(panel)[1]
+		}
+		
+		# Ignore new=TRUE
+		toLay <- integer(0)
+		for(i in toProcess) if(!.self$objects[[i]]$getParam("new")) toLay <- c(toLay, i)
+		
+		# Track heights
+		trackHeights <- character(0)
+		for(i in toLay) trackHeights <- c(trackHeights, .self$get(i)$getParam("height"))
+		
+		if(isTRUE(check)) {
+			# Absolute tracks (from cm to inches)
+			absolute <- grepl("^([0-9\\.]+) cm$", trackHeights)
+			heights <- sum(as.double(gsub("^([0-9\\.]+) cm$", "\\1", trackHeights[absolute]))) / 2.54
+			
+			# Relative tracks (0.2 inches minimum)
+			heights <- heights + sum(!absolute) * 0.2
+			
+			# Check
+			if(heights > graphics::par("din")[2]) stop("Plot area too small")
+		}
+		
+		layout <- list()
+		if(panel) {
+			if(panelSide == "left") {
+				# Left panel
+				layout$mat <- matrix(data=1:length(toLay), nrow=length(toLay), ncol=2)
+				layout$mat[,2] <- layout$mat[,2] + max(layout$mat)
+				layout$widths <- c(panelWidth, 1)
+			} else if(panelSide == "right") {
+				# Right panel
+				layout$mat <- matrix(data=1:length(toLay), nrow=length(toLay), ncol=2)
+				layout$mat[,1] <- layout$mat[,2] + max(layout$mat)
+				layout$widths <- c(1, panelWidth)
+			} else stop("Unhandled 'panelSide' value (left or right)")
+		} else {
+			# No panel
+			layout$mat = matrix(data=1:length(toLay), ncol=1)
+		}
+		layout$heights <- trackHeights
+		layout$panel <- panel
+	}
+	
+	return(layout)
+},
+
 initialize = function(files=character(0), objects=list(), hidden=logical(0), ...) { # "classes" and "count" are wrappers, do not initialize !
 	initFields(files=files, objects=objects, hidden=hidden)
 },

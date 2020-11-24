@@ -220,6 +220,7 @@ tk.browse <- function(
 			start = as.double(tcltk::tclvalue(startValue)) * 1e6,
 			end = as.double(tcltk::tclvalue(endValue)) * 1e6,
 			panelWidth = panelWidth,
+			panelSide = "left",   # FIXME 'right' would require to update xConvert()
 			panel = panel
 		)
 	}

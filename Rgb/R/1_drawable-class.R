@@ -101,6 +101,7 @@ Overloading methods should consider .self$callParams(chrom, start, end ...) to h
 - end     : single integer or numeric value, superior boundary of the window. NA should refer to .self$getChromEnd().
 - ...     : additionnal drawing parameters (precede but do not overwrite parameters stored in the object)."
 	
+	par(mar=c(0,0,0,0))
 	plot(x=NA, y=NA, xlim=0:1, ylim=0:1, xaxt="n", yaxt="n", xlab="", ylab="", bty="n")
 },
 
