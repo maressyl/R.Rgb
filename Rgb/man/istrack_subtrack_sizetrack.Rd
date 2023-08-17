@@ -85,7 +85,7 @@
 \examples{
   
   # Exemplar data : subset of human genes
-  data(hsFeatures)
+  data(hsGenes)
   
   # Track validity
   print(istrack(hsGenes))

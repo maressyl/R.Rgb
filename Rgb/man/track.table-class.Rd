@@ -38,7 +38,7 @@
 }
 \examples{
   # Exemplar data : subset of human genes
-  data(hsFeatures)
+  data(hsGenes)
   
   # Construction
   trackTable <- track.table(

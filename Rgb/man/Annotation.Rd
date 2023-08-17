@@ -59,13 +59,13 @@
 \details{
   \code{track.table.GTF} imports a "Gene Feature Transfert" file, as proposed by the UCSC Table Browser at \url{http://www.genome.ucsc.edu/cgi-bin/hgTables}) for a large amount of species. See the \code{\link{read.gtf}} manual for further details.
   
-  \code{track.exons.CCDS} contains various transcripts from the "Consensus Coding DNA Sequence" project, currently only available for mouse and human (see the NCBI data repository at \url{http://ftp.ncbi.nlm.nih.gov/pub/CCDS/}, and look for a file named "CCDS_current.txt").
+  \code{track.exons.CCDS} contains various transcripts from the "Consensus Coding DNA Sequence" project, currently only available for mouse and human (see the NCBI data repository at \url{https://ftp.ncbi.nlm.nih.gov/pub/CCDS/}, and look for a file named "CCDS_current.txt").
   
   \code{track.exons.GENCODE} contains various transcripts from the GENCODE project, currently only available for mouse and human (see the dedicated website at \url{https://www.gencodegenes.org/}). This function is intended to run on the GTF version of the data.
   
   \code{track.CNV.DGV} parses constitutive copy number variations from the current version of the Database of Genomic Variants, downloadable from \url{http://dgv.tcag.ca/dgv/app/downloads} using "DGV Variants" links. The whole database is dedicated to the human specy only.
   
-  \code{track.genes.NCBI} parses the gene list from the MapView project of the NCBI, for one of many species available at \url{http://ftp.ncbi.nih.gov/genomes/MapView/}. Select your specy of interest, then browse "sequence", "current" and "initial_release" (if the directories are available, they are not for certain species). Download the file named "seq_gene.md.gz". As many assemblies are included in the file, a first call to the function without "selection" is required, to list the available values. A second call with the appropriate assembly name will produce the desired track file.  
+  \code{track.genes.NCBI} parses the gene list from the MapView project of the NCBI, for one of many species available at \url{https://ftp.ncbi.nih.gov/genomes/MapView/}. Select your specy of interest, then browse "sequence", "current" and "initial_release" (if the directories are available, they are not for certain species). Download the file named "seq_gene.md.gz". As many assemblies are included in the file, a first call to the function without "selection" is required, to list the available values. A second call with the appropriate assembly name will produce the desired track file.
 
   \code{track.bands.UCSC} produces a track of cytogenetic banding, as made available by the UCSC for many species at \url{http://hgdownload.cse.ucsc.edu/downloads.html}. Select the specy and assembly version that suits your needs, and look for a file named "cytoBand.txt.gz" in the "Annotation database" section.
 }
@@ -75,7 +75,7 @@
 }
 
 \references{
-  Example of \code{track.exons.CCDS} raw file (current human assembly) : \url{http://ftp.ncbi.nlm.nih.gov/pub/CCDS/current_human/CCDS.current.txt}
+  Example of \code{track.exons.CCDS} raw file (current human assembly) : \url{https://ftp.ncbi.nlm.nih.gov/pub/CCDS/current_human/CCDS.current.txt}
   
   Example of \code{track.exons.GENCODE} raw file (human assembly 'GRCh38') : \url{ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_29/gencode.v29.annotation.gtf.gz}
   

@@ -1,9 +1,11 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
-\section{Changes in version 1.7.5 (2020-11-24)}{
+\section{Changes in version 1.7.5 (2023-08-17)}{
   \itemize{
     \item{Layout computation for browsePlot() is now a drawable.list method, to facilitate custom layouts.}
     \item{panelSide argument added to browsePlot().}
+    \item{hsFeatures dataset split into hsGenes and hsBands.}
+    \item{Minor fixes suggested by R CMD check.}
   }
 }
 \section{Changes in version 1.7.4 (2020-06-11)}{

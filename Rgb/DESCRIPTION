@@ -2,14 +2,14 @@ Package: Rgb
 Type: Package
 Title: The R Genome Browser
 Version: 1.7.5
-Date: 2020-11-24
+Date: 2023-08-17
 Author: Sylvain Mareschal
-Maintainer: Sylvain Mareschal <maressyl@gmail.com>
-URL: http://bioinformatics.ovsa.fr/Rgb
+Maintainer: Sylvain Mareschal <mareschal@ovsa.fr>
+URL: https://bioinformatics.ovsa.fr/Rgb
 BugReports: https://github.com/maressyl/R.Rgb/issues
 Description: Classes and methods to efficiently handle (slice, annotate, draw ...) genomic features (such as genes or transcripts), and an interactive interface to browse them.
 License: GPL (>= 3)
-Depends: R (>= 3.0.0), methods
+Depends: R (>= 3.5.0), methods
 Imports: utils, stats
 Suggests: tcltk, MASS, graphics, grDevices
 SystemRequirements: tk.browse() requires Tcl-tk >= 8.6 (shipped with R >= 3.4.0 on Windows, may have to be manually updated on other systems)

@@ -149,7 +149,7 @@ As the tables supplied by the Table Browser may need some reshaping, such files 
 Custom datasets can easily be converted from \code{data.frame} to \code{track.table} objects, then exported as .rdt files for Rgb. The table can hold as many columns as you want, as long as the few required columns are provided: chrom (factor), strand ("+" or "-"), start (integer), end (integer) and name (character). For more information on the \code{track.table} class and constructor, see \ref{sec:trackTable}.
 
 \begin{Scode}
-  data(hsFeatures)
+  data(hsGenes)
   class(hsGenes)
   head(hsGenes)
   tt <- track.table(hsGenes)
@@ -206,7 +206,8 @@ Centering the view on track features searched by "name" can also be achieved by 
 Genome browser representations can also be produced by scripts, calling the \strong{browsePlot} on which \strong{tk.browse} relies for its renderings. This function needs the track list to be passed as a \strong{drawable.list} object:
 
 \begin{Scode}
-  data(hsFeatures)
+  data(hsBands)
+  data(hsGenes)
   dl <- drawable.list()
   dl$add(file=NA, track=hsBands)
   dl$add(file=NA, track=track.table(hsGenes))
@@ -241,7 +242,7 @@ The \strong{track.table} class developed for Rgb can prove very useful when comp
 Aside from the \strong{draw} method extensively used by the genome browser, a fast and memory efficient \strong{slice} method is proposed for the most common task in genomic data manipulation: extracting rows in a given genomic window.
 
 \begin{Scode}
-  data(hsFeatures)
+  data(hsGenes)
   genes <- track.table(hsGenes)
   genes$slice(chrom="12", start=45e6, end=48e6)
   system.time(
@@ -254,7 +255,8 @@ Aside from the \strong{draw} method extensively used by the genome browser, a fa
 The \strong{cross} method, which makes direct use of the \strong{slice} one presented above, can also prove particularly useful to annotate genomic tables or count overlaps between tables:
 
 \begin{Scode}
-  data(hsFeatures)
+  data(hsBands)
+  data(hsGenes)
   print(hsBands)
   genes <- track.table(hsGenes)
   hsBands$cross(genes, type="count")[1:5]
@@ -270,7 +272,7 @@ The multi-track genome browsing system described above may be quite heavy to vis
 
 \begin{Scode}{fig=true, width=8, height=1}
   # Drawable data format
-  data(hsFeatures)
+  data(hsGenes)
   genes <- track.table(hsGenes)
   
   # Draw
@@ -314,14 +316,14 @@ All the classes used by Rgb are defined as "reference classes" (not to be confus
 
 \subsubsection{Methods are called from objects, using the \$ sign}
 \begin{Scode}
-  data(hsFeatures)
+  data(hsBands)
   hsBands$fill(1:5, "stain", LETTERS[1:5])
   hsBands$getColNames()
 \end{Scode}
 
 \subsubsection{Objects are only copied on explicit demand}
 \begin{Scode}
-  data(hsFeatures)
+  data(hsBands)
   a <- hsBands
   a$getColNames()
   a$delColumns("stain")
@@ -388,7 +390,7 @@ Extraction from \code{refTable} objects is handled by the \code{extract} method,
 
 \begin{Scode}
   library(Rgb)
-  data(hsFeatures)
+  data(hsGenes)
   rf <- refTable(hsGenes)
   rf$extract(1:5)
   rf$extract(c(TRUE, rep(FALSE, 799)))
@@ -428,7 +430,7 @@ The \code{drawable} class implements some features to be added to inheriting cla
 
 \begin{Scode}{fig=true, width=8, height=1}
   library(Rgb)
-  data(hsFeatures)
+  data(hsBands)
   hsBands$draw("1", 0, 150e6)
 \end{Scode}
 
@@ -444,7 +446,7 @@ Drawing parameters can be set at many levels, and are collated following a stric
 
 \begin{Scode}{fig=true, width=8, height=1}
   library(Rgb)
-  data(hsFeatures)
+  data(hsBands)
   hsBands$setParam("label", FALSE)
   hsBands$draw("1", 0, 150e6, label=TRUE)
 \end{Scode}
@@ -455,7 +457,7 @@ If a parameter was not defined specifically in an object, a call to \code{getPar
 
 \begin{Scode}
   library(Rgb)
-  data(hsFeatures)
+  data(hsBands)
   hsBands$getParam("drawFun")
   names(hsBands$defaultParams())
   hsBands$setParam("drawFun", "draw.points")
@@ -1098,7 +1100,7 @@ It is heavily recommended that drawing function developers take a look at existi
   }
     
   # Edit a track to use it
-  data(hsFeatures)
+  data(hsBands)
   hsBands$setParam("drawFun", "draw.custom")
   
   # Let's draw
@@ -1131,7 +1133,7 @@ Notice class definitions are not stored in .rdt files, so class defaults can be 
   )
   
   # Class switch
-  data(hsFeatures)
+  data(hsBands)
   obj <- new("track.custom")
   obj$import(hsBands)
   

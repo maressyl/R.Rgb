@@ -1,28 +1,17 @@
-\name{hsFeatures}
+\name{hsGenes}
 \docType{data}
-\alias{hsFeatures}
 \alias{hsGenes}
-\alias{hsBands}
-\title{Homo sapiens GRCh37 genomic features}
+\title{Subset of Homo sapiens GRCh37 genes}
 \description{
-  \code{hsGenes} contains 8000 randomly choosen human genes, from the NCBI repository.
-  
-  \code{hsBands} contains the whole list of human chromosome G-banding, from the UCSC repository.
-  
-  Both are provided as exemplar data of genomic features.
+  8000 randomly choosen GRCh37 human genes, from the NCBI repository.
 }
 \usage{
-  hsGenes
-  hsBands
+  data(hsGenes)
 }
 \format{
-  For \code{hsGenes}, a data.frame with 8000 rows and the following columns : "chrom", "start", "end" and "name".
-  
-  For \code{hsBands}, a track.table object with 862 rows and the following columns : "name", "chrom", "strand", "start", "end", "stain".
+  \code{data.frame} with 8000 rows and the following columns : "chrom", "start", "end" and "name".
 }
 \source{
   National Center for Biotechnology Information (ftp.ncbi.nih.gov)
-  
-  University of California, Santa Cruz (genome.ucsc.edu)
 }
 \keyword{datasets}
