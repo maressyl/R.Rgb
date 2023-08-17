@@ -51,7 +51,6 @@ int argsColCount(SEXP args) {
 }
 
 // Collect vectors in an argList, unfolding the first level of data.frames
-// 1 PROTECT
 void argsColCollect(SEXP args, int colCount, SEXP** colSexp, SEXP* colNames) {
 	int j = 0;
 	SEXP column;
@@ -90,6 +89,7 @@ void argsColCollect(SEXP args, int colCount, SEXP** colSexp, SEXP* colNames) {
 				error("Unhandled column type (top level)");
 		}
 	}
+	UNPROTECT(1);
 }
 
 // Collect vectors in an argList, unfolding the first level of data.frames
@@ -210,6 +210,7 @@ SEXP checktrack(SEXP args) {
 	SEXP* colSexp;
 	int colCount = argsColCount(args);
 	argsColCollect(args, colCount, &colSexp, &colNames);
+	PROTECT(colNames);
 	
 	// Length consistency
 	int rowCount = LENGTH(colSexp[0]);
@@ -294,6 +295,7 @@ SEXP track(SEXP args) {
 	SEXP* colSexp;
 	int colCount = argsColCount(args);
 	argsColCollect(args, colCount, &colSexp, &colNames);
+	PROTECT(colNames);
 	
 	// Length consistency
 	int rowCount = LENGTH(colSexp[0]);
@@ -382,16 +384,16 @@ SEXP track(SEXP args) {
 		for(int i = 0; i < colCount; i++) {
 			switch(TYPEOF(colSexp[i])) {
 				case INTSXP:
-					SET_VECTOR_ELT(output, i, PROTECT(allocVector(INTSXP, outputLength)));
+					SET_VECTOR_ELT(output, i, allocVector(INTSXP, outputLength));
 					break;
 				case REALSXP:
-					SET_VECTOR_ELT(output, i, PROTECT(allocVector(REALSXP, outputLength)));
+					SET_VECTOR_ELT(output, i, allocVector(REALSXP, outputLength));
 					break;
 				case LGLSXP:
-					SET_VECTOR_ELT(output, i, PROTECT(allocVector(LGLSXP, outputLength)));
+					SET_VECTOR_ELT(output, i, allocVector(LGLSXP, outputLength));
 					break;
 				case STRSXP:
-					SET_VECTOR_ELT(output, i, PROTECT(allocVector(STRSXP, outputLength)));
+					SET_VECTOR_ELT(output, i, allocVector(STRSXP, outputLength));
 					break;
 				default:
 					error("Unhandled column type");
@@ -443,7 +445,7 @@ SEXP track(SEXP args) {
 		Free(colSexp);
 	
 		// Unprotect variables (last action !)
-		UNPROTECT(4+colCount);
+		UNPROTECT(4);
 	} else {
 		error("'mode' argument not handled ('size' or 'sub')");
 	}

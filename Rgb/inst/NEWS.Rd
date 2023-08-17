@@ -6,6 +6,7 @@
     \item{panelSide argument added to browsePlot().}
     \item{hsFeatures dataset split into hsGenes and hsBands.}
     \item{Minor fixes suggested by R CMD check.}
+    \item{C code corrections suggested by Tomas Kalibera (rchk).}
   }
 }
 \section{Changes in version 1.7.4 (2020-06-11)}{
