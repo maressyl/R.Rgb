@@ -1,5 +1,10 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
+\section{Changes in version 1.7.6 (2023-12-15)}{
+  \itemize{
+    \item{Fixed error in read.gtf() when source file is empty.}
+  }
+}
 \section{Changes in version 1.7.5 (2023-08-17)}{
   \itemize{
     \item{Layout computation for browsePlot() is now a drawable.list method, to facilitate custom layouts.}

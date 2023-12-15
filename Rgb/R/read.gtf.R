@@ -21,7 +21,7 @@ read.gtf <- function(file, attr=c("split", "intact", "skip"), features=NULL, qui
 	
 	# As data.frame
 	class(content) <- "data.frame"
-	rownames(content) <- 1:length(content$seqname)
+	if(length(content$seqname) > 0L) rownames(content) <- 1:length(content$seqname)
 	
 	# Feature filtering
 	if(!is.null(features)) content <- content[ content$feature %in% features , , drop=FALSE ]
@@ -32,7 +32,7 @@ read.gtf <- function(file, attr=c("split", "intact", "skip"), features=NULL, qui
 	if(attr == "skip") {
 		# No attribute
 		content$attributes <- NULL
-	} else if(attr == "split") {
+	} else if(attr == "split" && nrow(content) > 0L) {
 		
 		if(!isTRUE(quiet)) message("Attribute splitting ... ", appendLF=FALSE)
 		
