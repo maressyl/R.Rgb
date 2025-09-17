@@ -1,5 +1,10 @@
 \name{Rgb-news}
 \title{Rgb package NEWS}
+\section{Changes in version 1.7.7 (2025-09-17)}{
+  \itemize{
+    \item{Article reference added to DESCRIPTION AND CITATION files.}
+  }
+}
 \section{Changes in version 1.7.6 (2023-12-15)}{
   \itemize{
     \item{Fixed error in read.gtf() when source file is empty.}
