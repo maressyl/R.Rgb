@@ -55,7 +55,7 @@ void argsColCollect(SEXP args, int colCount, SEXP** colSexp, SEXP* colNames) {
 	int j = 0;
 	SEXP column;
 	SEXP subNames;
-	(*colSexp) = Calloc(colCount, SEXP);
+	(*colSexp) = R_Calloc(colCount, SEXP);
 	PROTECT((*colNames) = allocVector(STRSXP, colCount));
 	for(; args != R_NilValue; args = CDR(args)) {
 		column = CAR(args);
@@ -263,7 +263,7 @@ SEXP checktrack(SEXP args) {
 	LOGICAL(output)[0] = TRUE;
 	
 	// Unprotect variables
-	Free(colSexp);
+	R_Free(colSexp);
 	UNPROTECT(2);
 	
 	return output;
@@ -368,7 +368,7 @@ SEXP track(SEXP args) {
 		INTEGER(output)[0] = outputLength;
 		
 		// Memory release
-		Free(colSexp);
+		R_Free(colSexp);
 	
 		// Unprotect variables (last action !)
 		UNPROTECT(2);
@@ -442,7 +442,7 @@ SEXP track(SEXP args) {
 		setAttrib(output, R_RowNamesSymbol, outRowNames);
 		
 		// Memory release
-		Free(colSexp);
+		R_Free(colSexp);
 	
 		// Unprotect variables (last action !)
 		UNPROTECT(4);
