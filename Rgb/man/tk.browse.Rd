@@ -26,7 +26,7 @@
     A \code{\linkS4class{drawable.list}} object containing the tracks to plot, as returned by \code{\link{drawable.list}} or \code{\link{tk.tracks}}.
 }
   \item{blocking}{
-    Single logical value, whether to wait for the interface window to be closed before unfreezing the R console. The \code{FALSE} default let you use R and the interface in parallel (see the 'Typing R commands while browsing' section below), the code{TRUE} value is used essentially in the stand alone version.
+    Single logical value, whether to wait for the interface window to be closed before unfreezing the R console. The \code{FALSE} default let you use R and the interface in parallel (see the 'Typing R commands while browsing' section below), \code{TRUE} is used essentially in the stand alone version.
 }
   \item{updateLimit}{
     Single numeric value, minimal time (in seconds) between two image updates when move or zoom key are continuously pressed. This is used to limit zoom and move speed on fast computers.

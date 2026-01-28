@@ -79,7 +79,7 @@
   
   Example of \code{track.exons.GENCODE} raw file (human assembly 'GRCh38') : \url{ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_29/gencode.v29.annotation.gtf.gz}
   
-  Example of \code{track.CNV.DGV} raw file (human assembly 'hg19') : \url{http://dgv.tcag.ca/dgv/docs/GRCh37_hg19_variants_2013-05-31.txt}
+  Example of \code{track.CNV.DGV} raw file (human assembly 'hg19') : \url{http://dgv.tcag.ca/dgv/docs/GRCh37_hg19_variants_2025-12-01.txt}
   
   Example of \code{track.genes.NCBI} raw file (human assembly 'GRCh37') : \url{https://ftp.ncbi.nih.gov/genomes/MapView/Homo_sapiens/sequence/BUILD.37.3/initial_release/seq_gene.md.gz}
 

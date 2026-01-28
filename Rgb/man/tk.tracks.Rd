@@ -5,7 +5,7 @@
 }
 
 \description{
-  This function allows to load and edit the \code{\linkS4class{drawable.list}} object that is to be passed to \code{\link{tk.browse}} and code{\link{browsePlot}}, using a Tcl-tk interface
+  This function allows to load and edit the \code{\linkS4class{drawable.list}} object that is to be passed to \code{\link{tk.browse}} and \code{\link{browsePlot}}, using a Tcl-tk interface
 }
 
 \usage{

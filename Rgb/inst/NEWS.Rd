@@ -3,6 +3,7 @@
 \section{Changes in version 1.7.8 (2026-01-28)}{
   \itemize{
     \item{Fixed C function calls for compatibility with R 4.5.}
+    \item{Minor man and meta-data file fixes for CRAN resubmission.}
   }
 }
 \section{Changes in version 1.7.7 (2025-09-17)}{
